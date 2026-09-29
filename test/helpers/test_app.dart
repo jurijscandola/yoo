@@ -1,4 +1,4 @@
-import 'package:drift/drift.dart' show DatabaseConnection;
+import 'package:drift/drift.dart' show DatabaseConnection, driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +7,8 @@ import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
+import 'package:yoo/features/reminders/domain/reminder_permissions.dart';
+import 'package:yoo/features/reminders/presentation/reminder_providers.dart';
 import 'package:yoo/features/settings/data/in_memory_settings_repository.dart';
 import 'package:yoo/features/settings/domain/app_settings.dart';
 import 'package:yoo/features/settings/presentation/settings_providers.dart';
@@ -14,25 +16,35 @@ import 'package:yoo/features/settings/presentation/settings_providers.dart';
 /// Everything a widget test needs to run the full app in memory.
 ///
 /// The in-memory database is not closed in tear-down: closing it inside the
-/// fake-async test zone can wait forever after a failure.
+/// fake-async test zone can wait forever after a failure (hence the drift
+/// warning about several open databases is silenced).
 class TestApp {
-  TestApp({AppSettings settings = const AppSettings(), DateTime? now})
-    : database = AppDatabase(
-        // Synchronous stream closing avoids pending timers in widget tests.
-        DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
-      ),
-      settings = InMemorySettingsRepository(settings),
-      clock = FixedClock(now ?? DateTime(2026, 9, 29, 10));
+  TestApp({
+    AppSettings settings = const AppSettings(),
+    DateTime? now,
+    this.permissions = const GrantedReminderPermissions(),
+  }) : database = AppDatabase(
+         // Synchronous stream closing avoids pending timers in widget tests.
+         DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
+       ),
+       settings = InMemorySettingsRepository(settings),
+       clock = FixedClock(now ?? DateTime(2026, 9, 29, 10)) {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  }
 
   final AppDatabase database;
   final InMemorySettingsRepository settings;
   final FixedClock clock;
+
+  /// Reminder permissions; all granted unless a test is about them.
+  final ReminderPermissions permissions;
 
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
     settingsRepositoryProvider.overrideWithValue(settings),
     clockProvider.overrideWithValue(clock),
+    reminderPermissionsProvider.overrideWithValue(permissions),
   ];
 
   /// The whole app, ready to pump.
