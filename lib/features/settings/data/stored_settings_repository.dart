@@ -21,6 +21,7 @@ class StoredSettingsRepository implements SettingsRepository {
       externalCalendars: json['externalCalendars'] == null
           ? const ExternalCalendarSettings()
           : ExternalCalendarSettings.fromJson(json['externalCalendars']! as Map<String, Object?>),
+      appIconId: json['appIconId'] as String? ?? AppSettings.defaultAppIconId,
     );
   }
 
@@ -28,6 +29,7 @@ class StoredSettingsRepository implements SettingsRepository {
     'localeCode': s.localeCode,
     'theme': s.theme.toJson(),
     'externalCalendars': s.externalCalendars.toJson(),
+    'appIconId': s.appIconId,
   });
 
   @override

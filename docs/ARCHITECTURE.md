@@ -126,5 +126,22 @@ plugin grants reading only with both; iOS has the usage descriptions in `Info.pl
 Device test: turn the feature on, check the permission dialog, that real events (all-day,
 recurring, other accounts) appear on the right days, hiding a calendar, and "Add as activity".
 
+### Phase 8 – export and personalization (done)
+- **Export** (`features/export/`): `MonthReport` (pure) → `MonthTextFormatter` (localized text,
+  CRLF) → `ExportDestination`. Today `ShareExportDestination`: writes `Yoo-YYYY-MM.txt` (UTF-8
+  with BOM) in the cache and opens the share sheet (save to Files/Drive or send). The Export
+  screen previews the text; months up to the current one.
+- **Personalization** (`features/settings/presentation/personalization_screen.dart`): live
+  preview, presets (choosing one drops the color overrides, keeps the font), a color for text,
+  pages, headers/sheets, cards, navigation bar, buttons and notifications (swatches or
+  "Default"), font (system, Inter, Nunito, Lora, JetBrains Mono: bundled static 400/600/700,
+  SIL OFL, licenses registered in the license page), reset. Language or notification color
+  changes reconfigure the notification channels/color and reschedule (`followReminderSettings`).
+- **App icon**: `AppIconScreen` with six placeholder previews; the choice is stored
+  (`AppSettings.appIconId`) but the launcher icon does not change yet. It needs the final
+  artwork plus native setup (Android `activity-alias` per icon, iOS alternate icons).
+- **Goals tab**: still empty on purpose; the owner will decide its content.
+
 ### Next phases
-8 export + personalization · 9 polish.
+9 polish. Pending device tests: notifications (phase 5), device calendars (phase 7), export
+share sheet and fonts on the phone (phase 8).

@@ -21,6 +21,8 @@ Future<void> main() async {
     gateway,
     onResponse: (response) => unawaited(handleNotificationResponse(container, response)),
   );
+  followReminderSettings(container, gateway);
+  registerFontLicenses();
   runApp(UncontrolledProviderScope(container: container, child: const YooApp()));
   unawaited(BackgroundTasks.register());
 

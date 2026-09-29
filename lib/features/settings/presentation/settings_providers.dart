@@ -48,6 +48,12 @@ class SettingsController {
     await _repository.save(current.copyWith(localeCode: code));
   }
 
+  /// Stores the chosen app icon.
+  Future<void> setAppIcon(String id) async {
+    final current = await _repository.load();
+    await _repository.save(current.copyWith(appIconId: id));
+  }
+
   /// Replaces the external calendar preferences.
   Future<void> setExternalCalendars(ExternalCalendarSettings value) async {
     final current = await _repository.load();
@@ -58,5 +64,12 @@ class SettingsController {
   Future<void> setTheme(ThemeConfig theme) async {
     final current = await _repository.load();
     await _repository.save(current.copyWith(theme: theme));
+  }
+
+  /// Applies [change] to the stored theme (read and written together, so
+  /// quick successive changes never overwrite each other).
+  Future<void> updateTheme(ThemeConfig Function(ThemeConfig theme) change) async {
+    final current = await _repository.load();
+    await _repository.save(current.copyWith(theme: change(current.theme)));
   }
 }

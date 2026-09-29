@@ -7,7 +7,11 @@ class AppSettings {
     this.localeCode,
     this.theme = const ThemeConfig(),
     this.externalCalendars = const ExternalCalendarSettings(),
+    this.appIconId = defaultAppIconId,
   });
+
+  /// Identifier of the app icon chosen in Personalization.
+  static const defaultAppIconId = 'classic';
 
   /// Selected UI language (`en`, `it`). `null` means the user has not chosen yet,
   /// which triggers the first-launch language prompt.
@@ -19,6 +23,9 @@ class AppSettings {
   /// Which device calendars are shown next to the activities.
   final ExternalCalendarSettings externalCalendars;
 
+  /// App icon chosen by the user (previews only for now, see ARCHITECTURE).
+  final String appIconId;
+
   /// Whether the first-launch language prompt must be shown.
   bool get needsLanguageChoice => localeCode == null;
 
@@ -26,11 +33,13 @@ class AppSettings {
     String? localeCode,
     ThemeConfig? theme,
     ExternalCalendarSettings? externalCalendars,
+    String? appIconId,
   }) {
     return AppSettings(
       localeCode: localeCode ?? this.localeCode,
       theme: theme ?? this.theme,
       externalCalendars: externalCalendars ?? this.externalCalendars,
+      appIconId: appIconId ?? this.appIconId,
     );
   }
 }
@@ -57,6 +66,9 @@ class ExternalCalendarSettings {
     hiddenCalendarIds: {...(json['hidden'] as List<Object?>? ?? const []).cast<String>()},
   );
 }
+
+/// The customizable colors of the theme.
+enum ThemeColorSlot { text, page, surface, cards, navBar, accent, notification }
 
 /// Every color and font of the app, as chosen by the user.
 ///
@@ -100,6 +112,48 @@ class ThemeConfig {
 
   /// Font family name; `null` uses the preset font.
   final String? fontFamily;
+
+  /// The override of [slot]; `null` means the preset default.
+  int? colorOf(ThemeColorSlot slot) => switch (slot) {
+    ThemeColorSlot.text => textColor,
+    ThemeColorSlot.page => pageColor,
+    ThemeColorSlot.surface => surfaceColor,
+    ThemeColorSlot.cards => cardColor,
+    ThemeColorSlot.navBar => navBarColor,
+    ThemeColorSlot.accent => accentColor,
+    ThemeColorSlot.notification => notificationColor,
+  };
+
+  /// A copy with [slot] set to [argb] (`null` restores the preset default).
+  ThemeConfig withColor(ThemeColorSlot slot, int? argb) => ThemeConfig(
+    presetId: presetId,
+    textColor: slot == ThemeColorSlot.text ? argb : textColor,
+    pageColor: slot == ThemeColorSlot.page ? argb : pageColor,
+    surfaceColor: slot == ThemeColorSlot.surface ? argb : surfaceColor,
+    cardColor: slot == ThemeColorSlot.cards ? argb : cardColor,
+    navBarColor: slot == ThemeColorSlot.navBar ? argb : navBarColor,
+    accentColor: slot == ThemeColorSlot.accent ? argb : accentColor,
+    notificationColor: slot == ThemeColorSlot.notification ? argb : notificationColor,
+    fontFamily: fontFamily,
+  );
+
+  /// A copy using [family] (`null` restores the preset font).
+  ThemeConfig withFont(String? family) => ThemeConfig(
+    presetId: presetId,
+    textColor: textColor,
+    pageColor: pageColor,
+    surfaceColor: surfaceColor,
+    cardColor: cardColor,
+    navBarColor: navBarColor,
+    accentColor: accentColor,
+    notificationColor: notificationColor,
+    fontFamily: family,
+  );
+
+  /// Switches to [presetId], dropping the color overrides (they were chosen
+  /// for the previous palette) but keeping the font.
+  ThemeConfig withPreset(String presetId) =>
+      ThemeConfig(presetId: presetId, fontFamily: fontFamily);
 
   /// Serializes to a plain map (used by persistence).
   Map<String, Object?> toJson() => {

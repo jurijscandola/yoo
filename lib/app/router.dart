@@ -12,6 +12,8 @@ import '../features/external_calendars/presentation/external_calendars_screen.da
 import '../features/external_calendars/presentation/external_events.dart';
 import '../features/goals/presentation/goals_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/settings/presentation/app_icon_screen.dart';
+import '../features/settings/presentation/personalization_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'routes.dart';
 import 'shell/app_shell.dart';
@@ -76,6 +78,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             extraSections: [ExternalEventsSection(date: date)],
           );
         },
+      ),
+      GoRoute(
+        path: Routes.personalization,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const PersonalizationScreen(),
+      ),
+      GoRoute(
+        path: Routes.appIcon,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const AppIconScreen(),
       ),
       GoRoute(
         path: Routes.export,

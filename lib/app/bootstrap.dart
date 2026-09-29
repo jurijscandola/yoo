@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:ui' show DartPluginRegistrant;
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/database/app_database.dart';
+import '../core/theme/yoo_fonts.dart';
 import '../core/theme/yoo_tokens.dart';
 import '../features/export/data/share_export_destination.dart';
 import '../features/export/presentation/export_providers.dart';
@@ -50,17 +53,7 @@ Future<void> initializeReminders(
   NotificationResponseHandler? onResponse,
 }) async {
   try {
-    final settings = await container.read(settingsRepositoryProvider).load();
-    final l10n = lookupAppLocalizations(Locale(settings.localeCode ?? 'en'));
-    gateway.configure(
-      accent: YooTokens.fromConfig(settings.theme).accent,
-      channels: (
-        reminders: l10n.channelReminders,
-        remindersDescription: l10n.channelRemindersDescription,
-        goals: l10n.channelGoals,
-        goalsDescription: l10n.channelGoalsDescription,
-      ),
-    );
+    final l10n = await configureReminders(container, gateway);
     await gateway.initialize(
       labels: reminderLabelsOf(l10n),
       onResponse: onResponse,
@@ -69,6 +62,55 @@ Future<void> initializeReminders(
   } catch (error, stack) {
     debugPrint('Notification setup failed: $error\n$stack');
   }
+}
+
+/// Applies the user's language (channel names) and notification color to
+/// [gateway]; returns the strings used. Called at startup and whenever the
+/// language or the color changes.
+Future<AppLocalizations> configureReminders(
+  ProviderContainer container,
+  LocalNotificationGateway gateway,
+) async {
+  final settings = await container.read(settingsRepositoryProvider).load();
+  final l10n = lookupAppLocalizations(Locale(settings.localeCode ?? 'en'));
+  gateway.configure(
+    accent: YooTokens.fromConfig(settings.theme).notification,
+    channels: (
+      reminders: l10n.channelReminders,
+      remindersDescription: l10n.channelRemindersDescription,
+      goals: l10n.channelGoals,
+      goalsDescription: l10n.channelGoalsDescription,
+    ),
+  );
+  return l10n;
+}
+
+/// Keeps scheduled reminders in line with the settings: a new language or
+/// notification color reschedules them (same ids, so they are replaced).
+void followReminderSettings(ProviderContainer container, LocalNotificationGateway gateway) {
+  container.listen(
+    currentSettingsProvider.select(
+      (s) => (s.localeCode, YooTokens.fromConfig(s.theme).notification),
+    ),
+    (previous, next) async {
+      if (previous == null || previous == next) return;
+      try {
+        await configureReminders(container, gateway);
+      } catch (error, stack) {
+        debugPrint('Notification setup failed: $error\n$stack');
+      }
+      await container.read(reminderRefreshProvider)();
+    },
+  );
+}
+
+/// Registers the licenses of the bundled fonts in the license page.
+void registerFontLicenses() {
+  LicenseRegistry.addLicense(() async* {
+    for (final MapEntry(key: family, value: path) in YooFonts.licenses.entries) {
+      yield LicenseEntryWithLineBreaks([family], await rootBundle.loadString(path));
+    }
+  });
 }
 
 /// Applies a notification action (if any), then refreshes the reminders so

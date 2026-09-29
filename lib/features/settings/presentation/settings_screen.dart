@@ -8,7 +8,8 @@ import '../../../l10n/l10n.dart';
 import '../../reminders/presentation/reminder_reliability_section.dart';
 import 'settings_providers.dart';
 
-/// Settings: export, personalization and language.
+/// Settings: export, personalization, language, device calendars and
+/// reminder reliability.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -34,7 +35,7 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.palette_outlined,
             title: l10n.settingsPersonalization,
             subtitle: l10n.settingsPersonalizationSubtitle,
-            onTap: () => _comingSoon(context),
+            onTap: () => context.push(Routes.personalization),
           ),
           SettingsTile(
             icon: Icons.translate,
@@ -52,12 +53,6 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  void _comingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoon)));
   }
 
   Future<void> _pickLanguage(BuildContext context, WidgetRef ref, String current) async {
