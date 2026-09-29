@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Native launch background: matches the default "paper" page token so the
+         Flutter opening animation starts without a color jump. -->
+    <color name="yoo_splash">#FFECE9E2</color>
+</resources>

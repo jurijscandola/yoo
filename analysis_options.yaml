@@ -15,6 +15,5 @@ linter:
     - prefer_final_locals
     - prefer_single_quotes
     - require_trailing_commas
-    - sort_constructors_first
     - unawaited_futures
     - directives_ordering

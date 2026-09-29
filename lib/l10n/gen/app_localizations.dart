@@ -103,6 +103,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yoo'**
   String get appTitle;
+
+  /// No description provided for @navCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get navCalendar;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get navGoals;
+
+  /// No description provided for @goalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get goalsTitle;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export data'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One .txt file per month'**
+  String get settingsExportSubtitle;
+
+  /// No description provided for @settingsPersonalization.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalization'**
+  String get settingsPersonalization;
+
+  /// No description provided for @settingsPersonalizationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors, fonts, app icon'**
+  String get settingsPersonalizationSubtitle;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @languagePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language'**
+  String get languagePromptTitle;
+
+  /// No description provided for @languagePromptSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it later in Settings.'**
+  String get languagePromptSubtitle;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageItalian.
+  ///
+  /// In en, this message translates to:
+  /// **'Italiano'**
+  String get languageItalian;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get moreOptions;
 }
 
 class _AppLocalizationsDelegate

@@ -10,4 +10,52 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appTitle => 'Yoo';
+
+  @override
+  String get navCalendar => 'Calendario';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navGoals => 'Obiettivi';
+
+  @override
+  String get goalsTitle => 'Obiettivi';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsExport => 'Esporta dati';
+
+  @override
+  String get settingsExportSubtitle => 'Un file .txt per ogni mese';
+
+  @override
+  String get settingsPersonalization => 'Personalizzazione';
+
+  @override
+  String get settingsPersonalizationSubtitle => 'Colori, font, icona dell\'app';
+
+  @override
+  String get settingsLanguage => 'Lingua';
+
+  @override
+  String get languagePromptTitle => 'Scegli la lingua';
+
+  @override
+  String get languagePromptSubtitle => 'Potrai cambiarla nelle Impostazioni.';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageItalian => 'Italiano';
+
+  @override
+  String get comingSoon => 'In arrivo';
+
+  @override
+  String get moreOptions => 'Altre opzioni';
 }

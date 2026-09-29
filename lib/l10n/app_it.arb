@@ -1,4 +1,20 @@
 {
   "@@locale": "it",
-  "appTitle": "Yoo"
+  "appTitle": "Yoo",
+  "navCalendar": "Calendario",
+  "navHome": "Home",
+  "navGoals": "Obiettivi",
+  "goalsTitle": "Obiettivi",
+  "settingsTitle": "Impostazioni",
+  "settingsExport": "Esporta dati",
+  "settingsExportSubtitle": "Un file .txt per ogni mese",
+  "settingsPersonalization": "Personalizzazione",
+  "settingsPersonalizationSubtitle": "Colori, font, icona dell'app",
+  "settingsLanguage": "Lingua",
+  "languagePromptTitle": "Scegli la lingua",
+  "languagePromptSubtitle": "Potrai cambiarla nelle Impostazioni.",
+  "languageEnglish": "English",
+  "languageItalian": "Italiano",
+  "comingSoon": "In arrivo",
+  "moreOptions": "Altre opzioni"
 }
