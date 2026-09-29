@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/time/local_date.dart';
 import '../features/activities/domain/services/activity_service.dart';
 import '../features/goals/domain/goal_service.dart';
+import '../features/home_widget/presentation/home_widget_providers.dart';
 import '../features/reminders/presentation/reminder_providers.dart';
 import 'providers.dart';
 
@@ -14,6 +15,9 @@ final goalCompletionNotifierProvider = Provider<GoalCompletionNotifier?>(
 
 /// Refreshes the notification schedule.
 final reminderRefreshProvider = Provider<Future<void> Function()>(reminderRefreshOf);
+
+/// Refreshes the home screen widget.
+final homeWidgetRefreshProvider = Provider<Future<void> Function()>(homeWidgetRefreshOf);
 
 final goalServiceProvider = Provider<GoalService>(
   (ref) => GoalService(
@@ -27,7 +31,7 @@ final goalServiceProvider = Provider<GoalService>(
 );
 
 /// What happens after any data change: goal checks for the affected months,
-/// then a refresh of the reminder schedule.
+/// then a refresh of the reminder schedule and of the home screen widget.
 final changeHookProvider = Provider<ChangeHook>((ref) {
   return (Set<LocalDate> days) async {
     final goals = ref.read(goalServiceProvider);
@@ -36,6 +40,7 @@ final changeHookProvider = Provider<ChangeHook>((ref) {
       await goals.checkCompletions(year, month);
     }
     await ref.read(reminderRefreshProvider)();
+    await ref.read(homeWidgetRefreshProvider)();
   };
 });
 

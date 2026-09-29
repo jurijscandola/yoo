@@ -36,9 +36,10 @@ void backgroundTaskDispatcher() {
     try {
       await runInBackground((container) async {
         // The rollover's change hook checks goals and refreshes reminders;
-        // the explicit refresh covers days where nothing changed.
+        // the explicit refreshes cover days where nothing changed.
         await container.read(activityServiceProvider).rollover();
         await container.read(reminderRefreshProvider)();
+        await container.read(homeWidgetRefreshProvider)();
       });
       return true;
     } catch (error, stack) {

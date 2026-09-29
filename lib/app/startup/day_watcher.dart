@@ -10,7 +10,8 @@ import '../services.dart';
 /// Keeps stored data aligned with the current day while the app runs: runs
 /// the day rollover on start, when the app returns to the foreground and at
 /// every local midnight, then refreshes the reminders (keeps the rolling
-/// window full and follows time zone changes). Also exposes today's date
+/// window full and follows time zone changes) and the home screen widget.
+/// Also exposes today's date
 /// through [todayProvider].
 class DayWatcher extends ConsumerStatefulWidget {
   const DayWatcher({super.key, required this.child});
@@ -36,7 +37,7 @@ class _DayWatcherState extends ConsumerState<DayWatcher> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) _onNewMoment();
   }
 
-  /// Runs the rollover, refreshes the reminders and re-arms the midnight timer.
+  /// Runs the rollover, refreshes reminders and widget, re-arms the midnight timer.
   void _onNewMoment() {
     ref.invalidate(todayProvider);
     // Device calendars may have changed while the app was in background.
@@ -54,8 +55,10 @@ class _DayWatcherState extends ConsumerState<DayWatcher> with WidgetsBindingObse
     // Read before awaiting: the widget may be disposed meanwhile.
     final activities = ref.read(activityServiceProvider);
     final refreshReminders = ref.read(reminderRefreshProvider);
+    final refreshWidget = ref.read(homeWidgetRefreshProvider);
     await activities.rollover();
     await refreshReminders();
+    await refreshWidget();
   }
 
   @override

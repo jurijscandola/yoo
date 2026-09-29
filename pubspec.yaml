@@ -49,6 +49,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   device_calendar_plus: ^0.9.0
+  home_widget: ^0.10.0
 
 dev_dependencies:
   flutter_test:

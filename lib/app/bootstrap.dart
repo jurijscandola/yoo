@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io' show Platform;
 import 'dart:ui' show DartPluginRegistrant;
 
 import 'package:flutter/foundation.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
 
 import '../core/database/app_database.dart';
 import '../core/theme/yoo_fonts.dart';
@@ -14,13 +17,19 @@ import '../features/export/data/share_export_destination.dart';
 import '../features/export/presentation/export_providers.dart';
 import '../features/external_calendars/data/device_external_calendar_source.dart';
 import '../features/external_calendars/presentation/external_calendar_providers.dart';
+import '../features/home_widget/data/android_home_screen_widget.dart';
+import '../features/home_widget/domain/widget_snapshot.dart';
+import '../features/home_widget/presentation/home_widget_providers.dart';
 import '../features/reminders/application/notification_action_handler.dart';
 import '../features/reminders/data/local_notification_gateway.dart';
+import '../features/reminders/domain/notification_planner.dart';
 import '../features/reminders/presentation/reminder_providers.dart';
 import '../features/settings/data/stored_settings_repository.dart';
 import '../features/settings/presentation/settings_providers.dart';
 import '../l10n/l10n.dart';
 import 'providers.dart';
+import 'router.dart';
+import 'routes.dart';
 import 'services.dart';
 
 // Startup shared by the UI isolate (`main`) and the background isolates that
@@ -39,6 +48,7 @@ ProviderContainer openAppContainer(LocalNotificationGateway gateway) {
       reminderPermissionsProvider.overrideWithValue(gateway),
       externalCalendarSourceProvider.overrideWithValue(DeviceExternalCalendarSource()),
       exportDestinationProvider.overrideWithValue(const ShareExportDestination()),
+      homeScreenWidgetProvider.overrideWithValue(const AndroidHomeScreenWidget()),
     ],
   );
 }
@@ -102,6 +112,50 @@ void followReminderSettings(ProviderContainer container, LocalNotificationGatewa
       await container.read(reminderRefreshProvider)();
     },
   );
+}
+
+/// Keeps the home screen widget in line with the theme and the language.
+void followWidgetSettings(ProviderContainer container) {
+  container.listen(
+    currentSettingsProvider.select((s) => (s.localeCode, jsonEncode(s.theme.toJson()))),
+    (previous, next) {
+      if (previous != null && previous != next) container.read(homeWidgetRefreshProvider)();
+    },
+  );
+}
+
+/// Android home screen widget: registers the card tap callback and opens
+/// Home when the widget header launched or resumed the app.
+Future<void> setUpHomeWidget(ProviderContainer container) async {
+  if (!Platform.isAndroid) return;
+  try {
+    await HomeWidget.registerInteractivityCallback(onHomeWidgetInteraction);
+    HomeWidget.widgetClicked.listen((uri) {
+      if (uri?.host == WidgetLinks.home.host) container.read(routerProvider).go(Routes.home);
+    });
+  } catch (error, stack) {
+    debugPrint('Home widget setup failed: $error\n$stack');
+  }
+}
+
+/// Entry point of taps on a home screen widget card (background isolate):
+/// completes the activity with the same logic as a notification action.
+@pragma('vm:entry-point')
+Future<void> onHomeWidgetInteraction(Uri? uri) async {
+  final target = WidgetLinks.parseComplete(uri);
+  if (target == null) return;
+  await runInBackground((container) async {
+    try {
+      await NotificationActionHandler(container.read(activityServiceProvider)).handle(
+        actionId: target.action,
+        payload: ReminderPayload(activityId: target.activityId, date: target.date).encode(),
+      );
+    } catch (error, stack) {
+      debugPrint('Widget action failed: $error\n$stack');
+    }
+    // The change hook refreshed it already, unless nothing changed.
+    await container.read(homeWidgetRefreshProvider)();
+  });
 }
 
 /// Registers the licenses of the bundled fonts in the license page.

@@ -295,5 +295,6 @@
   "previewActivityTwo": "Read 20 pages",
   "settingsAbout": "About Yoo",
   "settingsAboutSubtitle": "Open-source licenses",
-  "aboutLegalese": "Small recurring activities, reliable reminders."
+  "aboutLegalese": "Small recurring activities, reliable reminders.",
+  "widgetStale": "Open Yoo to update"
 }

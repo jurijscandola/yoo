@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.compose")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -9,6 +10,11 @@ android {
     // permission_handler_android requires API 37.
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
+
+    // Jetpack Glance (home screen widget) is written with Compose.
+    buildFeatures {
+        compose = true
+    }
 
     compileOptions {
         // Required by flutter_local_notifications (java.time APIs on older Android).

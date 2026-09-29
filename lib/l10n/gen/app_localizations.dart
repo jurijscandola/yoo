@@ -1226,6 +1226,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Small recurring activities, reliable reminders.'**
   String get aboutLegalese;
+
+  /// No description provided for @widgetStale.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Yoo to update'**
+  String get widgetStale;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

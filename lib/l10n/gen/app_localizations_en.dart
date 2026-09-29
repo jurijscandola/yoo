@@ -620,4 +620,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutLegalese => 'Small recurring activities, reliable reminders.';
+
+  @override
+  String get widgetStale => 'Open Yoo to update';
 }

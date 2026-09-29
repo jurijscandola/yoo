@@ -11,6 +11,8 @@ import 'package:yoo/features/export/domain/export_destination.dart';
 import 'package:yoo/features/export/presentation/export_providers.dart';
 import 'package:yoo/features/external_calendars/domain/external_calendar_source.dart';
 import 'package:yoo/features/external_calendars/presentation/external_calendar_providers.dart';
+import 'package:yoo/features/home_widget/domain/home_screen_widget.dart';
+import 'package:yoo/features/home_widget/presentation/home_widget_providers.dart';
 import 'package:yoo/features/reminders/domain/reminder_gateway.dart';
 import 'package:yoo/features/reminders/domain/reminder_permissions.dart';
 import 'package:yoo/features/reminders/presentation/reminder_providers.dart';
@@ -31,6 +33,7 @@ class TestApp {
     this.gateway = const NoopReminderGateway(),
     this.externalCalendars = const EmptyExternalCalendarSource(),
     this.exportDestination = const NoopExportDestination(),
+    this.homeScreenWidget = const NoopHomeScreenWidget(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -56,6 +59,9 @@ class TestApp {
   /// Where exports go; discarded unless a test inspects them.
   final ExportDestination exportDestination;
 
+  /// Home screen widget; nothing is drawn unless a test inspects it.
+  final HomeScreenWidget homeScreenWidget;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
@@ -65,6 +71,7 @@ class TestApp {
     reminderGatewayProvider.overrideWithValue(gateway),
     externalCalendarSourceProvider.overrideWithValue(externalCalendars),
     exportDestinationProvider.overrideWithValue(exportDestination),
+    homeScreenWidgetProvider.overrideWithValue(homeScreenWidget),
   ];
 
   /// The whole app, ready to pump.

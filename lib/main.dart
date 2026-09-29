@@ -22,9 +22,11 @@ Future<void> main() async {
     onResponse: (response) => unawaited(handleNotificationResponse(container, response)),
   );
   followReminderSettings(container, gateway);
+  followWidgetSettings(container);
   registerFontLicenses();
   runApp(UncontrolledProviderScope(container: container, child: const YooApp()));
   unawaited(BackgroundTasks.register());
+  unawaited(setUpHomeWidget(container));
 
   // An action pressed while the app was not running launched it. (The
   // reminder refresh of a normal start is done by the day watcher.)
