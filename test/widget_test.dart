@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:yoo/app/app.dart';
-import 'package:yoo/features/settings/data/in_memory_settings_repository.dart';
 import 'package:yoo/features/settings/domain/app_settings.dart';
-import 'package:yoo/features/settings/presentation/settings_providers.dart';
+
+import 'helpers/test_app.dart';
 
 void main() {
-  Widget buildApp(InMemorySettingsRepository repo) => ProviderScope(
-    overrides: [settingsRepositoryProvider.overrideWithValue(repo)],
-    child: const YooApp(),
-  );
-
   testWidgets('first launch: splash, language prompt, localized shell', (tester) async {
-    final repo = InMemorySettingsRepository();
-    await tester.pumpWidget(buildApp(repo));
+    final app = TestApp();
+    addTearDown(app.database.close);
+    await tester.pumpWidget(app.build());
 
     // The opening animation is on screen first.
     expect(find.text('Yoo'), findsOneWidget);
@@ -27,12 +21,13 @@ void main() {
 
     expect(find.text('Choose your language'), findsNothing);
     expect(find.text('Calendario'), findsWidgets);
-    expect((await repo.load()).localeCode, 'it');
+    expect((await app.settings.load()).localeCode, 'it');
   });
 
   testWidgets('returning user skips the prompt and can open settings', (tester) async {
-    final repo = InMemorySettingsRepository(const AppSettings(localeCode: 'en'));
-    await tester.pumpWidget(buildApp(repo));
+    final app = TestApp(settings: const AppSettings(localeCode: 'en'));
+    addTearDown(app.database.close);
+    await tester.pumpWidget(app.build());
     await tester.pumpAndSettle();
 
     expect(find.text('Choose your language'), findsNothing);

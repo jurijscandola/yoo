@@ -7,6 +7,7 @@ import '../core/theme/yoo_theme.dart';
 import '../features/settings/presentation/settings_providers.dart';
 import '../l10n/l10n.dart';
 import 'router.dart';
+import 'startup/day_watcher.dart';
 import 'startup/startup_gate.dart';
 
 /// Root widget: wires router, theme (from design tokens) and localization.
@@ -36,7 +37,7 @@ class YooApp extends ConsumerWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         routerConfig: ref.watch(routerProvider),
-        builder: (context, child) => StartupGate(child: child!),
+        builder: (context, child) => DayWatcher(child: StartupGate(child: child!)),
       ),
     );
   }
