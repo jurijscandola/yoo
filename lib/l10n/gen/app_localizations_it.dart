@@ -54,9 +54,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get languageItalian => 'Italiano';
 
   @override
-  String get comingSoon => 'In arrivo';
-
-  @override
   String get moreOptions => 'Altre opzioni';
 
   @override

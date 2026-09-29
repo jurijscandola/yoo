@@ -183,12 +183,6 @@ abstract class AppLocalizations {
   /// **'Italiano'**
   String get languageItalian;
 
-  /// No description provided for @comingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming soon'**
-  String get comingSoon;
-
   /// No description provided for @moreOptions.
   ///
   /// In en, this message translates to:
