@@ -17,3 +17,6 @@ linter:
     - require_trailing_commas
     - unawaited_futures
     - directives_ordering
+
+formatter:
+  page_width: 100

@@ -29,11 +29,7 @@ class _StartupGateState extends ConsumerState<StartupGate> {
     return Stack(
       children: [
         widget.child,
-        if (_splashDone)
-          _AnimatedPresence(
-            visible: needsLanguage,
-            child: const _LanguagePrompt(),
-          ),
+        if (_splashDone) _AnimatedPresence(visible: needsLanguage, child: const _LanguagePrompt()),
         if (!_splashDone)
           SplashOverlay(
             // Wait for the settings too, so the prompt never flickers.
@@ -108,9 +104,10 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
     return FadeTransition(
       opacity: Tween<double>(begin: 1, end: 0).animate(_outro),
       child: ScaleTransition(
-        scale: Tween<double>(begin: 1, end: 1.06).animate(
-          CurvedAnimation(parent: _outro, curve: Curves.easeIn),
-        ),
+        scale: Tween<double>(
+          begin: 1,
+          end: 1.06,
+        ).animate(CurvedAnimation(parent: _outro, curve: Curves.easeIn)),
         child: ColoredBox(
           color: t.page,
           child: Center(
@@ -122,8 +119,7 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
                 FadeTransition(
                   opacity: nameIn,
                   child: SlideTransition(
-                    position: Tween(begin: const Offset(0, 0.6), end: Offset.zero)
-                        .animate(nameIn),
+                    position: Tween(begin: const Offset(0, 0.6), end: Offset.zero).animate(nameIn),
                     child: Text(
                       'Yoo',
                       style: TextStyle(
@@ -190,12 +186,9 @@ class _LanguagePrompt extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       foregroundColor: t.text,
                       side: BorderSide(color: t.divider, width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(t.radius),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
                     ),
-                    onPressed: () =>
-                        ref.read(settingsControllerProvider).setLocale(code),
+                    onPressed: () => ref.read(settingsControllerProvider).setLocale(code),
                     child: Text(languageName(context, code)),
                   ),
                 ),

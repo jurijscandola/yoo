@@ -25,27 +25,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: Routes.calendar,
-                builder: (context, state) => const CalendarScreen(),
-              ),
+              GoRoute(path: Routes.calendar, builder: (context, state) => const CalendarScreen()),
             ],
           ),
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.home,
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen())],
           ),
           StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.goals,
-                builder: (context, state) => const GoalsScreen(),
-              ),
-            ],
+            routes: [GoRoute(path: Routes.goals, builder: (context, state) => const GoalsScreen())],
           ),
         ],
       ),

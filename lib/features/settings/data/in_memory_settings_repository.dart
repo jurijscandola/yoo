@@ -5,8 +5,7 @@ import '../domain/settings_repository.dart';
 
 /// Non-persistent [SettingsRepository], used by tests and as a fallback.
 class InMemorySettingsRepository implements SettingsRepository {
-  InMemorySettingsRepository([AppSettings initial = const AppSettings()])
-    : _current = initial;
+  InMemorySettingsRepository([AppSettings initial = const AppSettings()]) : _current = initial;
 
   AppSettings _current;
   final _controller = StreamController<AppSettings>.broadcast();

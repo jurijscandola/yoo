@@ -16,20 +16,14 @@ class AppShell extends StatelessWidget {
 
   void _onTap(int index) {
     // Tapping the active tab returns it to its root route.
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
+    navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      body: _FadeIndexedStack(
-        index: navigationShell.currentIndex,
-        children: children,
-      ),
+      body: _FadeIndexedStack(index: navigationShell.currentIndex, children: children),
       bottomNavigationBar: YooNavBar(
         currentIndex: navigationShell.currentIndex,
         onTap: _onTap,
@@ -63,8 +57,7 @@ class _FadeIndexedStack extends StatefulWidget {
   State<_FadeIndexedStack> createState() => _FadeIndexedStackState();
 }
 
-class _FadeIndexedStackState extends State<_FadeIndexedStack>
-    with SingleTickerProviderStateMixin {
+class _FadeIndexedStackState extends State<_FadeIndexedStack> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 260),

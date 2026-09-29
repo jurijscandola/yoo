@@ -109,8 +109,7 @@ abstract final class YooPalettes {
   ];
 
   /// Returns the border color for [index], clamped to the palette.
-  static Color borderColor(int index) =>
-      borderColors[index.clamp(0, borderColors.length - 1)];
+  static Color borderColor(int index) => borderColors[index.clamp(0, borderColors.length - 1)];
 
   /// Swatches offered for backgrounds (page, surfaces, navigation bar, cards).
   static const backgroundSwatches = <Color>[

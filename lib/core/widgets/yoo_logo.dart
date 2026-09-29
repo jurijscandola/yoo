@@ -17,10 +17,7 @@ class YooLogo extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: t.accent,
-        borderRadius: BorderRadius.circular(size * 0.3),
-      ),
+      decoration: BoxDecoration(color: t.accent, borderRadius: BorderRadius.circular(size * 0.3)),
       alignment: Alignment.center,
       child: Text(
         'Y',

@@ -105,9 +105,7 @@ class SettingsTile extends StatelessWidget {
         child: ListTile(
           leading: Icon(icon, color: t.text),
           title: Text(title),
-          subtitle: subtitle == null
-              ? null
-              : Text(subtitle!, style: TextStyle(color: t.textMuted)),
+          subtitle: subtitle == null ? null : Text(subtitle!, style: TextStyle(color: t.textMuted)),
           trailing: Icon(Icons.chevron_right, color: t.textMuted),
           onTap: onTap,
         ),

@@ -47,10 +47,7 @@ class _BagPainter extends CustomPainter {
     final handle = Path()
       ..moveTo(8.5 * s, 8 * s)
       ..lineTo(8.5 * s, 6.5 * s)
-      ..arcToPoint(
-        Offset(15.5 * s, 6.5 * s),
-        radius: Radius.circular(3.5 * s),
-      )
+      ..arcToPoint(Offset(15.5 * s, 6.5 * s), radius: Radius.circular(3.5 * s))
       ..lineTo(15.5 * s, 8 * s);
     canvas.drawPath(handle, stroke);
 

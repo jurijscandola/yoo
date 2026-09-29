@@ -15,9 +15,7 @@ class GoalsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           l10n.goalsTitle,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(

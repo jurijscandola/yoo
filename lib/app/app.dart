@@ -18,11 +18,10 @@ class YooApp extends ConsumerWidget {
     final tokens = ref.watch(yooTokensProvider);
     final isDark = tokens.brightness == Brightness.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark)
-          .copyWith(
-            statusBarColor: Colors.transparent,
-            systemNavigationBarColor: tokens.navBar,
-          ),
+      value: (isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark).copyWith(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: tokens.navBar,
+      ),
       child: MaterialApp.router(
         onGenerateTitle: (context) => context.l10n.appTitle,
         debugShowCheckedModeBanner: false,

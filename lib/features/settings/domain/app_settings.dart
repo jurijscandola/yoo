@@ -3,10 +3,7 @@
 /// Pure Dart: colors are stored as ARGB integers so that the domain layer does
 /// not depend on Flutter. The presentation layer maps them to design tokens.
 class AppSettings {
-  const AppSettings({
-    this.localeCode,
-    this.theme = const ThemeConfig(),
-  });
+  const AppSettings({this.localeCode, this.theme = const ThemeConfig()});
 
   /// Selected UI language (`en`, `it`). `null` means the user has not chosen yet,
   /// which triggers the first-launch language prompt.
@@ -19,10 +16,7 @@ class AppSettings {
   bool get needsLanguageChoice => localeCode == null;
 
   AppSettings copyWith({String? localeCode, ThemeConfig? theme}) {
-    return AppSettings(
-      localeCode: localeCode ?? this.localeCode,
-      theme: theme ?? this.theme,
-    );
+    return AppSettings(localeCode: localeCode ?? this.localeCode, theme: theme ?? this.theme);
   }
 }
 

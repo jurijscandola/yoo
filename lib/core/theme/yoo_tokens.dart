@@ -81,8 +81,7 @@ class YooTokens extends ThemeExtension<YooTokens> {
   /// Builds the tokens from the user's [config] applied over its preset.
   factory YooTokens.fromConfig(ThemeConfig config) {
     final preset = YooPalettes.presetById(config.presetId);
-    Color pick(int? value, Color fallback) =>
-        value == null ? fallback : Color(value);
+    Color pick(int? value, Color fallback) => value == null ? fallback : Color(value);
 
     final surface = pick(config.surfaceColor, preset.surface);
     final text = pick(config.textColor, preset.text);

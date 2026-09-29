@@ -9,10 +9,7 @@ import 'yoo_tokens.dart';
 /// colors; custom widgets read [YooTokens] via `context.tokens`.
 abstract final class YooTheme {
   static ThemeData build(YooTokens t) {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: t.accent,
-      brightness: t.brightness,
-    ).copyWith(
+    final scheme = ColorScheme.fromSeed(seedColor: t.accent, brightness: t.brightness).copyWith(
       primary: t.accent,
       onPrimary: t.onAccent,
       surface: t.surface,
@@ -49,20 +46,13 @@ abstract final class YooTheme {
         backgroundColor: t.accent,
         foregroundColor: t.onAccent,
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(t.radius),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: t.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(t.radius + 4),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius + 4)),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: t.surface,
-        showDragHandle: true,
-      ),
+      bottomSheetTheme: BottomSheetThemeData(backgroundColor: t.surface, showDragHandle: true),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: t.surface,
