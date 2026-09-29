@@ -57,43 +57,55 @@
 - **Phase 4** – activity form, Home (swipeable days, animated cards, actions menu), missed
   activities prompt/banner, daily summary. Widget tests for the main flows. 69 tests green.
 
+### Repository
+The git repository is `yoo/` (this folder), pushed to `github.com/jurijscandola/yoo` (`master`).
+The parent folder `Yoo/` also contains an older `.git` with only a scaffold snapshot: it is not
+used anymore and can be deleted.
+
 ### Resolved issue: hanging widget tests
 Widget tests hung for 10 minutes after any failure. Cause: closing the in-memory Drift database
 in `addTearDown` inside the fake-async zone never completes. Fix: widget tests no longer close
 the DB (see `test/helpers/test_app.dart`). Also, `find.bySemanticsLabel` needs semantics enabled:
 tests find the check button by icon instead.
 
-### In progress: Phase 5 – notifications (WIP commit, not wired yet)
-Written, compiling, **not yet connected to the app and not tested**:
-- `features/reminders/domain/reminder_gateway.dart` – gateway interface, action ids, labels.
-- `features/reminders/application/reminder_scheduler.dart` – idempotent refresh (cancel stale,
-  schedule planned, coalesced runs, time-zone sync).
-- `features/reminders/application/notification_action_handler.dart` – done / 100% / 50% /
-  typed percentage from the notification.
-- `features/reminders/data/local_notification_gateway.dart` – flutter_local_notifications
-  implementation (channels, iOS categories, exact vs inexact, permissions, time zones).
-- New l10n strings for notifications and permissions.
+### Phase 5 – notifications: code complete, device test pending
+Done and committed (steps 1–8, 85 tests green, debug and release APK build):
+- **Wiring** (`features/reminders/presentation/reminder_providers.dart`, `app/services.dart`):
+  `reminderGatewayProvider` (Noop by default), `reminderPermissionsProvider` (always granted by
+  default), `reminderSchedulerProvider` (single instance), `reminderStringsProvider` (localized
+  strings without a `BuildContext`). `reminderRefreshProvider` and
+  `goalCompletionNotifierProvider` use them; notification failures are logged, never propagated
+  to the data change that triggered them.
+- **Bootstrap** (`app/bootstrap.dart`, `main.dart`): `openAppContainer` builds the provider
+  graph on the shared DB with the real `LocalNotificationGateway`; the gateway is initialized
+  before `runApp` (scheduling needs time zones). Foreground responses and the
+  `@pragma('vm:entry-point')` background handler both go through `handleNotificationResponse`
+  (`NotificationActionHandler` + refresh). `runInBackground` gives background isolates a
+  temporary container and closes it afterwards.
+- **Refresh triggers**: every data change (change hook), `DayWatcher` after each rollover (start,
+  resume, midnight), the permission prompt, and the workmanager periodic task
+  (`app/background_tasks.dart`, id `com.app.yoo.refresh`, ~1 h: rollover + refresh).
+- **Android**: `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM`, the three
+  flutter_local_notifications receivers, small icon `drawable/ic_stat_yoo` (kept from resource
+  shrinking by `res/raw/keep.xml`), app label `Yoo`.
+- **iOS** (not buildable here, no Mac): BGTask id in `Info.plist` (+ `fetch` background mode),
+  workmanager registration and registrant, notification center delegate,
+  `FlutterLocalNotificationsPlugin.setPluginRegistrantCallback` in
+  `didInitializeImplicitFlutterEngine`.
+- **Permissions**: after the splash and the language choice, `StartupGate` explains and asks
+  notifications, then exact alarms (skipped if notifications are denied). Shown once
+  (`StoreKeys.permissionsAsked`). Settings has a "Reminder reliability" section: status of
+  notifications / exact alarms (tap to fix; opens system settings once denied) and the battery
+  optimization hint (Android only).
+- **Tests**: `test/features/reminders/application/` (scheduler with `FakeReminderGateway`, action
+  handler on the in-memory DB), `test/features/reminders/presentation/permission_flow_test.dart`.
 
 Still to do for Phase 5:
-1. Providers: `reminderGatewayProvider` (Noop default, real one overridden in `main`),
-   `reminderSchedulerProvider`; override `reminderRefreshProvider` and
-   `goalCompletionNotifierProvider` in `app/services.dart`.
-2. Bootstrap in `main`: initialize the gateway with localized labels, foreground response
-   handler, top-level `@pragma('vm:entry-point')` background handler that opens the shared DB in
-   a `ProviderContainer`, runs `NotificationActionHandler` and refreshes reminders.
-3. `DayWatcher`: also call the reminder refresh on resume.
-4. workmanager: periodic task (~1 h) running rollover + refresh (keeps the window full, follows
-   time-zone changes); iOS BGTask identifiers in Info.plist + AppDelegate registration.
-5. AndroidManifest: `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM`, receivers
-   `ScheduledNotificationReceiver`, `ScheduledNotificationBootReceiver` (BOOT_COMPLETED,
-   MY_PACKAGE_REPLACED, QUICKBOOT_POWERON), `ActionBroadcastReceiver`; monochrome small icon
-   drawable `ic_stat_yoo` (referenced by the gateway, **not created yet**).
-6. iOS AppDelegate: `FlutterLocalNotificationsPlugin.setPluginRegistrantCallback` inside
-   `didInitializeImplicitFlutterEngine` (UIScene) + notification center delegate.
-7. Permission flow after the startup gate (explanation dialog → notifications → exact alarms)
-   and a "Reminder reliability" section in Settings.
-8. Tests: `ReminderScheduler` with a fake gateway, `NotificationActionHandler` on the in-memory DB.
-9. Manual test on a real Android device (no emulator configured on this PC).
+9. Manual test on a real Android device. The phone connected on 2026-09-29 was not detected
+   (neither by `adb devices` nor as a USB device in Windows). Checklist once it is:
+   `flutter run`; permission prompts; a reminder a few minutes ahead fires with the app closed;
+   "Done" / 100% / 50% / typed % from the notification update Home; follow-ups stop at 100%;
+   reminders survive a reboot; goal-reached notification; language change updates action labels.
 
 ### Next phases
 6 Calendar screen + monthly goals UI · 7 external calendars (`device_calendar_plus`) ·
