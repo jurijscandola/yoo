@@ -177,12 +177,14 @@ class ExternalEventTile extends ConsumerWidget {
         : '${context.timeLabel(LocalTime(event.start.hour, event.start.minute))} – '
               '${context.timeLabel(LocalTime(event.end.hour, event.end.minute))}';
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 4,
             height: 36,
+            margin: const EdgeInsets.only(top: 2),
             decoration: BoxDecoration(
               color: event.colorArgb == null ? t.accent : Color(event.colorArgb!),
               borderRadius: BorderRadius.circular(2),
@@ -200,19 +202,27 @@ class ExternalEventTile extends ConsumerWidget {
                   style: TextStyle(color: t.text, fontWeight: FontWeight.w500),
                 ),
                 Text(when, style: TextStyle(color: t.textMuted, fontSize: 13)),
+                // Under the text rather than beside it: fits any text size.
+                if (canAdd)
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    icon: const Icon(Icons.add, size: 18),
+                    onPressed: () {
+                      // Read the router first: closing the sheet unmounts this tile.
+                      final router = GoRouter.of(context);
+                      if (closeSheet) Navigator.of(context).pop();
+                      router.push(
+                        Routes.newActivity(name: event.title, date: date, time: _startTime),
+                      );
+                    },
+                    label: Text(l10n.externalAddAsActivity),
+                  ),
               ],
             ),
           ),
-          if (canAdd)
-            TextButton(
-              onPressed: () {
-                // Read the router first: closing the sheet unmounts this tile.
-                final router = GoRouter.of(context);
-                if (closeSheet) Navigator.of(context).pop();
-                router.push(Routes.newActivity(name: event.title, date: date, time: _startTime));
-              },
-              child: Text(l10n.externalAddAsActivity),
-            ),
         ],
       ),
     );

@@ -140,45 +140,61 @@ class _DayPage extends ConsumerWidget {
         : 0;
     final visible = entries.value?.where(_visible).toList();
 
-    return Column(
-      children: [
-        DayHeader(
-          date: date,
-          today: today,
-          onTap: () => context.push(Routes.day(date)),
-          onBackToToday: onBackToToday,
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 250),
-          child: missedCount == 0
-              ? const SizedBox(width: double.infinity)
-              : _MissedBanner(count: missedCount),
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 250),
-          child: ExternalEventsBanner(date: date),
-        ),
-        Expanded(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            child: visible == null
-                ? const SizedBox.shrink()
-                : visible.isEmpty
-                ? _EmptyDay(
-                    key: const ValueKey('empty'),
-                    allDone: _mode == CardMode.actionable && (entries.value?.isNotEmpty ?? false),
-                  )
-                : DiffAnimatedList<DayEntry>(
-                    key: const ValueKey('list'),
-                    items: visible,
-                    keyOf: (e) => e.activity.id,
-                    padding: const EdgeInsets.only(top: 4, bottom: 96),
-                    itemBuilder: (context, entry, animation) =>
-                        ListItemTransition(animation: animation, child: _card(context, ref, entry)),
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        children: [
+          // Natural height, but never more than ~half of the page: with very
+          // large text the header and banners scroll instead of pushing the
+          // list off the screen.
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: constraints.maxHeight * 0.45),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  DayHeader(
+                    date: date,
+                    today: today,
+                    onTap: () => context.push(Routes.day(date)),
+                    onBackToToday: onBackToToday,
                   ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 250),
+                    child: missedCount == 0
+                        ? const SizedBox(width: double.infinity)
+                        : _MissedBanner(count: missedCount),
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 250),
+                    child: ExternalEventsBanner(date: date),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              child: visible == null
+                  ? const SizedBox.shrink()
+                  : visible.isEmpty
+                  ? _EmptyDay(
+                      key: const ValueKey('empty'),
+                      allDone: _mode == CardMode.actionable && (entries.value?.isNotEmpty ?? false),
+                    )
+                  : DiffAnimatedList<DayEntry>(
+                      key: const ValueKey('list'),
+                      items: visible,
+                      keyOf: (e) => e.activity.id,
+                      padding: const EdgeInsets.only(top: 4, bottom: 96),
+                      itemBuilder: (context, entry, animation) => ListItemTransition(
+                        animation: animation,
+                        child: _card(context, ref, entry),
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -260,27 +276,40 @@ class _EmptyDay extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final l10n = context.l10n;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              allDone ? Icons.task_alt_rounded : Icons.wb_sunny_outlined,
-              size: 44,
-              color: allDone ? t.success : t.textMuted.withValues(alpha: 0.5),
+    // Scrollable so that large text never overflows the remaining space.
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 80),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    allDone ? Icons.task_alt_rounded : Icons.wb_sunny_outlined,
+                    size: 44,
+                    color: allDone ? t.success : t.textMuted.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    allDone ? l10n.homeAllDone : l10n.homeEmpty,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  if (!allDone) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.homeEmptyHint,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: t.textMuted),
+                    ),
+                  ],
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              allDone ? l10n.homeAllDone : l10n.homeEmpty,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            if (!allDone) ...[
-              const SizedBox(height: 4),
-              Text(l10n.homeEmptyHint, style: TextStyle(color: t.textMuted)),
-            ],
-          ],
+          ),
         ),
       ),
     );

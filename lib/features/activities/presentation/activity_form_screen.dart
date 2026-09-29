@@ -368,7 +368,9 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.event_outlined),
             title: Text(l10n.startDate),
-            trailing: Text(context.fullDate(_startDate), style: TextStyle(color: t.textMuted)),
+            // Subtitle, not trailing: the full date can be long.
+            subtitle: Text(context.fullDate(_startDate), style: TextStyle(color: t.textMuted)),
+            trailing: Icon(Icons.chevron_right, color: t.textMuted),
             onTap: () async {
               final today = ref.read(todayProvider);
               final picked = await showDatePicker(

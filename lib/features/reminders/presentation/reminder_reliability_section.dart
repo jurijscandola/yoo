@@ -77,7 +77,7 @@ class _ReminderReliabilitySectionState extends ConsumerState<ReminderReliability
             icon: Icons.battery_saver_outlined,
             title: l10n.reliabilityBattery,
             subtitle: l10n.reliabilityBatteryHint,
-            trailing: TextButton(
+            action: TextButton(
               onPressed: permissions.openSystemSettings,
               child: Text(l10n.openSettings),
             ),
@@ -129,6 +129,7 @@ class _Tile extends StatelessWidget {
     this.subtitle,
     this.subtitleColor,
     this.trailing,
+    this.action,
     this.onTap,
   });
 
@@ -137,6 +138,9 @@ class _Tile extends StatelessWidget {
   final String? subtitle;
   final Color? subtitleColor;
   final Widget? trailing;
+
+  /// Button shown under the subtitle (a trailing one would not fit large text).
+  final Widget? action;
   final VoidCallback? onTap;
 
   @override
@@ -151,9 +155,16 @@ class _Tile extends StatelessWidget {
         child: ListTile(
           leading: Icon(icon, color: t.text),
           title: Text(title),
-          subtitle: subtitle == null
+          subtitle: subtitle == null && action == null
               ? null
-              : Text(subtitle!, style: TextStyle(color: subtitleColor ?? t.textMuted)),
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (subtitle != null)
+                      Text(subtitle!, style: TextStyle(color: subtitleColor ?? t.textMuted)),
+                    ?action,
+                  ],
+                ),
           trailing: trailing,
           onTap: onTap,
         ),

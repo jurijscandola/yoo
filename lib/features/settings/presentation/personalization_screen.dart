@@ -40,21 +40,24 @@ class PersonalizationScreen extends ConsumerWidget {
         children: [
           const ThemePreview(),
           header(l10n.themePresets),
-          SizedBox(
-            height: 92,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: YooPalettes.presets.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 10),
-              itemBuilder: (context, i) {
-                final preset = YooPalettes.presets[i];
-                return _PresetChip(
-                  preset: preset,
-                  label: presetName(context, preset.id),
-                  selected: preset.id == theme.presetId,
-                  onTap: () => controller.updateTheme((c) => c.withPreset(preset.id)),
-                );
-              },
+          MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.3,
+            child: SizedBox(
+              height: 92,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: YooPalettes.presets.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 10),
+                itemBuilder: (context, i) {
+                  final preset = YooPalettes.presets[i];
+                  return _PresetChip(
+                    preset: preset,
+                    label: presetName(context, preset.id),
+                    selected: preset.id == theme.presetId,
+                    onTap: () => controller.updateTheme((c) => c.withPreset(preset.id)),
+                  );
+                },
+              ),
             ),
           ),
           header(l10n.themeColors),
@@ -229,6 +232,8 @@ class _PresetChip extends StatelessWidget {
               ExcludeSemantics(
                 child: Text(
                   label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: preset.text, fontSize: 12, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -403,9 +408,13 @@ class ThemePreview extends StatelessWidget {
                 children: [
                   Icon(Icons.notifications, size: 16, color: t.notification),
                   const SizedBox(width: 6),
-                  Text(
-                    'Yoo · ${l10n.previewActivityOne}',
-                    style: TextStyle(color: t.textMuted, fontSize: 12),
+                  Flexible(
+                    child: Text(
+                      'Yoo · ${l10n.previewActivityOne}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: t.textMuted, fontSize: 12),
+                    ),
                   ),
                 ],
               ),

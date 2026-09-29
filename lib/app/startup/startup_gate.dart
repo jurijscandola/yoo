@@ -234,47 +234,52 @@ class _LanguagePrompt extends ConsumerWidget {
     final l10n = context.l10n;
     return Material(
       color: Colors.black.withValues(alpha: 0.35),
+      // Scrollable: with large text the card can be taller than the screen.
       child: Center(
-        child: Container(
-          margin: const EdgeInsets.all(32),
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
-          decoration: BoxDecoration(
-            color: t.surface,
-            borderRadius: BorderRadius.circular(t.radius + 8),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Center(child: YooLogo(size: 48)),
-              const SizedBox(height: 16),
-              Text(
-                l10n.languagePromptTitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.languagePromptSubtitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: t.textMuted),
-              ),
-              const SizedBox(height: 16),
-              for (final code in supportedLanguageCodes)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      foregroundColor: t.text,
-                      side: BorderSide(color: t.divider, width: 1.5),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
-                    ),
-                    onPressed: () => ref.read(settingsControllerProvider).setLocale(code),
-                    child: Text(languageName(context, code)),
-                  ),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(32),
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
+            decoration: BoxDecoration(
+              color: t.surface,
+              borderRadius: BorderRadius.circular(t.radius + 8),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Center(child: YooLogo(size: 48)),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.languagePromptTitle,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  l10n.languagePromptSubtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: t.textMuted),
+                ),
+                const SizedBox(height: 16),
+                for (final code in supportedLanguageCodes)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        foregroundColor: t.text,
+                        side: BorderSide(color: t.divider, width: 1.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(t.radius),
+                        ),
+                      ),
+                      onPressed: () => ref.read(settingsControllerProvider).setLocale(code),
+                      child: Text(languageName(context, code)),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -305,47 +310,50 @@ class _PermissionPrompt extends StatelessWidget {
     final l10n = context.l10n;
     return Material(
       color: Colors.black.withValues(alpha: 0.35),
+      // Scrollable: with large text the card can be taller than the screen.
       child: Center(
-        child: Container(
-          margin: const EdgeInsets.all(32),
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
-          decoration: BoxDecoration(
-            color: t.surface,
-            borderRadius: BorderRadius.circular(t.radius + 8),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Icon(icon, size: 44, color: t.accent),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                body,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: t.textMuted),
-              ),
-              const SizedBox(height: 20),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(32),
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
+            decoration: BoxDecoration(
+              color: t.surface,
+              borderRadius: BorderRadius.circular(t.radius + 8),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(icon, size: 44, color: t.accent),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                onPressed: onContinue,
-                child: Text(l10n.permContinue),
-              ),
-              const SizedBox(height: 4),
-              TextButton(
-                style: TextButton.styleFrom(foregroundColor: t.textMuted),
-                onPressed: onLater,
-                child: Text(l10n.permLater),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  body,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: t.textMuted),
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
+                  ),
+                  onPressed: onContinue,
+                  child: Text(l10n.permContinue),
+                ),
+                const SizedBox(height: 4),
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: t.textMuted),
+                  onPressed: onLater,
+                  child: Text(l10n.permLater),
+                ),
+              ],
+            ),
           ),
         ),
       ),
