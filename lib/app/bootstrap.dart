@@ -29,6 +29,7 @@ ProviderContainer openAppContainer(LocalNotificationGateway gateway) {
         (ref) => StoredSettingsRepository(ref.watch(keyValueStoreProvider)),
       ),
       reminderGatewayProvider.overrideWithValue(gateway),
+      reminderPermissionsProvider.overrideWithValue(gateway),
     ],
   );
 }

@@ -8,10 +8,8 @@ import 'providers.dart';
 
 /// Sends the "goal reached" notification.
 final goalCompletionNotifierProvider = Provider<GoalCompletionNotifier?>(
-  (ref) => ReminderGoalNotifier(
-    ref.watch(reminderGatewayProvider),
-    ref.watch(reminderStringsProvider),
-  ),
+  (ref) =>
+      ReminderGoalNotifier(ref.watch(reminderGatewayProvider), ref.watch(reminderStringsProvider)),
 );
 
 /// Refreshes the notification schedule.

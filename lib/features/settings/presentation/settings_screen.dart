@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/yoo_tokens.dart';
 import '../../../l10n/l10n.dart';
+import '../../reminders/presentation/reminder_reliability_section.dart';
 import 'settings_providers.dart';
 
 /// Settings: export, personalization and language.
@@ -36,6 +37,7 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: languageName(context, localeCode),
             onTap: () => _pickLanguage(context, ref, localeCode),
           ),
+          const ReminderReliabilitySection(),
         ],
       ),
     );

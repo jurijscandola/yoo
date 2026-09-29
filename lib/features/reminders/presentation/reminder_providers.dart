@@ -9,10 +9,28 @@ import '../../goals/domain/monthly_goal.dart';
 import '../../settings/presentation/settings_providers.dart';
 import '../application/reminder_scheduler.dart';
 import '../domain/reminder_gateway.dart';
+import '../domain/reminder_permissions.dart';
 
 /// The platform notification system. Does nothing by default (tests, and
 /// before initialization); `main` overrides it with the real gateway.
 final reminderGatewayProvider = Provider<ReminderGateway>((ref) => const NoopReminderGateway());
+
+/// What the OS allows the reminders to do. Always granted by default (tests);
+/// `main` overrides it with the real gateway.
+final reminderPermissionsProvider = Provider<ReminderPermissions>(
+  (ref) => const GrantedReminderPermissions(),
+);
+
+/// Current permission state, re-read when invalidated (e.g. on resume).
+final reminderPermissionStatusProvider = FutureProvider<ReminderPermissionStatus>((ref) async {
+  final permissions = ref.watch(reminderPermissionsProvider);
+  return (
+    notifications: await permissions.notificationsAllowed(),
+    exactAlarms: await permissions.exactAlarmsAllowed(),
+  );
+});
+
+typedef ReminderPermissionStatus = ({bool notifications, bool exactAlarms});
 
 /// Strings in the user's language, readable without a [BuildContext]
 /// (background isolates have none).

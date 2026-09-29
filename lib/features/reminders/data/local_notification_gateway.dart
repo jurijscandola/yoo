@@ -3,16 +3,19 @@ import 'dart:ui' show Color;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../domain/notification_planner.dart';
 import '../domain/reminder_gateway.dart';
+import '../domain/reminder_permissions.dart';
 
 /// Signature of the callback receiving notification taps and actions.
 typedef NotificationResponseHandler = void Function(NotificationResponse response);
 
-/// [ReminderGateway] backed by flutter_local_notifications.
+/// [ReminderGateway] and [ReminderPermissions] backed by
+/// flutter_local_notifications.
 ///
 /// Reliability notes:
 /// - reminders are scheduled with `zonedSchedule` in the device time zone,
@@ -20,7 +23,7 @@ typedef NotificationResponseHandler = void Function(NotificationResponse respons
 /// - the plugin's boot receiver restores them after a reboot or app update;
 /// - the time zone is re-read on every refresh, so a zone change reschedules
 ///   everything at the right local time.
-class LocalNotificationGateway implements ReminderGateway {
+class LocalNotificationGateway implements ReminderGateway, ReminderPermissions {
   LocalNotificationGateway({FlutterLocalNotificationsPlugin? plugin})
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
@@ -86,7 +89,12 @@ class LocalNotificationGateway implements ReminderGateway {
   /// Sets the notification accent color (Android) and channel names.
   void configure({
     Color? accent,
-    required ({String reminders, String remindersDescription, String goals, String goalsDescription})
+    required ({
+      String reminders,
+      String remindersDescription,
+      String goals,
+      String goalsDescription,
+    })
     channels,
   }) {
     _accent = accent;
@@ -100,10 +108,10 @@ class LocalNotificationGateway implements ReminderGateway {
       _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
   // ---------------------------------------------------------------------------
-  // Permissions
+  // ReminderPermissions
   // ---------------------------------------------------------------------------
 
-  /// Whether notifications are currently allowed.
+  @override
   Future<bool> notificationsAllowed() async {
     if (Platform.isAndroid) return await _android?.areNotificationsEnabled() ?? false;
     final options = await _ios?.checkPermissions();
@@ -111,21 +119,26 @@ class LocalNotificationGateway implements ReminderGateway {
   }
 
   /// Asks the notification permission (Android 13+ dialog, iOS alert).
+  @override
   Future<bool> requestNotifications() async {
     if (Platform.isAndroid) return await _android?.requestNotificationsPermission() ?? false;
     return await _ios?.requestPermissions(alert: true, badge: true, sound: true) ?? false;
   }
 
-  /// Whether exact alarms may be scheduled (always true on iOS).
+  @override
   Future<bool> exactAlarmsAllowed() async {
     if (!Platform.isAndroid) return true;
     return await _android?.canScheduleExactNotifications() ?? false;
   }
 
   /// Opens the Android "Alarms & reminders" permission screen.
+  @override
   Future<void> requestExactAlarms() async {
     if (Platform.isAndroid) await _android?.requestExactAlarmsPermission();
   }
+
+  @override
+  Future<void> openSystemSettings() => openAppSettings();
 
   /// Payload of the notification that launched the app, if any.
   Future<NotificationResponse?> launchResponse() async {

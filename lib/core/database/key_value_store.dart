@@ -12,4 +12,7 @@ abstract final class StoreKeys {
   static const lastProcessedDate = 'lastProcessedDate';
   static const scheduledReminderIds = 'scheduledReminderIds';
   static const lastTimeZone = 'lastTimeZone';
+
+  /// Set once the first-run permission prompt has been shown.
+  static const permissionsAsked = 'permissionsAsked';
 }
