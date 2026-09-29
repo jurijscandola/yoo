@@ -806,6 +806,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open settings'**
   String get openSettings;
+
+  /// No description provided for @previousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// No description provided for @nextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// No description provided for @calendarGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals of {month}'**
+  String calendarGoalsTitle(String month);
+
+  /// No description provided for @goalsEmptyMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No goals for this month'**
+  String get goalsEmptyMonth;
+
+  /// No description provided for @goalsEmptyMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one, then link activities to it from their form.'**
+  String get goalsEmptyMonthHint;
+
+  /// No description provided for @goalAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add goal'**
+  String get goalAdd;
+
+  /// No description provided for @goalEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit goal'**
+  String get goalEdit;
+
+  /// No description provided for @goalTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get goalTitleLabel;
+
+  /// No description provided for @goalTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Read 4 books'**
+  String get goalTitleHint;
+
+  /// No description provided for @goalRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get goalRename;
+
+  /// No description provided for @goalDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{title}\"?'**
+  String goalDeleteTitle(String title);
+
+  /// No description provided for @goalDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked activities stay: they just stop counting for it.'**
+  String get goalDeleteBody;
+
+  /// No description provided for @goalReachedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached'**
+  String get goalReachedLabel;
+
+  /// No description provided for @errorEmptyGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the goal a name'**
+  String get errorEmptyGoal;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

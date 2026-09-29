@@ -173,5 +173,19 @@
   "reliabilityBatteryHint": "Alcuni telefoni bloccano i promemoria per risparmiare batteria. Apri le impostazioni dell'app e imposta l'uso della batteria su \"Senza restrizioni\".",
   "statusAllowed": "Consentito",
   "statusNotAllowed": "Non consentito",
-  "openSettings": "Apri impostazioni"
+  "openSettings": "Apri impostazioni",
+  "previousMonth": "Mese precedente",
+  "nextMonth": "Mese successivo",
+  "calendarGoalsTitle": "Obiettivi di {month}",
+  "goalsEmptyMonth": "Nessun obiettivo per questo mese",
+  "goalsEmptyMonthHint": "Aggiungine uno, poi collega le attività dal loro modulo.",
+  "goalAdd": "Aggiungi obiettivo",
+  "goalEdit": "Modifica obiettivo",
+  "goalTitleLabel": "Obiettivo",
+  "goalTitleHint": "es. Leggere 4 libri",
+  "goalRename": "Rinomina",
+  "goalDeleteTitle": "Eliminare \"{title}\"?",
+  "goalDeleteBody": "Le attività collegate restano: smettono solo di contare per questo obiettivo.",
+  "goalReachedLabel": "Raggiunto",
+  "errorEmptyGoal": "Dai un nome all'obiettivo"
 }

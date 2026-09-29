@@ -389,4 +389,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Open settings';
+
+  @override
+  String get previousMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
+
+  @override
+  String calendarGoalsTitle(String month) {
+    return 'Goals of $month';
+  }
+
+  @override
+  String get goalsEmptyMonth => 'No goals for this month';
+
+  @override
+  String get goalsEmptyMonthHint => 'Add one, then link activities to it from their form.';
+
+  @override
+  String get goalAdd => 'Add goal';
+
+  @override
+  String get goalEdit => 'Edit goal';
+
+  @override
+  String get goalTitleLabel => 'Goal';
+
+  @override
+  String get goalTitleHint => 'e.g. Read 4 books';
+
+  @override
+  String get goalRename => 'Rename';
+
+  @override
+  String goalDeleteTitle(String title) {
+    return 'Delete \"$title\"?';
+  }
+
+  @override
+  String get goalDeleteBody => 'Linked activities stay: they just stop counting for it.';
+
+  @override
+  String get goalReachedLabel => 'Reached';
+
+  @override
+  String get errorEmptyGoal => 'Give the goal a name';
 }

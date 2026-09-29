@@ -7,6 +7,7 @@ import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
+import 'package:yoo/features/reminders/domain/reminder_gateway.dart';
 import 'package:yoo/features/reminders/domain/reminder_permissions.dart';
 import 'package:yoo/features/reminders/presentation/reminder_providers.dart';
 import 'package:yoo/features/settings/data/in_memory_settings_repository.dart';
@@ -23,6 +24,7 @@ class TestApp {
     AppSettings settings = const AppSettings(),
     DateTime? now,
     this.permissions = const GrantedReminderPermissions(),
+    this.gateway = const NoopReminderGateway(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -39,12 +41,16 @@ class TestApp {
   /// Reminder permissions; all granted unless a test is about them.
   final ReminderPermissions permissions;
 
+  /// Notification system; does nothing unless a test inspects it.
+  final ReminderGateway gateway;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
     settingsRepositoryProvider.overrideWithValue(settings),
     clockProvider.overrideWithValue(clock),
     reminderPermissionsProvider.overrideWithValue(permissions),
+    reminderGatewayProvider.overrideWithValue(gateway),
   ];
 
   /// The whole app, ready to pump.

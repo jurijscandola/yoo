@@ -173,5 +173,33 @@
   "reliabilityBatteryHint": "Some phones stop reminders to save battery. Open the app settings and set battery usage to \"Unrestricted\".",
   "statusAllowed": "Allowed",
   "statusNotAllowed": "Not allowed",
-  "openSettings": "Open settings"
+  "openSettings": "Open settings",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "calendarGoalsTitle": "Goals of {month}",
+  "@calendarGoalsTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "goalsEmptyMonth": "No goals for this month",
+  "goalsEmptyMonthHint": "Add one, then link activities to it from their form.",
+  "goalAdd": "Add goal",
+  "goalEdit": "Edit goal",
+  "goalTitleLabel": "Goal",
+  "goalTitleHint": "e.g. Read 4 books",
+  "goalRename": "Rename",
+  "goalDeleteTitle": "Delete \"{title}\"?",
+  "@goalDeleteTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "goalDeleteBody": "Linked activities stay: they just stop counting for it.",
+  "goalReachedLabel": "Reached",
+  "errorEmptyGoal": "Give the goal a name"
 }
