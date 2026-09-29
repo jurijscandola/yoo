@@ -7,7 +7,6 @@ import 'helpers/test_app.dart';
 void main() {
   testWidgets('first launch: splash, language prompt, localized shell', (tester) async {
     final app = TestApp();
-    addTearDown(app.database.close);
     await tester.pumpWidget(app.build());
 
     // The opening animation is on screen first.
@@ -26,7 +25,6 @@ void main() {
 
   testWidgets('returning user skips the prompt and can open settings', (tester) async {
     final app = TestApp(settings: const AppSettings(localeCode: 'en'));
-    addTearDown(app.database.close);
     await tester.pumpWidget(app.build());
     await tester.pumpAndSettle();
 

@@ -12,6 +12,9 @@ import 'package:yoo/features/settings/domain/app_settings.dart';
 import 'package:yoo/features/settings/presentation/settings_providers.dart';
 
 /// Everything a widget test needs to run the full app in memory.
+///
+/// The in-memory database is not closed in tear-down: closing it inside the
+/// fake-async test zone can wait forever after a failure.
 class TestApp {
   TestApp({AppSettings settings = const AppSettings(), DateTime? now})
     : database = AppDatabase(

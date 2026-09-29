@@ -2,7 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/time/local_date.dart';
+import '../features/activities/presentation/activity_form_screen.dart';
 import '../features/calendar/presentation/calendar_screen.dart';
+import '../features/daily_summary/presentation/daily_summary_screen.dart';
 import '../features/goals/presentation/goals_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
@@ -40,6 +43,28 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.settings,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/activity/new',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final date = state.uri.queryParameters['date'];
+          return ActivityFormScreen(
+            initialName: state.uri.queryParameters['name'],
+            initialDate: date == null ? null : LocalDate.parse(date),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/activity/:id/edit',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => ActivityFormScreen(activityId: state.pathParameters['id']),
+      ),
+      GoRoute(
+        path: '/day/:date',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            DailySummaryScreen(date: LocalDate.parse(state.pathParameters['date']!)),
       ),
     ],
   );

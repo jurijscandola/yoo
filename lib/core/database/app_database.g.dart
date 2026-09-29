@@ -3,8 +3,7 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $ActivitiesTable extends Activities
-    with TableInfo<$ActivitiesTable, ActivityRow> {
+class $ActivitiesTable extends Activities with TableInfo<$ActivitiesTable, ActivityRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -27,9 +26,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _notificationTextMeta = const VerificationMeta(
-    'notificationText',
-  );
+  static const VerificationMeta _notificationTextMeta = const VerificationMeta('notificationText');
   @override
   late final GeneratedColumn<String> notificationText = GeneratedColumn<String>(
     'notification_text',
@@ -38,9 +35,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _borderColorIndexMeta = const VerificationMeta(
-    'borderColorIndex',
-  );
+  static const VerificationMeta _borderColorIndexMeta = const VerificationMeta('borderColorIndex');
   @override
   late final GeneratedColumn<int> borderColorIndex = GeneratedColumn<int>(
     'border_color_index',
@@ -49,9 +44,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _recurrenceJsonMeta = const VerificationMeta(
-    'recurrenceJson',
-  );
+  static const VerificationMeta _recurrenceJsonMeta = const VerificationMeta('recurrenceJson');
   @override
   late final GeneratedColumn<String> recurrenceJson = GeneratedColumn<String>(
     'recurrence_json',
@@ -60,9 +53,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _timeSlotsJsonMeta = const VerificationMeta(
-    'timeSlotsJson',
-  );
+  static const VerificationMeta _timeSlotsJsonMeta = const VerificationMeta('timeSlotsJson');
   @override
   late final GeneratedColumn<String> timeSlotsJson = GeneratedColumn<String>(
     'time_slots_json',
@@ -71,9 +62,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _startDateMeta = const VerificationMeta(
-    'startDate',
-  );
+  static const VerificationMeta _startDateMeta = const VerificationMeta('startDate');
   @override
   late final GeneratedColumn<String> startDate = GeneratedColumn<String>(
     'start_date',
@@ -82,9 +71,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _partialJsonMeta = const VerificationMeta(
-    'partialJson',
-  );
+  static const VerificationMeta _partialJsonMeta = const VerificationMeta('partialJson');
   @override
   late final GeneratedColumn<String> partialJson = GeneratedColumn<String>(
     'partial_json',
@@ -93,9 +80,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _goalLinkJsonMeta = const VerificationMeta(
-    'goalLinkJson',
-  );
+  static const VerificationMeta _goalLinkJsonMeta = const VerificationMeta('goalLinkJson');
   @override
   late final GeneratedColumn<String> goalLinkJson = GeneratedColumn<String>(
     'goal_link_json',
@@ -104,9 +89,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -115,9 +98,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
@@ -126,9 +107,7 @@ class $ActivitiesTable extends Activities
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta('deletedAt');
   @override
   late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
     'deleted_at',
@@ -170,20 +149,14 @@ class $ActivitiesTable extends Activities
       context.missing(_idMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('notification_text')) {
       context.handle(
         _notificationTextMeta,
-        notificationText.isAcceptableOrUnknown(
-          data['notification_text']!,
-          _notificationTextMeta,
-        ),
+        notificationText.isAcceptableOrUnknown(data['notification_text']!, _notificationTextMeta),
       );
     } else if (isInserting) {
       context.missing(_notificationTextMeta);
@@ -191,10 +164,7 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('border_color_index')) {
       context.handle(
         _borderColorIndexMeta,
-        borderColorIndex.isAcceptableOrUnknown(
-          data['border_color_index']!,
-          _borderColorIndexMeta,
-        ),
+        borderColorIndex.isAcceptableOrUnknown(data['border_color_index']!, _borderColorIndexMeta),
       );
     } else if (isInserting) {
       context.missing(_borderColorIndexMeta);
@@ -202,10 +172,7 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('recurrence_json')) {
       context.handle(
         _recurrenceJsonMeta,
-        recurrenceJson.isAcceptableOrUnknown(
-          data['recurrence_json']!,
-          _recurrenceJsonMeta,
-        ),
+        recurrenceJson.isAcceptableOrUnknown(data['recurrence_json']!, _recurrenceJsonMeta),
       );
     } else if (isInserting) {
       context.missing(_recurrenceJsonMeta);
@@ -213,10 +180,7 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('time_slots_json')) {
       context.handle(
         _timeSlotsJsonMeta,
-        timeSlotsJson.isAcceptableOrUnknown(
-          data['time_slots_json']!,
-          _timeSlotsJsonMeta,
-        ),
+        timeSlotsJson.isAcceptableOrUnknown(data['time_slots_json']!, _timeSlotsJsonMeta),
       );
     } else if (isInserting) {
       context.missing(_timeSlotsJsonMeta);
@@ -232,19 +196,13 @@ class $ActivitiesTable extends Activities
     if (data.containsKey('partial_json')) {
       context.handle(
         _partialJsonMeta,
-        partialJson.isAcceptableOrUnknown(
-          data['partial_json']!,
-          _partialJsonMeta,
-        ),
+        partialJson.isAcceptableOrUnknown(data['partial_json']!, _partialJsonMeta),
       );
     }
     if (data.containsKey('goal_link_json')) {
       context.handle(
         _goalLinkJsonMeta,
-        goalLinkJson.isAcceptableOrUnknown(
-          data['goal_link_json']!,
-          _goalLinkJsonMeta,
-        ),
+        goalLinkJson.isAcceptableOrUnknown(data['goal_link_json']!, _goalLinkJsonMeta),
       );
     }
     if (data.containsKey('created_at')) {
@@ -278,14 +236,8 @@ class $ActivitiesTable extends Activities
   ActivityRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ActivityRow(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       notificationText: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notification_text'],
@@ -395,24 +347,17 @@ class ActivityRow extends DataClass implements Insertable<ActivityRow> {
       recurrenceJson: Value(recurrenceJson),
       timeSlotsJson: Value(timeSlotsJson),
       startDate: Value(startDate),
-      partialJson: partialJson == null && nullToAbsent
-          ? const Value.absent()
-          : Value(partialJson),
+      partialJson: partialJson == null && nullToAbsent ? const Value.absent() : Value(partialJson),
       goalLinkJson: goalLinkJson == null && nullToAbsent
           ? const Value.absent()
           : Value(goalLinkJson),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
+      deletedAt: deletedAt == null && nullToAbsent ? const Value.absent() : Value(deletedAt),
     );
   }
 
-  factory ActivityRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory ActivityRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ActivityRow(
       id: serializer.fromJson<String>(json['id']),
@@ -485,19 +430,11 @@ class ActivityRow extends DataClass implements Insertable<ActivityRow> {
       borderColorIndex: data.borderColorIndex.present
           ? data.borderColorIndex.value
           : this.borderColorIndex,
-      recurrenceJson: data.recurrenceJson.present
-          ? data.recurrenceJson.value
-          : this.recurrenceJson,
-      timeSlotsJson: data.timeSlotsJson.present
-          ? data.timeSlotsJson.value
-          : this.timeSlotsJson,
+      recurrenceJson: data.recurrenceJson.present ? data.recurrenceJson.value : this.recurrenceJson,
+      timeSlotsJson: data.timeSlotsJson.present ? data.timeSlotsJson.value : this.timeSlotsJson,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
-      partialJson: data.partialJson.present
-          ? data.partialJson.value
-          : this.partialJson,
-      goalLinkJson: data.goalLinkJson.present
-          ? data.goalLinkJson.value
-          : this.goalLinkJson,
+      partialJson: data.partialJson.present ? data.partialJson.value : this.partialJson,
+      goalLinkJson: data.goalLinkJson.present ? data.goalLinkJson.value : this.goalLinkJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -738,8 +675,7 @@ class ActivitiesCompanion extends UpdateCompanion<ActivityRow> {
   }
 }
 
-class $OccurrencesTable extends Occurrences
-    with TableInfo<$OccurrencesTable, OccurrenceRow> {
+class $OccurrencesTable extends Occurrences with TableInfo<$OccurrencesTable, OccurrenceRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -753,9 +689,7 @@ class $OccurrencesTable extends Occurrences
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _activityIdMeta = const VerificationMeta(
-    'activityId',
-  );
+  static const VerificationMeta _activityIdMeta = const VerificationMeta('activityId');
   @override
   late final GeneratedColumn<String> activityId = GeneratedColumn<String>(
     'activity_id',
@@ -773,9 +707,7 @@ class $OccurrencesTable extends Occurrences
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _originalDateMeta = const VerificationMeta(
-    'originalDate',
-  );
+  static const VerificationMeta _originalDateMeta = const VerificationMeta('originalDate');
   @override
   late final GeneratedColumn<String> originalDate = GeneratedColumn<String>(
     'original_date',
@@ -793,9 +725,7 @@ class $OccurrencesTable extends Occurrences
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _completedCountMeta = const VerificationMeta(
-    'completedCount',
-  );
+  static const VerificationMeta _completedCountMeta = const VerificationMeta('completedCount');
   @override
   late final GeneratedColumn<int> completedCount = GeneratedColumn<int>(
     'completed_count',
@@ -805,9 +735,7 @@ class $OccurrencesTable extends Occurrences
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _progressMeta = const VerificationMeta(
-    'progress',
-  );
+  static const VerificationMeta _progressMeta = const VerificationMeta('progress');
   @override
   late final GeneratedColumn<int> progress = GeneratedColumn<int>(
     'progress',
@@ -817,9 +745,7 @@ class $OccurrencesTable extends Occurrences
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _resolutionMeta = const VerificationMeta(
-    'resolution',
-  );
+  static const VerificationMeta _resolutionMeta = const VerificationMeta('resolution');
   @override
   late final GeneratedColumn<String> resolution = GeneratedColumn<String>(
     'resolution',
@@ -828,9 +754,7 @@ class $OccurrencesTable extends Occurrences
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _completedAtMeta = const VerificationMeta(
-    'completedAt',
-  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta('completedAt');
   @override
   late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
     'completed_at',
@@ -839,9 +763,7 @@ class $OccurrencesTable extends Occurrences
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _retroactiveMeta = const VerificationMeta(
-    'retroactive',
-  );
+  static const VerificationMeta _retroactiveMeta = const VerificationMeta('retroactive');
   @override
   late final GeneratedColumn<bool> retroactive = GeneratedColumn<bool>(
     'retroactive',
@@ -849,14 +771,10 @@ class $OccurrencesTable extends Occurrences
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("retroactive" IN (0, 1))',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("retroactive" IN (0, 1))'),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
@@ -905,39 +823,27 @@ class $OccurrencesTable extends Occurrences
       context.missing(_activityIdMeta);
     }
     if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
+      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
     if (data.containsKey('original_date')) {
       context.handle(
         _originalDateMeta,
-        originalDate.isAcceptableOrUnknown(
-          data['original_date']!,
-          _originalDateMeta,
-        ),
+        originalDate.isAcceptableOrUnknown(data['original_date']!, _originalDateMeta),
       );
     } else if (isInserting) {
       context.missing(_originalDateMeta);
     }
     if (data.containsKey('status')) {
-      context.handle(
-        _statusMeta,
-        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
-      );
+      context.handle(_statusMeta, status.isAcceptableOrUnknown(data['status']!, _statusMeta));
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
     if (data.containsKey('completed_count')) {
       context.handle(
         _completedCountMeta,
-        completedCount.isAcceptableOrUnknown(
-          data['completed_count']!,
-          _completedCountMeta,
-        ),
+        completedCount.isAcceptableOrUnknown(data['completed_count']!, _completedCountMeta),
       );
     }
     if (data.containsKey('progress')) {
@@ -955,19 +861,13 @@ class $OccurrencesTable extends Occurrences
     if (data.containsKey('completed_at')) {
       context.handle(
         _completedAtMeta,
-        completedAt.isAcceptableOrUnknown(
-          data['completed_at']!,
-          _completedAtMeta,
-        ),
+        completedAt.isAcceptableOrUnknown(data['completed_at']!, _completedAtMeta),
       );
     }
     if (data.containsKey('retroactive')) {
       context.handle(
         _retroactiveMeta,
-        retroactive.isAcceptableOrUnknown(
-          data['retroactive']!,
-          _retroactiveMeta,
-        ),
+        retroactive.isAcceptableOrUnknown(data['retroactive']!, _retroactiveMeta),
       );
     }
     if (data.containsKey('updated_at')) {
@@ -987,18 +887,12 @@ class $OccurrencesTable extends Occurrences
   OccurrenceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return OccurrenceRow(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       activityId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}activity_id'],
       )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}date'],
-      )!,
+      date: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}date'])!,
       originalDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}original_date'],
@@ -1095,21 +989,14 @@ class OccurrenceRow extends DataClass implements Insertable<OccurrenceRow> {
       status: Value(status),
       completedCount: Value(completedCount),
       progress: Value(progress),
-      resolution: resolution == null && nullToAbsent
-          ? const Value.absent()
-          : Value(resolution),
-      completedAt: completedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(completedAt),
+      resolution: resolution == null && nullToAbsent ? const Value.absent() : Value(resolution),
+      completedAt: completedAt == null && nullToAbsent ? const Value.absent() : Value(completedAt),
       retroactive: Value(retroactive),
       updatedAt: Value(updatedAt),
     );
   }
 
-  factory OccurrenceRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory OccurrenceRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return OccurrenceRow(
       id: serializer.fromJson<String>(json['id']),
@@ -1171,27 +1058,15 @@ class OccurrenceRow extends DataClass implements Insertable<OccurrenceRow> {
   OccurrenceRow copyWithCompanion(OccurrencesCompanion data) {
     return OccurrenceRow(
       id: data.id.present ? data.id.value : this.id,
-      activityId: data.activityId.present
-          ? data.activityId.value
-          : this.activityId,
+      activityId: data.activityId.present ? data.activityId.value : this.activityId,
       date: data.date.present ? data.date.value : this.date,
-      originalDate: data.originalDate.present
-          ? data.originalDate.value
-          : this.originalDate,
+      originalDate: data.originalDate.present ? data.originalDate.value : this.originalDate,
       status: data.status.present ? data.status.value : this.status,
-      completedCount: data.completedCount.present
-          ? data.completedCount.value
-          : this.completedCount,
+      completedCount: data.completedCount.present ? data.completedCount.value : this.completedCount,
       progress: data.progress.present ? data.progress.value : this.progress,
-      resolution: data.resolution.present
-          ? data.resolution.value
-          : this.resolution,
-      completedAt: data.completedAt.present
-          ? data.completedAt.value
-          : this.completedAt,
-      retroactive: data.retroactive.present
-          ? data.retroactive.value
-          : this.retroactive,
+      resolution: data.resolution.present ? data.resolution.value : this.resolution,
+      completedAt: data.completedAt.present ? data.completedAt.value : this.completedAt,
+      retroactive: data.retroactive.present ? data.retroactive.value : this.retroactive,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -1454,20 +1329,18 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _completionNotifiedAtMeta =
-      const VerificationMeta('completionNotifiedAt');
-  @override
-  late final GeneratedColumn<DateTime> completionNotifiedAt =
-      GeneratedColumn<DateTime>(
-        'completion_notified_at',
-        aliasedName,
-        true,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: false,
-      );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
+  static const VerificationMeta _completionNotifiedAtMeta = const VerificationMeta(
+    'completionNotifiedAt',
   );
+  @override
+  late final GeneratedColumn<DateTime> completionNotifiedAt = GeneratedColumn<DateTime>(
+    'completion_notified_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -1476,9 +1349,7 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
@@ -1487,9 +1358,7 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta('deletedAt');
   @override
   late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
     'deleted_at',
@@ -1515,10 +1384,7 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
   String get actualTableName => $name;
   static const String $name = 'goals';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<GoalRow> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<GoalRow> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1527,26 +1393,17 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
       context.missing(_idMeta);
     }
     if (data.containsKey('year')) {
-      context.handle(
-        _yearMeta,
-        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
-      );
+      context.handle(_yearMeta, year.isAcceptableOrUnknown(data['year']!, _yearMeta));
     } else if (isInserting) {
       context.missing(_yearMeta);
     }
     if (data.containsKey('month')) {
-      context.handle(
-        _monthMeta,
-        month.isAcceptableOrUnknown(data['month']!, _monthMeta),
-      );
+      context.handle(_monthMeta, month.isAcceptableOrUnknown(data['month']!, _monthMeta));
     } else if (isInserting) {
       context.missing(_monthMeta);
     }
     if (data.containsKey('title')) {
-      context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
+      context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
@@ -1590,18 +1447,9 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
   GoalRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return GoalRow(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      year: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}year'],
-      )!,
-      month: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}month'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      year: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}year'])!,
+      month: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}month'])!,
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -1679,25 +1527,18 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
           : Value(completionNotifiedAt),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
+      deletedAt: deletedAt == null && nullToAbsent ? const Value.absent() : Value(deletedAt),
     );
   }
 
-  factory GoalRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory GoalRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return GoalRow(
       id: serializer.fromJson<String>(json['id']),
       year: serializer.fromJson<int>(json['year']),
       month: serializer.fromJson<int>(json['month']),
       title: serializer.fromJson<String>(json['title']),
-      completionNotifiedAt: serializer.fromJson<DateTime?>(
-        json['completionNotifiedAt'],
-      ),
+      completionNotifiedAt: serializer.fromJson<DateTime?>(json['completionNotifiedAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
@@ -1711,9 +1552,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       'year': serializer.toJson<int>(year),
       'month': serializer.toJson<int>(month),
       'title': serializer.toJson<String>(title),
-      'completionNotifiedAt': serializer.toJson<DateTime?>(
-        completionNotifiedAt,
-      ),
+      'completionNotifiedAt': serializer.toJson<DateTime?>(completionNotifiedAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
@@ -1772,16 +1611,8 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    year,
-    month,
-    title,
-    completionNotifiedAt,
-    createdAt,
-    updatedAt,
-    deletedAt,
-  );
+  int get hashCode =>
+      Object.hash(id, year, month, title, completionNotifiedAt, createdAt, updatedAt, deletedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1849,8 +1680,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       if (year != null) 'year': year,
       if (month != null) 'month': month,
       if (title != null) 'title': title,
-      if (completionNotifiedAt != null)
-        'completion_notified_at': completionNotifiedAt,
+      if (completionNotifiedAt != null) 'completion_notified_at': completionNotifiedAt,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -1898,9 +1728,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       map['title'] = Variable<String>(title.value);
     }
     if (completionNotifiedAt.present) {
-      map['completion_notified_at'] = Variable<DateTime>(
-        completionNotifiedAt.value,
-      );
+      map['completion_notified_at'] = Variable<DateTime>(completionNotifiedAt.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -1934,8 +1762,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
   }
 }
 
-class $KeyValuesTable extends KeyValues
-    with TableInfo<$KeyValuesTable, KeyValueRow> {
+class $KeyValuesTable extends KeyValues with TableInfo<$KeyValuesTable, KeyValueRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1973,18 +1800,12 @@ class $KeyValuesTable extends KeyValues
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('key')) {
-      context.handle(
-        _keyMeta,
-        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
-      );
+      context.handle(_keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
     } else if (isInserting) {
       context.missing(_keyMeta);
     }
     if (data.containsKey('value')) {
-      context.handle(
-        _valueMeta,
-        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
-      );
+      context.handle(_valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
     }
     return context;
   }
@@ -1995,10 +1816,7 @@ class $KeyValuesTable extends KeyValues
   KeyValueRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return KeyValueRow(
-      key: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}key'],
-      )!,
+      key: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}key'])!,
       value: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}value'],
@@ -2029,16 +1847,11 @@ class KeyValueRow extends DataClass implements Insertable<KeyValueRow> {
   KeyValuesCompanion toCompanion(bool nullToAbsent) {
     return KeyValuesCompanion(
       key: Value(key),
-      value: value == null && nullToAbsent
-          ? const Value.absent()
-          : Value(value),
+      value: value == null && nullToAbsent ? const Value.absent() : Value(value),
     );
   }
 
-  factory KeyValueRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory KeyValueRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return KeyValueRow(
       key: serializer.fromJson<String>(json['key']),
@@ -2054,13 +1867,8 @@ class KeyValueRow extends DataClass implements Insertable<KeyValueRow> {
     };
   }
 
-  KeyValueRow copyWith({
-    String? key,
-    Value<String?> value = const Value.absent(),
-  }) => KeyValueRow(
-    key: key ?? this.key,
-    value: value.present ? value.value : this.value,
-  );
+  KeyValueRow copyWith({String? key, Value<String?> value = const Value.absent()}) =>
+      KeyValueRow(key: key ?? this.key, value: value.present ? value.value : this.value);
   KeyValueRow copyWithCompanion(KeyValuesCompanion data) {
     return KeyValueRow(
       key: data.key.present ? data.key.value : this.key,
@@ -2082,9 +1890,7 @@ class KeyValueRow extends DataClass implements Insertable<KeyValueRow> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is KeyValueRow &&
-          other.key == this.key &&
-          other.value == this.value);
+      (other is KeyValueRow && other.key == this.key && other.value == this.value);
 }
 
 class KeyValuesCompanion extends UpdateCompanion<KeyValueRow> {
@@ -2113,11 +1919,7 @@ class KeyValuesCompanion extends UpdateCompanion<KeyValueRow> {
     });
   }
 
-  KeyValuesCompanion copyWith({
-    Value<String>? key,
-    Value<String?>? value,
-    Value<int>? rowid,
-  }) {
+  KeyValuesCompanion copyWith({Value<String>? key, Value<String?>? value, Value<int>? rowid}) {
     return KeyValuesCompanion(
       key: key ?? this.key,
       value: value ?? this.value,
@@ -2218,8 +2020,7 @@ typedef $$ActivitiesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$ActivitiesTableFilterComposer
-    extends Composer<_$AppDatabase, $ActivitiesTable> {
+class $$ActivitiesTableFilterComposer extends Composer<_$AppDatabase, $ActivitiesTable> {
   $$ActivitiesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -2227,15 +2028,11 @@ class $$ActivitiesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get notificationText => $composableBuilder(
     column: $table.notificationText,
@@ -2247,49 +2044,32 @@ class $$ActivitiesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get recurrenceJson => $composableBuilder(
-    column: $table.recurrenceJson,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get recurrenceJson =>
+      $composableBuilder(column: $table.recurrenceJson, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get timeSlotsJson => $composableBuilder(
-    column: $table.timeSlotsJson,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get timeSlotsJson =>
+      $composableBuilder(column: $table.timeSlotsJson, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get startDate => $composableBuilder(
-    column: $table.startDate,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get partialJson => $composableBuilder(
-    column: $table.partialJson,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get partialJson =>
+      $composableBuilder(column: $table.partialJson, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get goalLinkJson => $composableBuilder(
-    column: $table.goalLinkJson,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get goalLinkJson =>
+      $composableBuilder(column: $table.goalLinkJson, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => ColumnFilters(column));
 }
 
-class $$ActivitiesTableOrderingComposer
-    extends Composer<_$AppDatabase, $ActivitiesTable> {
+class $$ActivitiesTableOrderingComposer extends Composer<_$AppDatabase, $ActivitiesTable> {
   $$ActivitiesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -2297,15 +2077,11 @@ class $$ActivitiesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get notificationText => $composableBuilder(
     column: $table.notificationText,
@@ -2327,39 +2103,26 @@ class $$ActivitiesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get startDate => $composableBuilder(
-    column: $table.startDate,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get partialJson => $composableBuilder(
-    column: $table.partialJson,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get partialJson =>
+      $composableBuilder(column: $table.partialJson, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get goalLinkJson => $composableBuilder(
-    column: $table.goalLinkJson,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get goalLinkJson =>
+      $composableBuilder(column: $table.goalLinkJson, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
 }
 
-class $$ActivitiesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ActivitiesTable> {
+class $$ActivitiesTableAnnotationComposer extends Composer<_$AppDatabase, $ActivitiesTable> {
   $$ActivitiesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -2373,38 +2136,26 @@ class $$ActivitiesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get notificationText => $composableBuilder(
-    column: $table.notificationText,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get notificationText =>
+      $composableBuilder(column: $table.notificationText, builder: (column) => column);
 
-  GeneratedColumn<int> get borderColorIndex => $composableBuilder(
-    column: $table.borderColorIndex,
-    builder: (column) => column,
-  );
+  GeneratedColumn<int> get borderColorIndex =>
+      $composableBuilder(column: $table.borderColorIndex, builder: (column) => column);
 
-  GeneratedColumn<String> get recurrenceJson => $composableBuilder(
-    column: $table.recurrenceJson,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get recurrenceJson =>
+      $composableBuilder(column: $table.recurrenceJson, builder: (column) => column);
 
-  GeneratedColumn<String> get timeSlotsJson => $composableBuilder(
-    column: $table.timeSlotsJson,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get timeSlotsJson =>
+      $composableBuilder(column: $table.timeSlotsJson, builder: (column) => column);
 
   GeneratedColumn<String> get startDate =>
       $composableBuilder(column: $table.startDate, builder: (column) => column);
 
-  GeneratedColumn<String> get partialJson => $composableBuilder(
-    column: $table.partialJson,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get partialJson =>
+      $composableBuilder(column: $table.partialJson, builder: (column) => column);
 
-  GeneratedColumn<String> get goalLinkJson => $composableBuilder(
-    column: $table.goalLinkJson,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get goalLinkJson =>
+      $composableBuilder(column: $table.goalLinkJson, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2427,10 +2178,7 @@ class $$ActivitiesTableTableManager
           $$ActivitiesTableAnnotationComposer,
           $$ActivitiesTableCreateCompanionBuilder,
           $$ActivitiesTableUpdateCompanionBuilder,
-          (
-            ActivityRow,
-            BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>,
-          ),
+          (ActivityRow, BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>),
           ActivityRow,
           PrefetchHooks Function()
         > {
@@ -2439,10 +2187,8 @@ class $$ActivitiesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$ActivitiesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ActivitiesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$ActivitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$ActivitiesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ActivitiesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -2509,11 +2255,7 @@ class $$ActivitiesTableTableManager
               .map(
                 (e) => (
                   e.readTable<$ActivitiesTable, ActivityRow>(table),
-                  BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>(
-                    db,
-                    table,
-                    e,
-                  ),
+                  BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>(db, table, e),
                 ),
               )
               .toList(),
@@ -2532,10 +2274,7 @@ typedef $$ActivitiesTableProcessedTableManager =
       $$ActivitiesTableAnnotationComposer,
       $$ActivitiesTableCreateCompanionBuilder,
       $$ActivitiesTableUpdateCompanionBuilder,
-      (
-        ActivityRow,
-        BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>,
-      ),
+      (ActivityRow, BaseReferences<_$AppDatabase, $ActivitiesTable, ActivityRow>),
       ActivityRow,
       PrefetchHooks Function()
     >;
@@ -2570,8 +2309,7 @@ typedef $$OccurrencesTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-class $$OccurrencesTableFilterComposer
-    extends Composer<_$AppDatabase, $OccurrencesTable> {
+class $$OccurrencesTableFilterComposer extends Composer<_$AppDatabase, $OccurrencesTable> {
   $$OccurrencesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -2579,64 +2317,41 @@ class $$OccurrencesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get activityId => $composableBuilder(
-    column: $table.activityId,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get originalDate => $composableBuilder(
-    column: $table.originalDate,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get originalDate =>
+      $composableBuilder(column: $table.originalDate, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get completedCount => $composableBuilder(
-    column: $table.completedCount,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<int> get completedCount =>
+      $composableBuilder(column: $table.completedCount, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get progress => $composableBuilder(
-    column: $table.progress,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<int> get progress =>
+      $composableBuilder(column: $table.progress, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get resolution => $composableBuilder(
-    column: $table.resolution,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get resolution =>
+      $composableBuilder(column: $table.resolution, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get completedAt => $composableBuilder(
-    column: $table.completedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get retroactive => $composableBuilder(
-    column: $table.retroactive,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<bool> get retroactive =>
+      $composableBuilder(column: $table.retroactive, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnFilters(column));
 }
 
-class $$OccurrencesTableOrderingComposer
-    extends Composer<_$AppDatabase, $OccurrencesTable> {
+class $$OccurrencesTableOrderingComposer extends Composer<_$AppDatabase, $OccurrencesTable> {
   $$OccurrencesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -2644,64 +2359,43 @@ class $$OccurrencesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get activityId => $composableBuilder(
-    column: $table.activityId,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get originalDate => $composableBuilder(
-    column: $table.originalDate,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get originalDate =>
+      $composableBuilder(column: $table.originalDate, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get status => $composableBuilder(
-    column: $table.status,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get completedCount => $composableBuilder(
     column: $table.completedCount,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get progress => $composableBuilder(
-    column: $table.progress,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<int> get progress =>
+      $composableBuilder(column: $table.progress, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get resolution => $composableBuilder(
-    column: $table.resolution,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get resolution =>
+      $composableBuilder(column: $table.resolution, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
-    column: $table.completedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get retroactive => $composableBuilder(
-    column: $table.retroactive,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<bool> get retroactive =>
+      $composableBuilder(column: $table.retroactive, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
 }
 
-class $$OccurrencesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $OccurrencesTable> {
+class $$OccurrencesTableAnnotationComposer extends Composer<_$AppDatabase, $OccurrencesTable> {
   $$OccurrencesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -2712,44 +2406,32 @@ class $$OccurrencesTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get activityId => $composableBuilder(
-    column: $table.activityId,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => column);
 
   GeneratedColumn<String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 
-  GeneratedColumn<String> get originalDate => $composableBuilder(
-    column: $table.originalDate,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get originalDate =>
+      $composableBuilder(column: $table.originalDate, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
-  GeneratedColumn<int> get completedCount => $composableBuilder(
-    column: $table.completedCount,
-    builder: (column) => column,
-  );
+  GeneratedColumn<int> get completedCount =>
+      $composableBuilder(column: $table.completedCount, builder: (column) => column);
 
   GeneratedColumn<int> get progress =>
       $composableBuilder(column: $table.progress, builder: (column) => column);
 
-  GeneratedColumn<String> get resolution => $composableBuilder(
-    column: $table.resolution,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get resolution =>
+      $composableBuilder(column: $table.resolution, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
-    column: $table.completedAt,
-    builder: (column) => column,
-  );
+  GeneratedColumn<DateTime> get completedAt =>
+      $composableBuilder(column: $table.completedAt, builder: (column) => column);
 
-  GeneratedColumn<bool> get retroactive => $composableBuilder(
-    column: $table.retroactive,
-    builder: (column) => column,
-  );
+  GeneratedColumn<bool> get retroactive =>
+      $composableBuilder(column: $table.retroactive, builder: (column) => column);
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -2766,10 +2448,7 @@ class $$OccurrencesTableTableManager
           $$OccurrencesTableAnnotationComposer,
           $$OccurrencesTableCreateCompanionBuilder,
           $$OccurrencesTableUpdateCompanionBuilder,
-          (
-            OccurrenceRow,
-            BaseReferences<_$AppDatabase, $OccurrencesTable, OccurrenceRow>,
-          ),
+          (OccurrenceRow, BaseReferences<_$AppDatabase, $OccurrencesTable, OccurrenceRow>),
           OccurrenceRow,
           PrefetchHooks Function()
         > {
@@ -2778,10 +2457,8 @@ class $$OccurrencesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$OccurrencesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$OccurrencesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$OccurrencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$OccurrencesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$OccurrencesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -2844,11 +2521,7 @@ class $$OccurrencesTableTableManager
               .map(
                 (e) => (
                   e.readTable<$OccurrencesTable, OccurrenceRow>(table),
-                  BaseReferences<
-                    _$AppDatabase,
-                    $OccurrencesTable,
-                    OccurrenceRow
-                  >(db, table, e),
+                  BaseReferences<_$AppDatabase, $OccurrencesTable, OccurrenceRow>(db, table, e),
                 ),
               )
               .toList(),
@@ -2867,10 +2540,7 @@ typedef $$OccurrencesTableProcessedTableManager =
       $$OccurrencesTableAnnotationComposer,
       $$OccurrencesTableCreateCompanionBuilder,
       $$OccurrencesTableUpdateCompanionBuilder,
-      (
-        OccurrenceRow,
-        BaseReferences<_$AppDatabase, $OccurrencesTable, OccurrenceRow>,
-      ),
+      (OccurrenceRow, BaseReferences<_$AppDatabase, $OccurrencesTable, OccurrenceRow>),
       OccurrenceRow,
       PrefetchHooks Function()
     >;
@@ -2907,49 +2577,34 @@ class $$GoalsTableFilterComposer extends Composer<_$AppDatabase, $GoalsTable> {
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get year => $composableBuilder(
-    column: $table.year,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get month => $composableBuilder(
-    column: $table.month,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<int> get month =>
+      $composableBuilder(column: $table.month, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get completionNotifiedAt => $composableBuilder(
     column: $table.completionNotifiedAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => ColumnFilters(column));
 }
 
-class $$GoalsTableOrderingComposer
-    extends Composer<_$AppDatabase, $GoalsTable> {
+class $$GoalsTableOrderingComposer extends Composer<_$AppDatabase, $GoalsTable> {
   $$GoalsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -2957,49 +2612,34 @@ class $$GoalsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get year => $composableBuilder(
-    column: $table.year,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get month => $composableBuilder(
-    column: $table.month,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<int> get month =>
+      $composableBuilder(column: $table.month, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get completionNotifiedAt => $composableBuilder(
     column: $table.completionNotifiedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
 }
 
-class $$GoalsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $GoalsTable> {
+class $$GoalsTableAnnotationComposer extends Composer<_$AppDatabase, $GoalsTable> {
   $$GoalsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -3019,10 +2659,8 @@ class $$GoalsTableAnnotationComposer
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get completionNotifiedAt => $composableBuilder(
-    column: $table.completionNotifiedAt,
-    builder: (column) => column,
-  );
+  GeneratedColumn<DateTime> get completionNotifiedAt =>
+      $composableBuilder(column: $table.completionNotifiedAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3054,12 +2692,9 @@ class $$GoalsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$GoalsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$GoalsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$GoalsTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer: () => $$GoalsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$GoalsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () => $$GoalsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
@@ -3108,11 +2743,7 @@ class $$GoalsTableTableManager
               .map(
                 (e) => (
                   e.readTable<$GoalsTable, GoalRow>(table),
-                  BaseReferences<_$AppDatabase, $GoalsTable, GoalRow>(
-                    db,
-                    table,
-                    e,
-                  ),
+                  BaseReferences<_$AppDatabase, $GoalsTable, GoalRow>(db, table, e),
                 ),
               )
               .toList(),
@@ -3136,20 +2767,11 @@ typedef $$GoalsTableProcessedTableManager =
       PrefetchHooks Function()
     >;
 typedef $$KeyValuesTableCreateCompanionBuilder =
-    KeyValuesCompanion Function({
-      required String key,
-      Value<String?> value,
-      Value<int> rowid,
-    });
+    KeyValuesCompanion Function({required String key, Value<String?> value, Value<int> rowid});
 typedef $$KeyValuesTableUpdateCompanionBuilder =
-    KeyValuesCompanion Function({
-      Value<String> key,
-      Value<String?> value,
-      Value<int> rowid,
-    });
+    KeyValuesCompanion Function({Value<String> key, Value<String?> value, Value<int> rowid});
 
-class $$KeyValuesTableFilterComposer
-    extends Composer<_$AppDatabase, $KeyValuesTable> {
+class $$KeyValuesTableFilterComposer extends Composer<_$AppDatabase, $KeyValuesTable> {
   $$KeyValuesTableFilterComposer({
     required super.$db,
     required super.$table,
@@ -3157,19 +2779,14 @@ class $$KeyValuesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get key => $composableBuilder(
-    column: $table.key,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get value => $composableBuilder(
-    column: $table.value,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnFilters<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => ColumnFilters(column));
 }
 
-class $$KeyValuesTableOrderingComposer
-    extends Composer<_$AppDatabase, $KeyValuesTable> {
+class $$KeyValuesTableOrderingComposer extends Composer<_$AppDatabase, $KeyValuesTable> {
   $$KeyValuesTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -3177,19 +2794,14 @@ class $$KeyValuesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get key => $composableBuilder(
-    column: $table.key,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get value => $composableBuilder(
-    column: $table.value,
-    builder: (column) => ColumnOrderings(column),
-  );
+  ColumnOrderings<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => ColumnOrderings(column));
 }
 
-class $$KeyValuesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $KeyValuesTable> {
+class $$KeyValuesTableAnnotationComposer extends Composer<_$AppDatabase, $KeyValuesTable> {
   $$KeyValuesTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -3215,10 +2827,7 @@ class $$KeyValuesTableTableManager
           $$KeyValuesTableAnnotationComposer,
           $$KeyValuesTableCreateCompanionBuilder,
           $$KeyValuesTableUpdateCompanionBuilder,
-          (
-            KeyValueRow,
-            BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>,
-          ),
+          (KeyValueRow, BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>),
           KeyValueRow,
           PrefetchHooks Function()
         > {
@@ -3227,10 +2836,8 @@ class $$KeyValuesTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$KeyValuesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$KeyValuesTableOrderingComposer($db: db, $table: table),
+          createFilteringComposer: () => $$KeyValuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$KeyValuesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$KeyValuesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
@@ -3244,20 +2851,12 @@ class $$KeyValuesTableTableManager
                 required String key,
                 Value<String?> value = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => KeyValuesCompanion.insert(
-                key: key,
-                value: value,
-                rowid: rowid,
-              ),
+              }) => KeyValuesCompanion.insert(key: key, value: value, rowid: rowid),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
                   e.readTable<$KeyValuesTable, KeyValueRow>(table),
-                  BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>(
-                    db,
-                    table,
-                    e,
-                  ),
+                  BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>(db, table, e),
                 ),
               )
               .toList(),
@@ -3276,10 +2875,7 @@ typedef $$KeyValuesTableProcessedTableManager =
       $$KeyValuesTableAnnotationComposer,
       $$KeyValuesTableCreateCompanionBuilder,
       $$KeyValuesTableUpdateCompanionBuilder,
-      (
-        KeyValueRow,
-        BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>,
-      ),
+      (KeyValueRow, BaseReferences<_$AppDatabase, $KeyValuesTable, KeyValueRow>),
       KeyValueRow,
       PrefetchHooks Function()
     >;
@@ -3291,8 +2887,6 @@ class $AppDatabaseManager {
       $$ActivitiesTableTableManager(_db, _db.activities);
   $$OccurrencesTableTableManager get occurrences =>
       $$OccurrencesTableTableManager(_db, _db.occurrences);
-  $$GoalsTableTableManager get goals =>
-      $$GoalsTableTableManager(_db, _db.goals);
-  $$KeyValuesTableTableManager get keyValues =>
-      $$KeyValuesTableTableManager(_db, _db.keyValues);
+  $$GoalsTableTableManager get goals => $$GoalsTableTableManager(_db, _db.goals);
+  $$KeyValuesTableTableManager get keyValues => $$KeyValuesTableTableManager(_db, _db.keyValues);
 }

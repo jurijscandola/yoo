@@ -58,4 +58,249 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get moreOptions => 'Altre opzioni';
+
+  @override
+  String get today => 'Oggi';
+
+  @override
+  String get yesterday => 'Ieri';
+
+  @override
+  String get tomorrow => 'Domani';
+
+  @override
+  String get homeEmpty => 'Nessuna attività per questo giorno';
+
+  @override
+  String get homeEmptyHint => 'Tocca + per creare un\'attività';
+
+  @override
+  String get homeAllDone => 'Tutto fatto per oggi';
+
+  @override
+  String get newActivity => 'Nuova attività';
+
+  @override
+  String get editActivity => 'Modifica attività';
+
+  @override
+  String get fieldName => 'Nome';
+
+  @override
+  String get fieldNameHint => 'es. Prendi le vitamine';
+
+  @override
+  String get fieldNotification => 'Testo della notifica';
+
+  @override
+  String get fieldNotificationHint => 'Cosa deve dire il promemoria';
+
+  @override
+  String get sectionRecurrence => 'Ricorrenza';
+
+  @override
+  String get recurrenceDaily => 'Tutti i giorni';
+
+  @override
+  String get recurrenceEveryOtherDay => 'Un giorno sì e uno no';
+
+  @override
+  String get recurrenceWeekly => 'Ogni settimana';
+
+  @override
+  String get recurrenceMonthly => 'Una volta al mese';
+
+  @override
+  String get recurrenceSpecificDays => 'Giorni specifici';
+
+  @override
+  String get weekdayLabel => 'Il giorno';
+
+  @override
+  String get monthDayLabel => 'Giorno del mese';
+
+  @override
+  String get monthlyClampNote => 'Nei mesi più corti cade l\'ultimo giorno del mese.';
+
+  @override
+  String get specificDaysLabel => 'Giorni del mese';
+
+  @override
+  String get repeatNone => 'Solo questo mese';
+
+  @override
+  String get repeatNext => 'Anche il mese prossimo';
+
+  @override
+  String get repeatEvery => 'Tutti i mesi';
+
+  @override
+  String get startDate => 'Inizia il';
+
+  @override
+  String get sectionTimes => 'Volte al giorno';
+
+  @override
+  String timeSlotLabel(int n) {
+    return 'Volta $n';
+  }
+
+  @override
+  String get timeRandom => 'Orario casuale in una fascia';
+
+  @override
+  String get timeFrom => 'Dalle';
+
+  @override
+  String get timeTo => 'Alle';
+
+  @override
+  String get timeAt => 'Alle';
+
+  @override
+  String get sectionColor => 'Colore del bordo';
+
+  @override
+  String get sectionPartial => 'Completamento parziale';
+
+  @override
+  String get partialDescription => 'La notifica chiede quanto hai completato.';
+
+  @override
+  String get partialReminders => 'Promemoria aggiuntivi';
+
+  @override
+  String get partialUntil => 'Fino alle';
+
+  @override
+  String get sectionGoal => 'Obiettivo mensile';
+
+  @override
+  String get goalLinkToggle => 'Contribuisce a un obiettivo';
+
+  @override
+  String get goalPick => 'Obiettivo';
+
+  @override
+  String get goalNone => 'Nessun obiettivo: creali dal Calendario.';
+
+  @override
+  String get goalImpact => 'Impatto';
+
+  @override
+  String get impactAdditive => 'Aggiunge';
+
+  @override
+  String get impactSubtractive => 'Sottrae';
+
+  @override
+  String get save => 'Salva';
+
+  @override
+  String get cancel => 'Annulla';
+
+  @override
+  String get delete => 'Elimina';
+
+  @override
+  String get errorEmptyName => 'Dai un nome all\'attività';
+
+  @override
+  String get errorNoDays => 'Seleziona almeno un giorno';
+
+  @override
+  String get errorTimeSlot => 'L\'orario di fine deve essere dopo quello di inizio';
+
+  @override
+  String get actionEdit => 'Modifica';
+
+  @override
+  String get actionPostpone => 'Sposta a domani';
+
+  @override
+  String get actionSkipDay => 'Rimuovi solo per questo giorno';
+
+  @override
+  String get actionDeleteActivity => 'Elimina l\'intera attività';
+
+  @override
+  String deleteConfirmTitle(String name) {
+    return 'Eliminare \"$name\"?';
+  }
+
+  @override
+  String get deleteConfirmBody => 'Non verrà più pianificata. Lo storico resta nei riepiloghi.';
+
+  @override
+  String get postponed => 'Spostata a domani';
+
+  @override
+  String get cannotPostpone => 'Domani c\'è già questa attività';
+
+  @override
+  String get progressTitle => 'Quanto hai completato?';
+
+  @override
+  String get progressDone => 'Fatto';
+
+  @override
+  String timesDone(int done, int total) {
+    return '$done/$total';
+  }
+
+  @override
+  String percent(int value) {
+    return '$value%';
+  }
+
+  @override
+  String get summaryTitle => 'Riepilogo giornaliero';
+
+  @override
+  String get summaryEmpty => 'Nessuna attività in questo giorno';
+
+  @override
+  String get summaryPlanned => 'Pianificata';
+
+  @override
+  String get summaryMoved => 'Spostata al giorno dopo';
+
+  @override
+  String get summaryCompletedLater => 'Completata in seguito';
+
+  @override
+  String get summaryPending => 'Ancora da fare';
+
+  @override
+  String missedBanner(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attività non completate',
+      one: '1 attività non completata',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get missedPromptTitle => 'Cosa facciamo?';
+
+  @override
+  String get missedPromptSubtitle =>
+      'Queste attività non sono state completate. Forse hai dimenticato di spuntarle? Puoi ancora segnarle come completate.';
+
+  @override
+  String get missedDidIt => 'L\'ho fatta';
+
+  @override
+  String get missedMoveToday => 'Falla oggi';
+
+  @override
+  String get missedLeave => 'Lascia stare';
+
+  @override
+  String get missedCannotMove => 'Già pianificata oggi';
+
+  @override
+  String get missedResolveAll => 'Decido dopo';
 }

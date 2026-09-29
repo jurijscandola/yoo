@@ -10,10 +10,9 @@ class DriftGoalRepository implements GoalRepository {
 
   final AppDatabase _db;
 
-  SimpleSelectStatement<$GoalsTable, GoalRow> _month(int year, int month) =>
-      _db.select(_db.goals)
-        ..where((t) => t.year.equals(year) & t.month.equals(month) & t.deletedAt.isNull())
-        ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]);
+  SimpleSelectStatement<$GoalsTable, GoalRow> _month(int year, int month) => _db.select(_db.goals)
+    ..where((t) => t.year.equals(year) & t.month.equals(month) & t.deletedAt.isNull())
+    ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]);
 
   @override
   Stream<List<MonthlyGoal>> watchMonth(int year, int month) =>
@@ -38,18 +37,20 @@ class DriftGoalRepository implements GoalRepository {
   }
 
   @override
-  Future<void> save(MonthlyGoal goal) => _db.into(_db.goals).insertOnConflictUpdate(
-    GoalsCompanion.insert(
-      id: goal.id,
-      year: goal.year,
-      month: goal.month,
-      title: goal.title,
-      completionNotifiedAt: Value(goal.completionNotifiedAt),
-      createdAt: goal.createdAt,
-      updatedAt: goal.updatedAt,
-      deletedAt: Value(goal.deletedAt),
-    ),
-  );
+  Future<void> save(MonthlyGoal goal) => _db
+      .into(_db.goals)
+      .insertOnConflictUpdate(
+        GoalsCompanion.insert(
+          id: goal.id,
+          year: goal.year,
+          month: goal.month,
+          title: goal.title,
+          completionNotifiedAt: Value(goal.completionNotifiedAt),
+          createdAt: goal.createdAt,
+          updatedAt: goal.updatedAt,
+          deletedAt: Value(goal.deletedAt),
+        ),
+      );
 }
 
 /// Maps a database row to the domain entity.

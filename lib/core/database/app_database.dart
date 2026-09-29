@@ -81,10 +81,7 @@ class AppDatabase extends _$AppDatabase {
   /// Opens the on-device database. It is shared across isolates, so the
   /// background notification handler and the UI see the same data.
   factory AppDatabase.open() => AppDatabase(
-    driftDatabase(
-      name: 'yoo',
-      native: const DriftNativeOptions(shareAcrossIsolates: true),
-    ),
+    driftDatabase(name: 'yoo', native: const DriftNativeOptions(shareAcrossIsolates: true)),
   );
 
   @override

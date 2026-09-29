@@ -30,9 +30,7 @@ class DriftActivityRepository implements ActivityRepository {
 
   @override
   Future<Activity?> getById(String id) async {
-    final row = await (_db.select(
-      _db.activities,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    final row = await (_db.select(_db.activities)..where((t) => t.id.equals(id))).getSingleOrNull();
     return row == null ? null : activityFromRow(row);
   }
 
