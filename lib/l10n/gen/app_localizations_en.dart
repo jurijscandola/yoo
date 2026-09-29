@@ -614,4 +614,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get previewActivityTwo => 'Read 20 pages';
+
+  @override
+  String get settingsAbout => 'About Yoo';
+
+  @override
+  String get settingsAboutSubtitle => 'Open-source licenses';
+
+  @override
+  String get aboutLegalese => 'Small recurring activities, reliable reminders.';
 }

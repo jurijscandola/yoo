@@ -293,5 +293,8 @@
   "appIconSunset": "Sunset",
   "themeReset": "Reset to default",
   "previewActivityOne": "Morning walk",
-  "previewActivityTwo": "Read 20 pages"
+  "previewActivityTwo": "Read 20 pages",
+  "settingsAbout": "About Yoo",
+  "settingsAboutSubtitle": "Open-source licenses",
+  "aboutLegalese": "Small recurring activities, reliable reminders."
 }

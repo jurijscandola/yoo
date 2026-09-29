@@ -50,6 +50,17 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.externalCalendars),
           ),
           const ReminderReliabilitySection(),
+          const SizedBox(height: 16),
+          SettingsTile(
+            icon: Icons.info_outline,
+            title: l10n.settingsAbout,
+            subtitle: l10n.settingsAboutSubtitle,
+            onTap: () => showLicensePage(
+              context: context,
+              applicationName: l10n.appTitle,
+              applicationLegalese: l10n.aboutLegalese,
+            ),
+          ),
         ],
       ),
     );

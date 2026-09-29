@@ -1214,6 +1214,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read 20 pages'**
   String get previewActivityTwo;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About Yoo'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsAboutSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get settingsAboutSubtitle;
+
+  /// No description provided for @aboutLegalese.
+  ///
+  /// In en, this message translates to:
+  /// **'Small recurring activities, reliable reminders.'**
+  String get aboutLegalese;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
