@@ -3,13 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/time/local_date.dart';
 import '../features/activities/domain/services/activity_service.dart';
 import '../features/goals/domain/goal_service.dart';
+import '../features/reminders/presentation/reminder_providers.dart';
 import 'providers.dart';
 
-/// Sends the "goal reached" notification; overridden once notifications exist.
-final goalCompletionNotifierProvider = Provider<GoalCompletionNotifier?>((ref) => null);
+/// Sends the "goal reached" notification.
+final goalCompletionNotifierProvider = Provider<GoalCompletionNotifier?>(
+  (ref) => ReminderGoalNotifier(
+    ref.watch(reminderGatewayProvider),
+    ref.watch(reminderStringsProvider),
+  ),
+);
 
-/// Refreshes the notification schedule; overridden once notifications exist.
-final reminderRefreshProvider = Provider<Future<void> Function()>((ref) => () async {});
+/// Refreshes the notification schedule.
+final reminderRefreshProvider = Provider<Future<void> Function()>(reminderRefreshOf);
 
 final goalServiceProvider = Provider<GoalService>(
   (ref) => GoalService(
