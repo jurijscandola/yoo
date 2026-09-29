@@ -42,7 +42,7 @@
 - **Splash**: an opening animation on every cold start.
 - **Bundle id**: `com.app.yoo`.
 
-## Current status (updated 2026-09-29, evening)
+## Current status (updated 2026-09-30)
 
 ### Done (committed)
 - **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n. (The Gradle helper
@@ -142,6 +142,27 @@ recurring, other accounts) appear on the right days, hiding a calendar, and "Add
   artwork plus native setup (Android `activity-alias` per icon, iOS alternate icons).
 - **Goals tab**: still empty on purpose; the owner will decide its content.
 
-### Next phases
-9 polish. Pending device tests: notifications (phase 5), device calendars (phase 7), export
-share sheet and fonts on the phone (phase 8).
+### Phase 9 – polish (done)
+- Large text: `test/polish/large_text_test.dart` opens every main screen on a 360×690 phone with
+  2× text (English and Italian); layouts were fixed until nothing overflows (Home header area
+  capped and scrollable, nav bar text scaling capped at 1.3, long trailing texts moved below).
+- Placeholder launcher icon ("Classic" preview) on Android (adaptive + monochrome + legacy PNGs)
+  and iOS; regenerate with `tool/generate_placeholder_icons.py` (needs Pillow).
+- Settings → "About Yoo" opens the license page (font licenses included).
+- Cleanup: unused dependencies and strings removed, Gradle template TODOs removed.
+- Accessibility: calendar cells are announced with their full date by table_calendar, which also
+  hides custom labels inside the cell, so the day status is only in the daily summary.
+
+### Open items (need the owner, a device or a Mac)
+- **Device tests**: notifications (phase 5 checklist), device calendars (phase 7), export share
+  sheet, fonts and dark themes on a real phone.
+- **Release signing**: `android/app/build.gradle.kts` signs release builds with the debug key; a
+  release keystore (kept out of git) is needed before publishing.
+- **iOS**: never built (no Mac). Also: Italian permission texts need an `it.lproj/InfoPlist.strings`
+  added through Xcode.
+- **App icons**: final artwork, then native switching (Android `activity-alias` per icon, iOS
+  alternate icons) for the choice already stored in `AppSettings.appIconId`.
+- **Goals tab**: content to be decided.
+- **Build warning**: flutter_timezone and workmanager_android still apply the Kotlin Gradle Plugin;
+  future Flutter versions will refuse it until those plugins are updated (already at their latest
+  versions).
