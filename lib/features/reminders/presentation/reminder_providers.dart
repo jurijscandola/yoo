@@ -59,6 +59,7 @@ Future<void> Function() reminderRefreshOf(Ref ref) {
 }
 
 /// Sends the "goal reached" notification through the reminder gateway.
+/// Failures are logged: they must not undo the change that reached the goal.
 class ReminderGoalNotifier implements GoalCompletionNotifier {
   ReminderGoalNotifier(this._gateway, this._strings);
 
@@ -71,11 +72,15 @@ class ReminderGoalNotifier implements GoalCompletionNotifier {
 
   @override
   Future<void> notifyGoalReached(MonthlyGoal goal) async {
-    final l10n = await _strings();
-    await _gateway.showNow(
-      id: idOf(goal),
-      title: l10n.goalReachedTitle,
-      body: l10n.goalReachedBody(goal.title),
-    );
+    try {
+      final l10n = await _strings();
+      await _gateway.showNow(
+        id: idOf(goal),
+        title: l10n.goalReachedTitle,
+        body: l10n.goalReachedBody(goal.title),
+      );
+    } catch (error, stack) {
+      debugPrint('Goal notification failed: $error\n$stack');
+    }
   }
 }
