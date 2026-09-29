@@ -153,6 +153,18 @@ recurring, other accounts) appear on the right days, hiding a calendar, and "Add
 - Accessibility: calendar cells are announced with their full date by table_calendar, which also
   hides custom labels inside the cell, so the day status is only in the daily summary.
 
+### Phase 10 – home screen widget (final phase, Android only for now)
+Planned after phases 6–8. A home screen widget built with `home_widget` (Flutter side) and
+Jetpack Glance (Android side); iOS is prepared in the Dart layer (a platform-neutral data model
+and update service) but has no WidgetKit extension yet.
+- Shows today's date and the activities still to do, with the colors of the user's theme
+  (page, surface, card, text, accent and the activity border colors).
+- Tapping a card completes it in background, reusing the notification action logic
+  (`NotificationActionHandler`: "done" for counter activities, 100% for partial ones).
+- Tapping the header opens the app on Home.
+- Updated whenever activities change (same change hook as the reminders), and at midnight
+  (the periodic background task plus the day watcher).
+
 ### Open items (need the owner, a device or a Mac)
 - **Device tests**: notifications (phase 5 checklist), device calendars (phase 7), export share
   sheet, fonts and dark themes on a real phone.
