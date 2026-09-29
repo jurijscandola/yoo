@@ -84,14 +84,19 @@ Future<void> handleNotificationResponse(
 /// foreground. Runs in a background isolate with its own provider graph on
 /// the shared database.
 @pragma('vm:entry-point')
-Future<void> onBackgroundNotificationResponse(NotificationResponse response) async {
+Future<void> onBackgroundNotificationResponse(NotificationResponse response) =>
+    runInBackground((container) => handleNotificationResponse(container, response));
+
+/// Runs [body] in a background isolate with a temporary provider graph on the
+/// shared database and an initialized notification gateway.
+Future<T> runInBackground<T>(Future<T> Function(ProviderContainer container) body) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
   final gateway = LocalNotificationGateway();
   final container = openAppContainer(gateway);
   try {
     await initializeReminders(container, gateway);
-    await handleNotificationResponse(container, response);
+    return await body(container);
   } finally {
     final database = container.read(databaseProvider);
     container.dispose();

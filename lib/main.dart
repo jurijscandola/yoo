@@ -5,8 +5,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
+import 'app/background_tasks.dart';
 import 'app/bootstrap.dart';
-import 'app/services.dart';
 import 'features/reminders/data/local_notification_gateway.dart';
 
 /// Entry point of Yoo: opens the local database, wires the persistent
@@ -22,17 +22,15 @@ Future<void> main() async {
     onResponse: (response) => unawaited(handleNotificationResponse(container, response)),
   );
   runApp(UncontrolledProviderScope(container: container, child: const YooApp()));
+  unawaited(BackgroundTasks.register());
 
-  // An action pressed while the app was not running launched it.
+  // An action pressed while the app was not running launched it. (The
+  // reminder refresh of a normal start is done by the day watcher.)
   NotificationResponse? launch;
   try {
     launch = await gateway.launchResponse();
   } catch (_) {
     // Launch details are optional: a normal start follows.
   }
-  if (launch != null) {
-    await handleNotificationResponse(container, launch);
-  } else {
-    await container.read(reminderRefreshProvider)();
-  }
+  if (launch != null) await handleNotificationResponse(container, launch);
 }
