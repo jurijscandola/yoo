@@ -479,4 +479,139 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get calendarsPick => 'Calendari da mostrare';
+
+  @override
+  String get exportDescription =>
+      'Un file .txt con gli obiettivi e le attività del mese. Salvalo o invialo dal menu di condivisione.';
+
+  @override
+  String exportButton(String month) {
+    return 'Esporta $month';
+  }
+
+  @override
+  String get exportEmpty => 'Nessun dato registrato in questo mese';
+
+  @override
+  String get exportFailed => 'Esportazione non riuscita';
+
+  @override
+  String get exportPreview => 'Anteprima';
+
+  @override
+  String reportTitle(String month) {
+    return 'Yoo · $month';
+  }
+
+  @override
+  String reportExportedOn(String date) {
+    return 'Esportato il $date';
+  }
+
+  @override
+  String get reportGoals => 'OBIETTIVI';
+
+  @override
+  String get reportNoGoals => 'Nessun obiettivo';
+
+  @override
+  String get reportActivities => 'ATTIVITÀ';
+
+  @override
+  String get reportNoActivities => 'Nessuna attività';
+
+  @override
+  String reportTotal(int done, int total) {
+    return 'Completate: $done su $total';
+  }
+
+  @override
+  String get themePresets => 'Temi';
+
+  @override
+  String get presetPaper => 'Carta';
+
+  @override
+  String get presetMist => 'Nebbia';
+
+  @override
+  String get presetSage => 'Salvia';
+
+  @override
+  String get presetNight => 'Notte';
+
+  @override
+  String get presetInk => 'Inchiostro';
+
+  @override
+  String get themeColors => 'Colori';
+
+  @override
+  String get colorText => 'Testo';
+
+  @override
+  String get colorPage => 'Pagine';
+
+  @override
+  String get colorSurface => 'Intestazioni e pannelli';
+
+  @override
+  String get colorCards => 'Card';
+
+  @override
+  String get colorBar => 'Barra di navigazione';
+
+  @override
+  String get colorAccent => 'Pulsanti';
+
+  @override
+  String get colorNotification => 'Notifiche';
+
+  @override
+  String get colorNotificationHint => 'Solo Android';
+
+  @override
+  String get colorDefault => 'Predefinito';
+
+  @override
+  String get themeFont => 'Carattere';
+
+  @override
+  String get fontSystem => 'Sistema';
+
+  @override
+  String get fontSample => 'Un piccolo passo ogni giorno';
+
+  @override
+  String get appIcon => 'Icona dell\'app';
+
+  @override
+  String get appIconHint => 'Le icone definitive sono in arrivo: queste sono anteprime.';
+
+  @override
+  String get appIconClassic => 'Classica';
+
+  @override
+  String get appIconLight => 'Chiara';
+
+  @override
+  String get appIconDark => 'Scura';
+
+  @override
+  String get appIconOcean => 'Oceano';
+
+  @override
+  String get appIconForest => 'Foresta';
+
+  @override
+  String get appIconSunset => 'Tramonto';
+
+  @override
+  String get themeReset => 'Ripristina predefiniti';
+
+  @override
+  String get previewActivityOne => 'Passeggiata mattutina';
+
+  @override
+  String get previewActivityTwo => 'Leggere 20 pagine';
 }

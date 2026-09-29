@@ -7,6 +7,8 @@ import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
+import 'package:yoo/features/export/domain/export_destination.dart';
+import 'package:yoo/features/export/presentation/export_providers.dart';
 import 'package:yoo/features/external_calendars/domain/external_calendar_source.dart';
 import 'package:yoo/features/external_calendars/presentation/external_calendar_providers.dart';
 import 'package:yoo/features/reminders/domain/reminder_gateway.dart';
@@ -28,6 +30,7 @@ class TestApp {
     this.permissions = const GrantedReminderPermissions(),
     this.gateway = const NoopReminderGateway(),
     this.externalCalendars = const EmptyExternalCalendarSource(),
+    this.exportDestination = const NoopExportDestination(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -50,6 +53,9 @@ class TestApp {
   /// Device calendars; none unless a test is about them.
   final ExternalCalendarSource externalCalendars;
 
+  /// Where exports go; discarded unless a test inspects them.
+  final ExportDestination exportDestination;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
@@ -58,6 +64,7 @@ class TestApp {
     reminderPermissionsProvider.overrideWithValue(permissions),
     reminderGatewayProvider.overrideWithValue(gateway),
     externalCalendarSourceProvider.overrideWithValue(externalCalendars),
+    exportDestinationProvider.overrideWithValue(exportDestination),
   ];
 
   /// The whole app, ready to pump.

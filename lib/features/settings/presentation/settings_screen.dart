@@ -28,7 +28,7 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.file_download_outlined,
             title: l10n.settingsExport,
             subtitle: l10n.settingsExportSubtitle,
-            onTap: () => _comingSoon(context),
+            onTap: () => context.push(Routes.export),
           ),
           SettingsTile(
             icon: Icons.palette_outlined,

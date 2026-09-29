@@ -8,6 +8,9 @@ abstract final class Routes {
   static const goals = '/goals';
   static const settings = '/settings';
   static const externalCalendars = '/settings/calendars';
+  static const export = '/settings/export';
+  static const personalization = '/settings/personalization';
+  static const appIcon = '/settings/personalization/icon';
 
   /// Activity creation, optionally pre-filled with a [name], a start [date]
   /// and a [time] of day.

@@ -7,6 +7,7 @@ import '../core/time/local_time.dart';
 import '../features/activities/presentation/activity_form_screen.dart';
 import '../features/calendar/presentation/calendar_screen.dart';
 import '../features/daily_summary/presentation/daily_summary_screen.dart';
+import '../features/export/presentation/export_screen.dart';
 import '../features/external_calendars/presentation/external_calendars_screen.dart';
 import '../features/external_calendars/presentation/external_events.dart';
 import '../features/goals/presentation/goals_screen.dart';
@@ -75,6 +76,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             extraSections: [ExternalEventsSection(date: date)],
           );
         },
+      ),
+      GoRoute(
+        path: Routes.export,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const ExportScreen(),
       ),
       GoRoute(
         path: Routes.externalCalendars,

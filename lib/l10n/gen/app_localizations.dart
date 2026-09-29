@@ -962,6 +962,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calendars to show'**
   String get calendarsPick;
+
+  /// No description provided for @exportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A .txt file with the goals and activities of the month. Save it or send it from the share menu.'**
+  String get exportDescription;
+
+  /// No description provided for @exportButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export {month}'**
+  String exportButton(String month);
+
+  /// No description provided for @exportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded in this month'**
+  String get exportEmpty;
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed'**
+  String get exportFailed;
+
+  /// No description provided for @exportPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get exportPreview;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoo · {month}'**
+  String reportTitle(String month);
+
+  /// No description provided for @reportExportedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported on {date}'**
+  String reportExportedOn(String date);
+
+  /// No description provided for @reportGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'GOALS'**
+  String get reportGoals;
+
+  /// No description provided for @reportNoGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'No goals'**
+  String get reportNoGoals;
+
+  /// No description provided for @reportActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVITIES'**
+  String get reportActivities;
+
+  /// No description provided for @reportNoActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'No activities'**
+  String get reportNoActivities;
+
+  /// No description provided for @reportTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed: {done} of {total}'**
+  String reportTotal(int done, int total);
+
+  /// No description provided for @themePresets.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get themePresets;
+
+  /// No description provided for @presetPaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper'**
+  String get presetPaper;
+
+  /// No description provided for @presetMist.
+  ///
+  /// In en, this message translates to:
+  /// **'Mist'**
+  String get presetMist;
+
+  /// No description provided for @presetSage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sage'**
+  String get presetSage;
+
+  /// No description provided for @presetNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get presetNight;
+
+  /// No description provided for @presetInk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ink'**
+  String get presetInk;
+
+  /// No description provided for @themeColors.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors'**
+  String get themeColors;
+
+  /// No description provided for @colorText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get colorText;
+
+  /// No description provided for @colorPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pages'**
+  String get colorPage;
+
+  /// No description provided for @colorSurface.
+  ///
+  /// In en, this message translates to:
+  /// **'Headers and sheets'**
+  String get colorSurface;
+
+  /// No description provided for @colorCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards'**
+  String get colorCards;
+
+  /// No description provided for @colorBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation bar'**
+  String get colorBar;
+
+  /// No description provided for @colorAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons'**
+  String get colorAccent;
+
+  /// No description provided for @colorNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get colorNotification;
+
+  /// No description provided for @colorNotificationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Android only'**
+  String get colorNotificationHint;
+
+  /// No description provided for @colorDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get colorDefault;
+
+  /// No description provided for @themeFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Font'**
+  String get themeFont;
+
+  /// No description provided for @fontSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get fontSystem;
+
+  /// No description provided for @fontSample.
+  ///
+  /// In en, this message translates to:
+  /// **'A small step every day'**
+  String get fontSample;
+
+  /// No description provided for @appIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'App icon'**
+  String get appIcon;
+
+  /// No description provided for @appIconHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The final icons are on their way: these are previews.'**
+  String get appIconHint;
+
+  /// No description provided for @appIconClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get appIconClassic;
+
+  /// No description provided for @appIconLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get appIconLight;
+
+  /// No description provided for @appIconDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get appIconDark;
+
+  /// No description provided for @appIconOcean.
+  ///
+  /// In en, this message translates to:
+  /// **'Ocean'**
+  String get appIconOcean;
+
+  /// No description provided for @appIconForest.
+  ///
+  /// In en, this message translates to:
+  /// **'Forest'**
+  String get appIconForest;
+
+  /// No description provided for @appIconSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get appIconSunset;
+
+  /// No description provided for @themeReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to default'**
+  String get themeReset;
+
+  /// No description provided for @previewActivityOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning walk'**
+  String get previewActivityOne;
+
+  /// No description provided for @previewActivityTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'Read 20 pages'**
+  String get previewActivityTwo;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

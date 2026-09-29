@@ -220,5 +220,78 @@
   "calendarsEnable": "Show events from device calendars",
   "calendarsDenied": "Yoo is not allowed to read your calendars.",
   "calendarsNone": "No calendars on this device",
-  "calendarsPick": "Calendars to show"
+  "calendarsPick": "Calendars to show",
+  "exportDescription": "A .txt file with the goals and activities of the month. Save it or send it from the share menu.",
+  "exportButton": "Export {month}",
+  "@exportButton": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "exportEmpty": "Nothing recorded in this month",
+  "exportFailed": "Export failed",
+  "exportPreview": "Preview",
+  "reportTitle": "Yoo · {month}",
+  "@reportTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "reportExportedOn": "Exported on {date}",
+  "@reportExportedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportGoals": "GOALS",
+  "reportNoGoals": "No goals",
+  "reportActivities": "ACTIVITIES",
+  "reportNoActivities": "No activities",
+  "reportTotal": "Completed: {done} of {total}",
+  "@reportTotal": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "themePresets": "Themes",
+  "presetPaper": "Paper",
+  "presetMist": "Mist",
+  "presetSage": "Sage",
+  "presetNight": "Night",
+  "presetInk": "Ink",
+  "themeColors": "Colors",
+  "colorText": "Text",
+  "colorPage": "Pages",
+  "colorSurface": "Headers and sheets",
+  "colorCards": "Cards",
+  "colorBar": "Navigation bar",
+  "colorAccent": "Buttons",
+  "colorNotification": "Notifications",
+  "colorNotificationHint": "Android only",
+  "colorDefault": "Default",
+  "themeFont": "Font",
+  "fontSystem": "System",
+  "fontSample": "A small step every day",
+  "appIcon": "App icon",
+  "appIconHint": "The final icons are on their way: these are previews.",
+  "appIconClassic": "Classic",
+  "appIconLight": "Light",
+  "appIconDark": "Dark",
+  "appIconOcean": "Ocean",
+  "appIconForest": "Forest",
+  "appIconSunset": "Sunset",
+  "themeReset": "Reset to default",
+  "previewActivityOne": "Morning walk",
+  "previewActivityTwo": "Read 20 pages"
 }
