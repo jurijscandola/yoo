@@ -41,3 +41,60 @@
 - **No deadlines** on activities or goals.
 - **Splash**: an opening animation on every cold start.
 - **Bundle id**: `com.app.yoo`.
+
+## Current status (updated 2026-09-29)
+
+### Done (committed)
+- **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n, Gradle helper
+  (`tool/flutter_android.ps1`, needed because of the `!` in the project path).
+- **Phase 1** – design tokens (`YooTokens`), presets/palettes, bottom navigation with the custom
+  goals icon, opening animation on every cold start, first-launch language prompt, Goals skeleton,
+  Settings screen (language works; export/personalization are "coming soon").
+- **Phase 2** – pure domain logic + unit tests: recurrences, occurrences, missed-activity rules,
+  notification planner (rolling window, seeded random time, partial follow-ups), goal progress.
+- **Phase 3** – Drift database, repositories, `ActivityService`, `GoalService`, day rollover
+  (`DayWatcher`: start, resume, midnight), integration tests on an in-memory DB.
+- **Phase 4** – activity form, Home (swipeable days, animated cards, actions menu), missed
+  activities prompt/banner, daily summary. Widget tests for the main flows. 69 tests green.
+
+### Resolved issue: hanging widget tests
+Widget tests hung for 10 minutes after any failure. Cause: closing the in-memory Drift database
+in `addTearDown` inside the fake-async zone never completes. Fix: widget tests no longer close
+the DB (see `test/helpers/test_app.dart`). Also, `find.bySemanticsLabel` needs semantics enabled:
+tests find the check button by icon instead.
+
+### In progress: Phase 5 – notifications (WIP commit, not wired yet)
+Written, compiling, **not yet connected to the app and not tested**:
+- `features/reminders/domain/reminder_gateway.dart` – gateway interface, action ids, labels.
+- `features/reminders/application/reminder_scheduler.dart` – idempotent refresh (cancel stale,
+  schedule planned, coalesced runs, time-zone sync).
+- `features/reminders/application/notification_action_handler.dart` – done / 100% / 50% /
+  typed percentage from the notification.
+- `features/reminders/data/local_notification_gateway.dart` – flutter_local_notifications
+  implementation (channels, iOS categories, exact vs inexact, permissions, time zones).
+- New l10n strings for notifications and permissions.
+
+Still to do for Phase 5:
+1. Providers: `reminderGatewayProvider` (Noop default, real one overridden in `main`),
+   `reminderSchedulerProvider`; override `reminderRefreshProvider` and
+   `goalCompletionNotifierProvider` in `app/services.dart`.
+2. Bootstrap in `main`: initialize the gateway with localized labels, foreground response
+   handler, top-level `@pragma('vm:entry-point')` background handler that opens the shared DB in
+   a `ProviderContainer`, runs `NotificationActionHandler` and refreshes reminders.
+3. `DayWatcher`: also call the reminder refresh on resume.
+4. workmanager: periodic task (~1 h) running rollover + refresh (keeps the window full, follows
+   time-zone changes); iOS BGTask identifiers in Info.plist + AppDelegate registration.
+5. AndroidManifest: `RECEIVE_BOOT_COMPLETED`, `SCHEDULE_EXACT_ALARM`, receivers
+   `ScheduledNotificationReceiver`, `ScheduledNotificationBootReceiver` (BOOT_COMPLETED,
+   MY_PACKAGE_REPLACED, QUICKBOOT_POWERON), `ActionBroadcastReceiver`; monochrome small icon
+   drawable `ic_stat_yoo` (referenced by the gateway, **not created yet**).
+6. iOS AppDelegate: `FlutterLocalNotificationsPlugin.setPluginRegistrantCallback` inside
+   `didInitializeImplicitFlutterEngine` (UIScene) + notification center delegate.
+7. Permission flow after the startup gate (explanation dialog → notifications → exact alarms)
+   and a "Reminder reliability" section in Settings.
+8. Tests: `ReminderScheduler` with a fake gateway, `NotificationActionHandler` on the in-memory DB.
+9. Manual test on a real Android device (no emulator configured on this PC).
+
+### Next phases
+6 Calendar screen + monthly goals UI · 7 external calendars (`device_calendar_plus`) ·
+8 export + personalization · 9 polish.

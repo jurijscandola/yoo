@@ -650,6 +650,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Decide later'**
   String get missedResolveAll;
+
+  /// No description provided for @notifDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get notifDone;
+
+  /// No description provided for @notifFull.
+  ///
+  /// In en, this message translates to:
+  /// **'100%'**
+  String get notifFull;
+
+  /// No description provided for @notifHalf.
+  ///
+  /// In en, this message translates to:
+  /// **'50%'**
+  String get notifHalf;
+
+  /// No description provided for @notifOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other %'**
+  String get notifOther;
+
+  /// No description provided for @notifInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentage (0-100)'**
+  String get notifInputLabel;
+
+  /// No description provided for @notifProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {percent}%'**
+  String notifProgress(String name, int percent);
+
+  /// No description provided for @goalReachedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached!'**
+  String get goalReachedTitle;
+
+  /// No description provided for @goalReachedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" is at 100%'**
+  String goalReachedBody(String title);
+
+  /// No description provided for @channelReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get channelReminders;
+
+  /// No description provided for @channelRemindersDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders for your activities'**
+  String get channelRemindersDescription;
+
+  /// No description provided for @channelGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get channelGoals;
+
+  /// No description provided for @channelGoalsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When a monthly goal is reached'**
+  String get channelGoalsDescription;
+
+  /// No description provided for @permTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow reminders'**
+  String get permTitle;
+
+  /// No description provided for @permBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoo reminds you at the right time, even when the app is closed. Allow notifications on the next screen.'**
+  String get permBody;
+
+  /// No description provided for @permExactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Precise reminders'**
+  String get permExactTitle;
+
+  /// No description provided for @permExactBody.
+  ///
+  /// In en, this message translates to:
+  /// **'To remind you at the exact time, allow \"Alarms & reminders\" for Yoo on the next screen.'**
+  String get permExactBody;
+
+  /// No description provided for @permContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get permContinue;
+
+  /// No description provided for @permLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get permLater;
+
+  /// No description provided for @settingsReliability.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder reliability'**
+  String get settingsReliability;
+
+  /// No description provided for @reliabilityNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get reliabilityNotifications;
+
+  /// No description provided for @reliabilityExact.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact alarms'**
+  String get reliabilityExact;
+
+  /// No description provided for @reliabilityBattery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery optimization'**
+  String get reliabilityBattery;
+
+  /// No description provided for @reliabilityBatteryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Some phones stop reminders to save battery. Open the app settings and set battery usage to \"Unrestricted\".'**
+  String get reliabilityBatteryHint;
+
+  /// No description provided for @statusAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed'**
+  String get statusAllowed;
+
+  /// No description provided for @statusNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not allowed'**
+  String get statusNotAllowed;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

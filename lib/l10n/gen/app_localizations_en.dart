@@ -304,4 +304,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missedResolveAll => 'Decide later';
+
+  @override
+  String get notifDone => 'Done';
+
+  @override
+  String get notifFull => '100%';
+
+  @override
+  String get notifHalf => '50%';
+
+  @override
+  String get notifOther => 'Other %';
+
+  @override
+  String get notifInputLabel => 'Percentage (0-100)';
+
+  @override
+  String notifProgress(String name, int percent) {
+    return '$name · $percent%';
+  }
+
+  @override
+  String get goalReachedTitle => 'Goal reached!';
+
+  @override
+  String goalReachedBody(String title) {
+    return '\"$title\" is at 100%';
+  }
+
+  @override
+  String get channelReminders => 'Reminders';
+
+  @override
+  String get channelRemindersDescription => 'Reminders for your activities';
+
+  @override
+  String get channelGoals => 'Goals';
+
+  @override
+  String get channelGoalsDescription => 'When a monthly goal is reached';
+
+  @override
+  String get permTitle => 'Allow reminders';
+
+  @override
+  String get permBody =>
+      'Yoo reminds you at the right time, even when the app is closed. Allow notifications on the next screen.';
+
+  @override
+  String get permExactTitle => 'Precise reminders';
+
+  @override
+  String get permExactBody =>
+      'To remind you at the exact time, allow \"Alarms & reminders\" for Yoo on the next screen.';
+
+  @override
+  String get permContinue => 'Continue';
+
+  @override
+  String get permLater => 'Not now';
+
+  @override
+  String get settingsReliability => 'Reminder reliability';
+
+  @override
+  String get reliabilityNotifications => 'Notifications';
+
+  @override
+  String get reliabilityExact => 'Exact alarms';
+
+  @override
+  String get reliabilityBattery => 'Battery optimization';
+
+  @override
+  String get reliabilityBatteryHint =>
+      'Some phones stop reminders to save battery. Open the app settings and set battery usage to \"Unrestricted\".';
+
+  @override
+  String get statusAllowed => 'Allowed';
+
+  @override
+  String get statusNotAllowed => 'Not allowed';
+
+  @override
+  String get openSettings => 'Open settings';
 }

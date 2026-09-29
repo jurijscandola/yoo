@@ -17,14 +17,12 @@
   "languageItalian": "Italiano",
   "comingSoon": "In arrivo",
   "moreOptions": "Altre opzioni",
-
   "today": "Oggi",
   "yesterday": "Ieri",
   "tomorrow": "Domani",
   "homeEmpty": "Nessuna attività per questo giorno",
   "homeEmptyHint": "Tocca + per creare un'attività",
   "homeAllDone": "Tutto fatto per oggi",
-
   "newActivity": "Nuova attività",
   "editActivity": "Modifica attività",
   "fieldName": "Nome",
@@ -47,7 +45,13 @@
   "startDate": "Inizia il",
   "sectionTimes": "Volte al giorno",
   "timeSlotLabel": "Volta {n}",
-  "@timeSlotLabel": {"placeholders": {"n": {"type": "int"}}},
+  "@timeSlotLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "timeRandom": "Orario casuale in una fascia",
   "timeFrom": "Dalle",
   "timeTo": "Alle",
@@ -70,37 +74,104 @@
   "errorEmptyName": "Dai un nome all'attività",
   "errorNoDays": "Seleziona almeno un giorno",
   "errorTimeSlot": "L'orario di fine deve essere dopo quello di inizio",
-
   "actionEdit": "Modifica",
   "actionPostpone": "Sposta a domani",
   "actionSkipDay": "Rimuovi solo per questo giorno",
   "actionDeleteActivity": "Elimina l'intera attività",
   "deleteConfirmTitle": "Eliminare \"{name}\"?",
-  "@deleteConfirmTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@deleteConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "deleteConfirmBody": "Non verrà più pianificata. Lo storico resta nei riepiloghi.",
   "postponed": "Spostata a domani",
   "cannotPostpone": "Domani c'è già questa attività",
   "progressTitle": "Quanto hai completato?",
   "progressDone": "Fatto",
   "timesDone": "{done}/{total}",
-  "@timesDone": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "@timesDone": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "percent": "{value}%",
-  "@percent": {"placeholders": {"value": {"type": "int"}}},
-
+  "@percent": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
   "summaryTitle": "Riepilogo giornaliero",
   "summaryEmpty": "Nessuna attività in questo giorno",
   "summaryPlanned": "Pianificata",
   "summaryMoved": "Spostata al giorno dopo",
   "summaryCompletedLater": "Completata in seguito",
   "summaryPending": "Ancora da fare",
-
   "missedBanner": "{count, plural, =1{1 attività non completata} other{{count} attività non completate}}",
-  "@missedBanner": {"placeholders": {"count": {"type": "int"}}},
+  "@missedBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "missedPromptTitle": "Cosa facciamo?",
   "missedPromptSubtitle": "Queste attività non sono state completate. Forse hai dimenticato di spuntarle? Puoi ancora segnarle come completate.",
   "missedDidIt": "L'ho fatta",
   "missedMoveToday": "Falla oggi",
   "missedLeave": "Lascia stare",
   "missedCannotMove": "Già pianificata oggi",
-  "missedResolveAll": "Decido dopo"
+  "missedResolveAll": "Decido dopo",
+  "notifDone": "Fatto",
+  "notifFull": "100%",
+  "notifHalf": "50%",
+  "notifOther": "Altra %",
+  "notifInputLabel": "Percentuale (0-100)",
+  "notifProgress": "{name} · {percent}%",
+  "@notifProgress": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "goalReachedTitle": "Obiettivo raggiunto!",
+  "goalReachedBody": "\"{title}\" è al 100%",
+  "@goalReachedBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "channelReminders": "Promemoria",
+  "channelRemindersDescription": "Promemoria delle tue attività",
+  "channelGoals": "Obiettivi",
+  "channelGoalsDescription": "Quando un obiettivo mensile viene raggiunto",
+  "permTitle": "Consenti i promemoria",
+  "permBody": "Yoo ti avvisa al momento giusto, anche ad app chiusa. Consenti le notifiche nella schermata successiva.",
+  "permExactTitle": "Promemoria puntuali",
+  "permExactBody": "Per avvisarti all'orario esatto, consenti \"Sveglie e promemoria\" per Yoo nella schermata successiva.",
+  "permContinue": "Continua",
+  "permLater": "Non ora",
+  "settingsReliability": "Affidabilità dei promemoria",
+  "reliabilityNotifications": "Notifiche",
+  "reliabilityExact": "Sveglie esatte",
+  "reliabilityBattery": "Ottimizzazione batteria",
+  "reliabilityBatteryHint": "Alcuni telefoni bloccano i promemoria per risparmiare batteria. Apri le impostazioni dell'app e imposta l'uso della batteria su \"Senza restrizioni\".",
+  "statusAllowed": "Consentito",
+  "statusNotAllowed": "Non consentito",
+  "openSettings": "Apri impostazioni"
 }

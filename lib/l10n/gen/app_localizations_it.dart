@@ -303,4 +303,89 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get missedResolveAll => 'Decido dopo';
+
+  @override
+  String get notifDone => 'Fatto';
+
+  @override
+  String get notifFull => '100%';
+
+  @override
+  String get notifHalf => '50%';
+
+  @override
+  String get notifOther => 'Altra %';
+
+  @override
+  String get notifInputLabel => 'Percentuale (0-100)';
+
+  @override
+  String notifProgress(String name, int percent) {
+    return '$name · $percent%';
+  }
+
+  @override
+  String get goalReachedTitle => 'Obiettivo raggiunto!';
+
+  @override
+  String goalReachedBody(String title) {
+    return '\"$title\" è al 100%';
+  }
+
+  @override
+  String get channelReminders => 'Promemoria';
+
+  @override
+  String get channelRemindersDescription => 'Promemoria delle tue attività';
+
+  @override
+  String get channelGoals => 'Obiettivi';
+
+  @override
+  String get channelGoalsDescription => 'Quando un obiettivo mensile viene raggiunto';
+
+  @override
+  String get permTitle => 'Consenti i promemoria';
+
+  @override
+  String get permBody =>
+      'Yoo ti avvisa al momento giusto, anche ad app chiusa. Consenti le notifiche nella schermata successiva.';
+
+  @override
+  String get permExactTitle => 'Promemoria puntuali';
+
+  @override
+  String get permExactBody =>
+      'Per avvisarti all\'orario esatto, consenti \"Sveglie e promemoria\" per Yoo nella schermata successiva.';
+
+  @override
+  String get permContinue => 'Continua';
+
+  @override
+  String get permLater => 'Non ora';
+
+  @override
+  String get settingsReliability => 'Affidabilità dei promemoria';
+
+  @override
+  String get reliabilityNotifications => 'Notifiche';
+
+  @override
+  String get reliabilityExact => 'Sveglie esatte';
+
+  @override
+  String get reliabilityBattery => 'Ottimizzazione batteria';
+
+  @override
+  String get reliabilityBatteryHint =>
+      'Alcuni telefoni bloccano i promemoria per risparmiare batteria. Apri le impostazioni dell\'app e imposta l\'uso della batteria su \"Senza restrizioni\".';
+
+  @override
+  String get statusAllowed => 'Consentito';
+
+  @override
+  String get statusNotAllowed => 'Non consentito';
+
+  @override
+  String get openSettings => 'Apri impostazioni';
 }
