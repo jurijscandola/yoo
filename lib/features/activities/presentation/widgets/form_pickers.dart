@@ -173,6 +173,9 @@ class BorderColorPicker extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: YooPalettes.borderColors[i],
+                  // Hairline so that colors close to the background (black on
+                  // a dark theme) stay visible.
+                  border: Border.all(color: t.text.withValues(alpha: 0.25)),
                 ),
               ),
             ),

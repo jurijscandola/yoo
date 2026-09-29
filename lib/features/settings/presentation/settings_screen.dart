@@ -22,46 +22,51 @@ class SettingsScreen extends ConsumerWidget {
     );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: [
-          SettingsTile(
-            icon: Icons.file_download_outlined,
-            title: l10n.settingsExport,
-            subtitle: l10n.settingsExportSubtitle,
-            onTap: () => context.push(Routes.export),
-          ),
-          SettingsTile(
-            icon: Icons.palette_outlined,
-            title: l10n.settingsPersonalization,
-            subtitle: l10n.settingsPersonalizationSubtitle,
-            onTap: () => context.push(Routes.personalization),
-          ),
-          SettingsTile(
-            icon: Icons.translate,
-            title: l10n.settingsLanguage,
-            subtitle: languageName(context, localeCode),
-            onTap: () => _pickLanguage(context, ref, localeCode),
-          ),
-          SettingsTile(
-            icon: Icons.event_outlined,
-            title: l10n.settingsCalendars,
-            subtitle: calendarsOn ? l10n.settingsCalendarsOn : l10n.settingsCalendarsOff,
-            onTap: () => context.push(Routes.externalCalendars),
-          ),
-          const ReminderReliabilitySection(),
-          const SizedBox(height: 16),
-          SettingsTile(
-            icon: Icons.info_outline,
-            title: l10n.settingsAbout,
-            subtitle: l10n.settingsAboutSubtitle,
-            onTap: () => showLicensePage(
-              context: context,
-              applicationName: l10n.appTitle,
-              applicationLegalese: l10n.aboutLegalese,
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: [
+            SettingsTile(
+              icon: Icons.file_download_outlined,
+              title: l10n.settingsExport,
+              subtitle: l10n.settingsExportSubtitle,
+              onTap: () => context.push(Routes.export),
             ),
-          ),
-        ],
+            SettingsTile(
+              icon: Icons.palette_outlined,
+              title: l10n.settingsPersonalization,
+              subtitle: l10n.settingsPersonalizationSubtitle,
+              onTap: () => context.push(Routes.personalization),
+            ),
+            SettingsTile(
+              icon: Icons.translate,
+              title: l10n.settingsLanguage,
+              subtitle: languageName(context, localeCode),
+              onTap: () => _pickLanguage(context, ref, localeCode),
+            ),
+            SettingsTile(
+              icon: Icons.event_outlined,
+              title: l10n.settingsCalendars,
+              subtitle: calendarsOn ? l10n.settingsCalendarsOn : l10n.settingsCalendarsOff,
+              onTap: () => context.push(Routes.externalCalendars),
+            ),
+            const ReminderReliabilitySection(),
+            const SizedBox(height: 16),
+            SettingsTile(
+              icon: Icons.info_outline,
+              title: l10n.settingsAbout,
+              subtitle: l10n.settingsAboutSubtitle,
+              onTap: () => showLicensePage(
+                context: context,
+                applicationName: l10n.appTitle,
+                applicationLegalese: l10n.aboutLegalese,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

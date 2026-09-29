@@ -214,30 +214,35 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 8, bottom: 32),
-        children: [
-          _nameSection(context),
-          _recurrenceSection(context),
-          _timesSection(context),
-          FormSection(
-            title: l10n.sectionColor,
-            child: BorderColorPicker(
-              selected: _color,
-              onChanged: (i) => setState(() => _color = i),
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(top: 8, bottom: 32),
+          children: [
+            _nameSection(context),
+            _recurrenceSection(context),
+            _timesSection(context),
+            FormSection(
+              title: l10n.sectionColor,
+              child: BorderColorPicker(
+                selected: _color,
+                onChanged: (i) => setState(() => _color = i),
+              ),
             ),
-          ),
-          _partialSection(context),
-          _goalSection(context),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FilledButton(
-              style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-              onPressed: _save,
-              child: Text(l10n.save),
+            _partialSection(context),
+            _goalSection(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: FilledButton(
+                style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                onPressed: _save,
+                child: Text(l10n.save),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

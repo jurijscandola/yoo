@@ -151,6 +151,8 @@ void main() {
     final (name, content) = destination.files.single;
     expect(name, 'Yoo-2026-09.txt');
     expect(content, startsWith('Yoo · September 2026'));
+    // The file has Windows line ends even though the preview does not.
+    expect(content, contains('\r\n'));
     expect(content, contains('Activity v'));
 
     await tester.tap(find.byTooltip('Previous month'));

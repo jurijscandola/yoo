@@ -33,36 +33,41 @@ class DailySummaryScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.summaryTitle)),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 32),
-        children: [
-          DayHeader(date: date, today: today),
-          if (entries != null && entries.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Text(l10n.summaryEmpty, style: TextStyle(color: t.textMuted)),
-              ),
-            ),
-          if (entries != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Material(
-                color: t.surface,
-                borderRadius: BorderRadius.circular(t.radius),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    for (final (i, entry) in entries.indexed) ...[
-                      if (i > 0) Divider(height: 1, indent: 56, color: t.divider),
-                      _SummaryRow(entry: entry, today: today),
-                    ],
-                  ],
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 32),
+          children: [
+            DayHeader(date: date, today: today),
+            if (entries != null && entries.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Center(
+                  child: Text(l10n.summaryEmpty, style: TextStyle(color: t.textMuted)),
                 ),
               ),
-            ),
-          ...extraSections,
-        ],
+            if (entries != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Material(
+                  color: t.surface,
+                  borderRadius: BorderRadius.circular(t.radius),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      for (final (i, entry) in entries.indexed) ...[
+                        if (i > 0) Divider(height: 1, indent: 56, color: t.divider),
+                        _SummaryRow(entry: entry, today: today),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ...extraSections,
+          ],
+        ),
       ),
     );
   }

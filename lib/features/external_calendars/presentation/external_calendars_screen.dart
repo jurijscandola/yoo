@@ -66,84 +66,91 @@ class _ExternalCalendarsScreenState extends ConsumerState<ExternalCalendarsScree
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsCalendars)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        children: [
-          Material(
-            color: t.surface,
-            borderRadius: BorderRadius.circular(t.radius),
-            clipBehavior: Clip.antiAlias,
-            child: SwitchListTile(
-              title: Text(l10n.calendarsEnable),
-              subtitle: Text(l10n.externalReadOnly, style: TextStyle(color: t.textMuted)),
-              value: config.enabled && access == ExternalCalendarAccess.granted,
-              onChanged: _setEnabled,
-            ),
-          ),
-          if (access == ExternalCalendarAccess.denied) ...[
-            const SizedBox(height: 12),
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: [
             Material(
-              color: t.danger.withValues(alpha: 0.1),
+              color: t.surface,
               borderRadius: BorderRadius.circular(t.radius),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(l10n.calendarsDenied, style: TextStyle(color: t.text)),
-                    ),
-                    TextButton(
-                      onPressed: () =>
-                          ref.read(externalCalendarSourceProvider).openSystemSettings(),
-                      child: Text(l10n.openSettings),
-                    ),
-                  ],
-                ),
+              clipBehavior: Clip.antiAlias,
+              child: SwitchListTile(
+                title: Text(l10n.calendarsEnable),
+                subtitle: Text(l10n.externalReadOnly, style: TextStyle(color: t.textMuted)),
+                value: config.enabled && access == ExternalCalendarAccess.granted,
+                onChanged: _setEnabled,
               ),
             ),
-          ],
-          if (config.enabled && access == ExternalCalendarAccess.granted && calendars != null) ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 20, 4, 6),
-              child: Text(
-                l10n.calendarsPick,
-                style: TextStyle(color: t.textMuted, fontWeight: FontWeight.w600),
-              ),
-            ),
-            if (calendars.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(l10n.calendarsNone, style: TextStyle(color: t.textMuted)),
-              )
-            else
+            if (access == ExternalCalendarAccess.denied) ...[
+              const SizedBox(height: 12),
               Material(
-                color: t.surface,
+                color: t.danger.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(t.radius),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    for (final c in calendars)
-                      CheckboxListTile(
-                        value: !config.hiddenCalendarIds.contains(c.id),
-                        onChanged: (shown) => _setShown(c.id, shown ?? false),
-                        secondary: Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: c.colorArgb == null ? t.accent : Color(c.colorArgb!),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        title: Text(c.name),
-                        subtitle: c.account == null || c.account == c.name
-                            ? null
-                            : Text(c.account!, style: TextStyle(color: t.textMuted)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(l10n.calendarsDenied, style: TextStyle(color: t.text)),
                       ),
-                  ],
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(externalCalendarSourceProvider).openSystemSettings(),
+                        child: Text(l10n.openSettings),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ],
+            if (config.enabled &&
+                access == ExternalCalendarAccess.granted &&
+                calendars != null) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 20, 4, 6),
+                child: Text(
+                  l10n.calendarsPick,
+                  style: TextStyle(color: t.textMuted, fontWeight: FontWeight.w600),
+                ),
+              ),
+              if (calendars.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(l10n.calendarsNone, style: TextStyle(color: t.textMuted)),
+                )
+              else
+                Material(
+                  color: t.surface,
+                  borderRadius: BorderRadius.circular(t.radius),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      for (final c in calendars)
+                        CheckboxListTile(
+                          value: !config.hiddenCalendarIds.contains(c.id),
+                          onChanged: (shown) => _setShown(c.id, shown ?? false),
+                          secondary: Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              color: c.colorArgb == null ? t.accent : Color(c.colorArgb!),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          title: Text(c.name),
+                          subtitle: c.account == null || c.account == c.name
+                              ? null
+                              : Text(c.account!, style: TextStyle(color: t.textMuted)),
+                        ),
+                    ],
+                  ),
+                ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

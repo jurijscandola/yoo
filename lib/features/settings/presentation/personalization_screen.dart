@@ -35,87 +35,92 @@ class PersonalizationScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsPersonalization)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          const ThemePreview(),
-          header(l10n.themePresets),
-          MediaQuery.withClampedTextScaling(
-            maxScaleFactor: 1.3,
-            child: SizedBox(
-              height: 92,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: YooPalettes.presets.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 10),
-                itemBuilder: (context, i) {
-                  final preset = YooPalettes.presets[i];
-                  return _PresetChip(
-                    preset: preset,
-                    label: presetName(context, preset.id),
-                    selected: preset.id == theme.presetId,
-                    onTap: () => controller.updateTheme((c) => c.withPreset(preset.id)),
-                  );
-                },
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            const ThemePreview(),
+            header(l10n.themePresets),
+            MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.3,
+              child: SizedBox(
+                height: 92,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: YooPalettes.presets.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 10),
+                  itemBuilder: (context, i) {
+                    final preset = YooPalettes.presets[i];
+                    return _PresetChip(
+                      preset: preset,
+                      label: presetName(context, preset.id),
+                      selected: preset.id == theme.presetId,
+                      onTap: () => controller.updateTheme((c) => c.withPreset(preset.id)),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-          header(l10n.themeColors),
-          _Group(
-            children: [
-              for (final slot in ThemeColorSlot.values)
-                _ColorRow(
-                  slot: slot,
-                  current: slotColor(t, slot),
-                  overridden: theme.colorOf(slot) != null,
-                  onPick: (argb) => controller.updateTheme((c) => c.withColor(slot, argb)),
-                ),
-            ],
-          ),
-          header(l10n.themeFont),
-          _Group(
-            children: [
-              for (final family in YooFonts.options)
+            header(l10n.themeColors),
+            _Group(
+              children: [
+                for (final slot in ThemeColorSlot.values)
+                  _ColorRow(
+                    slot: slot,
+                    current: slotColor(t, slot),
+                    overridden: theme.colorOf(slot) != null,
+                    onPick: (argb) => controller.updateTheme((c) => c.withColor(slot, argb)),
+                  ),
+              ],
+            ),
+            header(l10n.themeFont),
+            _Group(
+              children: [
+                for (final family in YooFonts.options)
+                  ListTile(
+                    title: Text(
+                      family ?? l10n.fontSystem,
+                      style: TextStyle(fontFamily: family, fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      l10n.fontSample,
+                      style: TextStyle(fontFamily: family, color: t.textMuted),
+                    ),
+                    trailing: theme.fontFamily == family
+                        ? Icon(Icons.check_rounded, color: t.accent)
+                        : null,
+                    onTap: () => controller.updateTheme((c) => c.withFont(family)),
+                  ),
+              ],
+            ),
+            header(l10n.appIcon),
+            _Group(
+              children: [
                 ListTile(
-                  title: Text(
-                    family ?? l10n.fontSystem,
-                    style: TextStyle(fontFamily: family, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Text(
-                    l10n.fontSample,
-                    style: TextStyle(fontFamily: family, color: t.textMuted),
-                  ),
-                  trailing: theme.fontFamily == family
-                      ? Icon(Icons.check_rounded, color: t.accent)
-                      : null,
-                  onTap: () => controller.updateTheme((c) => c.withFont(family)),
+                  leading: AppIconPreview(option: AppIconOption.byId(settings.appIconId), size: 40),
+                  title: Text(AppIconOption.byId(settings.appIconId).label(context)),
+                  trailing: Icon(Icons.chevron_right, color: t.textMuted),
+                  onTap: () => context.push(Routes.appIcon),
                 ),
-            ],
-          ),
-          header(l10n.appIcon),
-          _Group(
-            children: [
-              ListTile(
-                leading: AppIconPreview(option: AppIconOption.byId(settings.appIconId), size: 40),
-                title: Text(AppIconOption.byId(settings.appIconId).label(context)),
-                trailing: Icon(Icons.chevron_right, color: t.textMuted),
-                onTap: () => context.push(Routes.appIcon),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: t.text,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              side: BorderSide(color: t.divider, width: 1.5),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
+              ],
             ),
-            icon: const Icon(Icons.restart_alt),
-            label: Text(l10n.themeReset),
-            onPressed: () => controller.setTheme(const ThemeConfig()),
-          ),
-        ],
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: t.text,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(color: t.divider, width: 1.5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(t.radius)),
+              ),
+              icon: const Icon(Icons.restart_alt),
+              label: Text(l10n.themeReset),
+              onPressed: () => controller.setTheme(const ThemeConfig()),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -93,51 +93,56 @@ class AppIconScreen extends ConsumerWidget {
     final selected = ref.watch(currentSettingsProvider.select((s) => s.appIconId));
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appIcon)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-        children: [
-          Text(l10n.appIconHint, style: TextStyle(color: t.textMuted)),
-          const SizedBox(height: 20),
-          GridView.count(
-            crossAxisCount: 3,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.8,
-            children: [
-              for (final option in AppIconOption.all)
-                Semantics(
-                  button: true,
-                  selected: option.id == selected,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(t.radius),
-                    onTap: () => ref.read(settingsControllerProvider).setAppIcon(option.id),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: option.id == selected ? t.surface : Colors.transparent,
-                        borderRadius: BorderRadius.circular(t.radius),
-                        border: Border.all(
-                          color: option.id == selected ? t.accent : Colors.transparent,
-                          width: 2,
+      // Keeps the end of the list above the system navigation bar
+      // (edge-to-edge on Android 15+).
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            Text(l10n.appIconHint, style: TextStyle(color: t.textMuted)),
+            const SizedBox(height: 20),
+            GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.8,
+              children: [
+                for (final option in AppIconOption.all)
+                  Semantics(
+                    button: true,
+                    selected: option.id == selected,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(t.radius),
+                      onTap: () => ref.read(settingsControllerProvider).setAppIcon(option.id),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: option.id == selected ? t.surface : Colors.transparent,
+                          borderRadius: BorderRadius.circular(t.radius),
+                          border: Border.all(
+                            color: option.id == selected ? t.accent : Colors.transparent,
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AppIconPreview(option: option, size: 64),
-                          const SizedBox(height: 8),
-                          Text(option.label(context), style: TextStyle(color: t.text)),
-                        ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppIconPreview(option: option, size: 64),
+                            const SizedBox(height: 8),
+                            Text(option.label(context), style: TextStyle(color: t.text)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
