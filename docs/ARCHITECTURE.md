@@ -45,8 +45,8 @@
 ## Current status (updated 2026-09-29)
 
 ### Done (committed)
-- **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n, Gradle helper
-  (`tool/flutter_android.ps1`, needed because of the `!` in the project path).
+- **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n. (The Gradle helper
+  script for the old `!` in the project path was removed: plain `flutter` builds Android now.)
 - **Phase 1** – design tokens (`YooTokens`), presets/palettes, bottom navigation with the custom
   goals icon, opening animation on every cold start, first-launch language prompt, Goals skeleton,
   Settings screen (language works; export/personalization are "coming soon").
