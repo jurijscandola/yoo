@@ -43,7 +43,10 @@ class HomeWidgetUpdater {
     final locale = Locale(settings.localeCode ?? 'en');
     final l10n = lookupAppLocalizations(locale);
     await initializeDateFormatting(locale.toLanguageTag());
-    final dateFormat = DateFormat.MMMMEEEEd(locale.toLanguageTag());
+    // Short weekday, full month ("Wed, September 30"): fits narrow widgets.
+    final dateFormat = DateFormat.E(
+      locale.toLanguageTag(),
+    ).addPattern(DateFormat.MMMMd(locale.toLanguageTag()).pattern, ', ');
     final tokens = YooTokens.fromConfig(settings.theme);
 
     final today = _clock.today();

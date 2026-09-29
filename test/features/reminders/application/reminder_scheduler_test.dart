@@ -84,7 +84,7 @@ void main() {
     // 12:00 today and tomorrow (2-day horizon), carrying the occurrence payload.
     expect(gateway.pending.values.map((r) => r.date), unorderedEquals([today, today.addDays(1)]));
     final first = pendingOf(a.id, today).single;
-    expect(first.title, 'Vitamins');
+    expect(first.title, 'Yoo! Vitamins');
     expect(first.body, 'Time for Vitamins');
     expect(ReminderPayload.tryDecode(first.payload)?.activityId, a.id);
     expect(gateway.lastLabels, same(labels));

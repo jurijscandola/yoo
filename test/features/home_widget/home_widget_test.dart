@@ -136,7 +136,7 @@ void main() {
       final (todayDay, tomorrow) = (snapshot.days[0], snapshot.days[1]);
       expect(todayDay.date, today);
       expect(todayDay.title, 'Today');
-      expect(todayDay.subtitle, 'Tuesday, September 29');
+      expect(todayDay.subtitle, 'Tue, September 29');
       // Walk is done: only Study and Water (1 of 3 done) are left.
       expect(todayDay.items.map((i) => i.name), ['Study', 'Water']);
       final waterItem = todayDay.items.last;
@@ -168,7 +168,7 @@ void main() {
       await settings.save(const AppSettings(localeCode: 'it'));
       await updater.update();
       expect(widget.last.days.first.title, 'Oggi');
-      expect(widget.last.days.first.subtitle, 'Martedì 29 settembre');
+      expect(widget.last.days.first.subtitle, 'Mar, 29 settembre');
       expect(widget.last.staleText, 'Apri Yoo per aggiornare');
     });
 

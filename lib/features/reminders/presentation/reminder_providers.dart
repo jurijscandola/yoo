@@ -8,6 +8,7 @@ import '../../goals/domain/goal_service.dart';
 import '../../goals/domain/monthly_goal.dart';
 import '../../settings/presentation/settings_providers.dart';
 import '../application/reminder_scheduler.dart';
+import '../domain/notification_planner.dart';
 import '../domain/reminder_gateway.dart';
 import '../domain/reminder_permissions.dart';
 
@@ -94,7 +95,7 @@ class ReminderGoalNotifier implements GoalCompletionNotifier {
       final l10n = await _strings();
       await _gateway.showNow(
         id: idOf(goal),
-        title: l10n.goalReachedTitle,
+        title: NotificationTitles.of(l10n.goalReachedTitle),
         body: l10n.goalReachedBody(goal.title),
       );
     } catch (error, stack) {

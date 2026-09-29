@@ -129,7 +129,7 @@ void main() {
     await activities.setProgress(water.id, today.addDays(1), 100);
     await tester.pumpAndSettle();
     expect(find.text('Reached'), findsOneWidget);
-    expect(gateway.shown.single.title, 'Goal reached!');
+    expect(gateway.shown.single.title, 'Yoo! Goal reached!');
     expect(gateway.shown.single.body, '"Stay hydrated" is at 100%');
   });
 

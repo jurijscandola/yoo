@@ -58,6 +58,14 @@ class PlannedReminder {
   String toString() => 'PlannedReminder($title @ $date $time, ${kind.name}#$index)';
 }
 
+/// Every notification title starts with the app's greeting.
+abstract final class NotificationTitles {
+  static const prefix = 'Yoo!';
+
+  /// "Yoo! Take vitamins".
+  static String of(String title) => '$prefix $title';
+}
+
 /// Data embedded in a notification to find its occurrence back.
 class ReminderPayload {
   const ReminderPayload({required this.activityId, required this.date});
@@ -157,7 +165,7 @@ class NotificationPlanner {
       time: time,
       kind: kind,
       index: index,
-      title: a.name,
+      title: NotificationTitles.of(a.name),
       body: a.notificationText,
       isPartial: a.isPartial,
     );
