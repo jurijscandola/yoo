@@ -201,5 +201,24 @@
   },
   "goalDeleteBody": "Linked activities stay: they just stop counting for it.",
   "goalReachedLabel": "Reached",
-  "errorEmptyGoal": "Give the goal a name"
+  "errorEmptyGoal": "Give the goal a name",
+  "externalSectionTitle": "From your calendars",
+  "externalEventsCount": "{count, plural, =1{1 event in your calendars} other{{count} events in your calendars}}",
+  "@externalEventsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "externalAllDay": "All day",
+  "externalAddAsActivity": "Add as activity",
+  "externalReadOnly": "Read only: Yoo never changes your calendars.",
+  "settingsCalendars": "Device calendars",
+  "settingsCalendarsOff": "Off",
+  "settingsCalendarsOn": "Shown in Home and in the summaries",
+  "calendarsEnable": "Show events from device calendars",
+  "calendarsDenied": "Yoo is not allowed to read your calendars.",
+  "calendarsNone": "No calendars on this device",
+  "calendarsPick": "Calendars to show"
 }

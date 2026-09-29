@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/time/local_date.dart';
+import '../core/time/local_time.dart';
 import '../features/activities/presentation/activity_form_screen.dart';
 import '../features/calendar/presentation/calendar_screen.dart';
 import '../features/daily_summary/presentation/daily_summary_screen.dart';
+import '../features/external_calendars/presentation/external_calendars_screen.dart';
+import '../features/external_calendars/presentation/external_events.dart';
 import '../features/goals/presentation/goals_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
@@ -49,9 +52,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) {
           final date = state.uri.queryParameters['date'];
+          final time = state.uri.queryParameters['time'];
           return ActivityFormScreen(
             initialName: state.uri.queryParameters['name'],
             initialDate: date == null ? null : LocalDate.parse(date),
+            initialTime: time == null ? null : LocalTime.parse(time),
           );
         },
       ),
@@ -63,8 +68,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/day/:date',
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) =>
-            DailySummaryScreen(date: LocalDate.parse(state.pathParameters['date']!)),
+        builder: (context, state) {
+          final date = LocalDate.parse(state.pathParameters['date']!);
+          return DailySummaryScreen(
+            date: date,
+            extraSections: [ExternalEventsSection(date: date)],
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.externalCalendars,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const ExternalCalendarsScreen(),
       ),
     ],
   );

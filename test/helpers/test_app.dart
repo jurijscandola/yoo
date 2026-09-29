@@ -7,6 +7,8 @@ import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
+import 'package:yoo/features/external_calendars/domain/external_calendar_source.dart';
+import 'package:yoo/features/external_calendars/presentation/external_calendar_providers.dart';
 import 'package:yoo/features/reminders/domain/reminder_gateway.dart';
 import 'package:yoo/features/reminders/domain/reminder_permissions.dart';
 import 'package:yoo/features/reminders/presentation/reminder_providers.dart';
@@ -25,6 +27,7 @@ class TestApp {
     DateTime? now,
     this.permissions = const GrantedReminderPermissions(),
     this.gateway = const NoopReminderGateway(),
+    this.externalCalendars = const EmptyExternalCalendarSource(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -44,6 +47,9 @@ class TestApp {
   /// Notification system; does nothing unless a test inspects it.
   final ReminderGateway gateway;
 
+  /// Device calendars; none unless a test is about them.
+  final ExternalCalendarSource externalCalendars;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
@@ -51,6 +57,7 @@ class TestApp {
     clockProvider.overrideWithValue(clock),
     reminderPermissionsProvider.overrideWithValue(permissions),
     reminderGatewayProvider.overrideWithValue(gateway),
+    externalCalendarSourceProvider.overrideWithValue(externalCalendars),
   ];
 
   /// The whole app, ready to pump.

@@ -3,6 +3,10 @@
          time (the user grants "Alarms & reminders"; inexact otherwise). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- Device calendars, shown read only. device_calendar_plus only grants
+         read access when both are declared; Yoo never writes. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <application
         android:label="Yoo"
         android:name="${applicationName}"

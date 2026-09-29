@@ -890,6 +890,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Give the goal a name'**
   String get errorEmptyGoal;
+
+  /// No description provided for @externalSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'From your calendars'**
+  String get externalSectionTitle;
+
+  /// No description provided for @externalEventsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 event in your calendars} other{{count} events in your calendars}}'**
+  String externalEventsCount(int count);
+
+  /// No description provided for @externalAllDay.
+  ///
+  /// In en, this message translates to:
+  /// **'All day'**
+  String get externalAllDay;
+
+  /// No description provided for @externalAddAsActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Add as activity'**
+  String get externalAddAsActivity;
+
+  /// No description provided for @externalReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Read only: Yoo never changes your calendars.'**
+  String get externalReadOnly;
+
+  /// No description provided for @settingsCalendars.
+  ///
+  /// In en, this message translates to:
+  /// **'Device calendars'**
+  String get settingsCalendars;
+
+  /// No description provided for @settingsCalendarsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get settingsCalendarsOff;
+
+  /// No description provided for @settingsCalendarsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in Home and in the summaries'**
+  String get settingsCalendarsOn;
+
+  /// No description provided for @calendarsEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Show events from device calendars'**
+  String get calendarsEnable;
+
+  /// No description provided for @calendarsDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoo is not allowed to read your calendars.'**
+  String get calendarsDenied;
+
+  /// No description provided for @calendarsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No calendars on this device'**
+  String get calendarsNone;
+
+  /// No description provided for @calendarsPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendars to show'**
+  String get calendarsPick;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

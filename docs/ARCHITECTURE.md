@@ -42,7 +42,7 @@
 - **Splash**: an opening animation on every cold start.
 - **Bundle id**: `com.app.yoo`.
 
-## Current status (updated 2026-09-29)
+## Current status (updated 2026-09-29, evening)
 
 ### Done (committed)
 - **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n. (The Gradle helper
@@ -107,6 +107,24 @@ Still to do for Phase 5:
    "Done" / 100% / 50% / typed % from the notification update Home; follow-ups stop at 100%;
    reminders survive a reboot; goal-reached notification; language change updates action labels.
 
+### Phase 6 – Calendar screen (done)
+`features/calendar/`: month view (table_calendar, swipe or arrows, tap the title to return to the
+current month) with a dot per day from `dayMarkOf` (done / missed / planned). Tapping a day opens
+its daily summary (future days list what is planned). Below, `MonthGoalsSection`
+(`features/goals/presentation/`): goals of the month with live percentage; add (current and
+future months), rename and delete through `GoalEditor`. The 100% notification comes from
+`GoalService.checkCompletions` through the reminder gateway.
+
+### Phase 7 – external calendars (done, device test pending)
+`features/external_calendars/`: `ExternalCalendarSource` (pure interface, `EmptyExternalCalendarSource`
+by default) implemented by `DeviceExternalCalendarSource` (device_calendar_plus, never writes).
+Opt-in from Settings → "Device calendars" (asks the permission, then choose the calendars to
+show; stored in `AppSettings.externalCalendars`). Events appear in Home as a compact row opening
+a sheet, and in the daily summary. "Add as activity" opens the form pre-filled with name, date
+and exact start time (today and later only). Android declares READ and WRITE_CALENDAR because the
+plugin grants reading only with both; iOS has the usage descriptions in `Info.plist`.
+Device test: turn the feature on, check the permission dialog, that real events (all-day,
+recurring, other accounts) appear on the right days, hiding a calendar, and "Add as activity".
+
 ### Next phases
-6 Calendar screen + monthly goals UI · 7 external calendars (`device_calendar_plus`) ·
 8 export + personalization · 9 polish.

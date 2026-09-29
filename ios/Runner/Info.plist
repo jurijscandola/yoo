@@ -6,6 +6,10 @@
 	<array>
 		<string>com.app.yoo.refresh</string>
 	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Yoo shows your calendar events next to your activities. It never changes them.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Yoo shows your calendar events next to your activities. It never changes them.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

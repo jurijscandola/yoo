@@ -18,11 +18,17 @@ class StoredSettingsRepository implements SettingsRepository {
       theme: json['theme'] == null
           ? const ThemeConfig()
           : ThemeConfig.fromJson(json['theme']! as Map<String, Object?>),
+      externalCalendars: json['externalCalendars'] == null
+          ? const ExternalCalendarSettings()
+          : ExternalCalendarSettings.fromJson(json['externalCalendars']! as Map<String, Object?>),
     );
   }
 
-  static String _encode(AppSettings s) =>
-      jsonEncode({'localeCode': s.localeCode, 'theme': s.theme.toJson()});
+  static String _encode(AppSettings s) => jsonEncode({
+    'localeCode': s.localeCode,
+    'theme': s.theme.toJson(),
+    'externalCalendars': s.externalCalendars.toJson(),
+  });
 
   @override
   Stream<AppSettings> watch() => _store.watch(StoreKeys.settings).map(_decode);

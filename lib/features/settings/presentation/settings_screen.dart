@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routes.dart';
 import '../../../core/theme/yoo_tokens.dart';
 import '../../../l10n/l10n.dart';
 import '../../reminders/presentation/reminder_reliability_section.dart';
@@ -14,6 +16,9 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final localeCode = ref.watch(appLocaleProvider).languageCode;
+    final calendarsOn = ref.watch(
+      currentSettingsProvider.select((s) => s.externalCalendars.enabled),
+    );
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
       body: ListView(
@@ -36,6 +41,12 @@ class SettingsScreen extends ConsumerWidget {
             title: l10n.settingsLanguage,
             subtitle: languageName(context, localeCode),
             onTap: () => _pickLanguage(context, ref, localeCode),
+          ),
+          SettingsTile(
+            icon: Icons.event_outlined,
+            title: l10n.settingsCalendars,
+            subtitle: calendarsOn ? l10n.settingsCalendarsOn : l10n.settingsCalendarsOff,
+            onTap: () => context.push(Routes.externalCalendars),
           ),
           const ReminderReliabilitySection(),
         ],

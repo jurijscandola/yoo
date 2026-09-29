@@ -3,7 +3,11 @@
 /// Pure Dart: colors are stored as ARGB integers so that the domain layer does
 /// not depend on Flutter. The presentation layer maps them to design tokens.
 class AppSettings {
-  const AppSettings({this.localeCode, this.theme = const ThemeConfig()});
+  const AppSettings({
+    this.localeCode,
+    this.theme = const ThemeConfig(),
+    this.externalCalendars = const ExternalCalendarSettings(),
+  });
 
   /// Selected UI language (`en`, `it`). `null` means the user has not chosen yet,
   /// which triggers the first-launch language prompt.
@@ -12,12 +16,46 @@ class AppSettings {
   /// User-customized theme values.
   final ThemeConfig theme;
 
+  /// Which device calendars are shown next to the activities.
+  final ExternalCalendarSettings externalCalendars;
+
   /// Whether the first-launch language prompt must be shown.
   bool get needsLanguageChoice => localeCode == null;
 
-  AppSettings copyWith({String? localeCode, ThemeConfig? theme}) {
-    return AppSettings(localeCode: localeCode ?? this.localeCode, theme: theme ?? this.theme);
+  AppSettings copyWith({
+    String? localeCode,
+    ThemeConfig? theme,
+    ExternalCalendarSettings? externalCalendars,
+  }) {
+    return AppSettings(
+      localeCode: localeCode ?? this.localeCode,
+      theme: theme ?? this.theme,
+      externalCalendars: externalCalendars ?? this.externalCalendars,
+    );
   }
+}
+
+/// Read-only display of the device calendars (off until the user opts in).
+class ExternalCalendarSettings {
+  const ExternalCalendarSettings({this.enabled = false, this.hiddenCalendarIds = const {}});
+
+  final bool enabled;
+
+  /// Calendars the user chose not to show; new calendars are shown.
+  final Set<String> hiddenCalendarIds;
+
+  ExternalCalendarSettings copyWith({bool? enabled, Set<String>? hiddenCalendarIds}) =>
+      ExternalCalendarSettings(
+        enabled: enabled ?? this.enabled,
+        hiddenCalendarIds: hiddenCalendarIds ?? this.hiddenCalendarIds,
+      );
+
+  Map<String, Object?> toJson() => {'enabled': enabled, 'hidden': hiddenCalendarIds.toList()};
+
+  factory ExternalCalendarSettings.fromJson(Map<String, Object?> json) => ExternalCalendarSettings(
+    enabled: json['enabled'] as bool? ?? false,
+    hiddenCalendarIds: {...(json['hidden'] as List<Object?>? ?? const []).cast<String>()},
+  );
 }
 
 /// Every color and font of the app, as chosen by the user.

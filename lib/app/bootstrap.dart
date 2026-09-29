@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/database/app_database.dart';
 import '../core/theme/yoo_tokens.dart';
+import '../features/external_calendars/data/device_external_calendar_source.dart';
+import '../features/external_calendars/presentation/external_calendar_providers.dart';
 import '../features/reminders/application/notification_action_handler.dart';
 import '../features/reminders/data/local_notification_gateway.dart';
 import '../features/reminders/presentation/reminder_providers.dart';
@@ -30,6 +32,7 @@ ProviderContainer openAppContainer(LocalNotificationGateway gateway) {
       ),
       reminderGatewayProvider.overrideWithValue(gateway),
       reminderPermissionsProvider.overrideWithValue(gateway),
+      externalCalendarSourceProvider.overrideWithValue(DeviceExternalCalendarSource()),
     ],
   );
 }

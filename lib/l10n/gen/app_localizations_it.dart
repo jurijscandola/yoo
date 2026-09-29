@@ -435,4 +435,48 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get errorEmptyGoal => 'Dai un nome all\'obiettivo';
+
+  @override
+  String get externalSectionTitle => 'Dai tuoi calendari';
+
+  @override
+  String externalEventsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count eventi nei tuoi calendari',
+      one: '1 evento nei tuoi calendari',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get externalAllDay => 'Tutto il giorno';
+
+  @override
+  String get externalAddAsActivity => 'Aggiungi come attività';
+
+  @override
+  String get externalReadOnly => 'Sola lettura: Yoo non modifica mai i tuoi calendari.';
+
+  @override
+  String get settingsCalendars => 'Calendari del dispositivo';
+
+  @override
+  String get settingsCalendarsOff => 'Disattivati';
+
+  @override
+  String get settingsCalendarsOn => 'Mostrati in Home e nei riepiloghi';
+
+  @override
+  String get calendarsEnable => 'Mostra gli eventi dei calendari del dispositivo';
+
+  @override
+  String get calendarsDenied => 'Yoo non ha il permesso di leggere i tuoi calendari.';
+
+  @override
+  String get calendarsNone => 'Nessun calendario su questo dispositivo';
+
+  @override
+  String get calendarsPick => 'Calendari da mostrare';
 }

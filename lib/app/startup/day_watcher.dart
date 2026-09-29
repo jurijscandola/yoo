@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/external_calendars/presentation/external_calendar_providers.dart';
 import '../providers.dart';
 import '../services.dart';
 
@@ -38,6 +39,9 @@ class _DayWatcherState extends ConsumerState<DayWatcher> with WidgetsBindingObse
   /// Runs the rollover, refreshes the reminders and re-arms the midnight timer.
   void _onNewMoment() {
     ref.invalidate(todayProvider);
+    // Device calendars may have changed while the app was in background.
+    ref.invalidate(externalCalendarAccessProvider);
+    ref.invalidate(externalEventsOnProvider);
     unawaited(_rolloverAndRefresh());
     _midnight?.cancel();
     final now = ref.read(clockProvider).now();

@@ -14,6 +14,7 @@ import '../../activities/domain/services/occurrence_planner.dart';
 import '../../activities/presentation/activity_providers.dart';
 import '../../activities/presentation/widgets/activity_card.dart';
 import '../../activities/presentation/widgets/activity_sheets.dart';
+import '../../external_calendars/presentation/external_events.dart';
 import 'widgets/day_header.dart';
 
 /// Page index of today in the day pager; pages to the right are later days.
@@ -152,6 +153,10 @@ class _DayPage extends ConsumerWidget {
           child: missedCount == 0
               ? const SizedBox(width: double.infinity)
               : _MissedBanner(count: missedCount),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          child: ExternalEventsBanner(date: date),
         ),
         Expanded(
           child: AnimatedSwitcher(

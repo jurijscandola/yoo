@@ -31,7 +31,13 @@ class _Slot {
 
 /// Creation and editing of an activity.
 class ActivityFormScreen extends ConsumerStatefulWidget {
-  const ActivityFormScreen({super.key, this.activityId, this.initialName, this.initialDate});
+  const ActivityFormScreen({
+    super.key,
+    this.activityId,
+    this.initialName,
+    this.initialDate,
+    this.initialTime,
+  });
 
   /// The activity to edit; `null` creates a new one.
   final String? activityId;
@@ -41,6 +47,9 @@ class ActivityFormScreen extends ConsumerStatefulWidget {
 
   /// Pre-filled start date.
   final LocalDate? initialDate;
+
+  /// Pre-filled exact time of the first reminder.
+  final LocalTime? initialTime;
 
   @override
   ConsumerState<ActivityFormScreen> createState() => _ActivityFormScreenState();
@@ -83,7 +92,13 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
     _startDate = widget.initialDate ?? today;
     _weekday = _startDate.weekday;
     _monthDay = _startDate.day;
-    _slots = [_Slot(from: const LocalTime(9, 0), to: const LocalTime(10, 0), random: true)];
+    final time = widget.initialTime;
+    _slots = [
+      if (time == null)
+        _Slot(from: const LocalTime(9, 0), to: const LocalTime(10, 0), random: true)
+      else
+        _Slot(from: time, to: LocalTime.fromMinutes(time.inMinutes + 60), random: false),
+    ];
     _name.text = widget.initialName ?? '';
     if (activity == null) return;
 

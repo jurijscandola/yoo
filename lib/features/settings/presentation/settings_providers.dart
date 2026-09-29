@@ -48,6 +48,12 @@ class SettingsController {
     await _repository.save(current.copyWith(localeCode: code));
   }
 
+  /// Replaces the external calendar preferences.
+  Future<void> setExternalCalendars(ExternalCalendarSettings value) async {
+    final current = await _repository.load();
+    await _repository.save(current.copyWith(externalCalendars: value));
+  }
+
   /// Replaces the theme configuration.
   Future<void> setTheme(ThemeConfig theme) async {
     final current = await _repository.load();

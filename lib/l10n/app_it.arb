@@ -187,5 +187,17 @@
   "goalDeleteTitle": "Eliminare \"{title}\"?",
   "goalDeleteBody": "Le attività collegate restano: smettono solo di contare per questo obiettivo.",
   "goalReachedLabel": "Raggiunto",
-  "errorEmptyGoal": "Dai un nome all'obiettivo"
+  "errorEmptyGoal": "Dai un nome all'obiettivo",
+  "externalSectionTitle": "Dai tuoi calendari",
+  "externalEventsCount": "{count, plural, =1{1 evento nei tuoi calendari} other{{count} eventi nei tuoi calendari}}",
+  "externalAllDay": "Tutto il giorno",
+  "externalAddAsActivity": "Aggiungi come attività",
+  "externalReadOnly": "Sola lettura: Yoo non modifica mai i tuoi calendari.",
+  "settingsCalendars": "Calendari del dispositivo",
+  "settingsCalendarsOff": "Disattivati",
+  "settingsCalendarsOn": "Mostrati in Home e nei riepiloghi",
+  "calendarsEnable": "Mostra gli eventi dei calendari del dispositivo",
+  "calendarsDenied": "Yoo non ha il permesso di leggere i tuoi calendari.",
+  "calendarsNone": "Nessun calendario su questo dispositivo",
+  "calendarsPick": "Calendari da mostrare"
 }
