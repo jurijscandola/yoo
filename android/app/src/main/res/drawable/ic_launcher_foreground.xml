@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The "Y" of ic_stat_yoo, scaled into the 108dp adaptive icon canvas
+     (visible area: the central 72dp). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="2.2222"
+        android:scaleY="2.2222"
+        android:translateX="27.333"
+        android:translateY="27.333">
+        <path
+            android:fillColor="#FFFAF8F4"
+            android:pathData="M4,3 L8.6,3 L12,8.9 L15.4,3 L20,3 L14,12.9 L14,21 L10,21 L10,12.9 Z" />
+    </group>
+</vector>
