@@ -6,6 +6,7 @@ import '../../../app/routes.dart';
 import '../../../core/theme/yoo_fonts.dart';
 import '../../../core/theme/yoo_palettes.dart';
 import '../../../core/theme/yoo_tokens.dart';
+import '../../../core/widgets/activity_card_preview.dart';
 import '../../../l10n/l10n.dart';
 import '../domain/app_settings.dart';
 import 'app_icon_screen.dart';
@@ -94,6 +95,62 @@ class PersonalizationScreen extends ConsumerWidget {
                         : null,
                     onTap: () => controller.updateTheme((c) => c.withFont(family)),
                   ),
+              ],
+            ),
+            header(l10n.themeCardStyle),
+            _Group(
+              children: [
+                for (final (style, title, subtitle) in [
+                  (CardStyle.standard, l10n.cardStyleStandard, l10n.cardStyleStandardHint),
+                  (CardStyle.onlyButton, l10n.cardStyleButton, l10n.cardStyleButtonHint),
+                  (CardStyle.coloredShadow, l10n.cardStyleShadow, l10n.cardStyleShadowHint),
+                  (CardStyle.halfBorder, l10n.cardStyleHalf, l10n.cardStyleHalfHint),
+                  (CardStyle.paper, l10n.cardStylePaper, l10n.cardStylePaperHint),
+                ])
+                  ListTile(
+                    title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    subtitle: Text(subtitle, style: TextStyle(color: t.textMuted)),
+                    trailing: theme.cardStyle == style
+                        ? Icon(Icons.check_rounded, color: t.accent)
+                        : null,
+                    onTap: () => controller.updateTheme((c) => c.withCardStyle(style)),
+                  ),
+              ],
+            ),
+            header(l10n.themeActivityText),
+            _Group(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+                  child: Row(
+                    children: [
+                      Text('A', style: TextStyle(color: t.textMuted, fontSize: 13)),
+                      Expanded(
+                        child: Slider(
+                          value: theme.activityTextScale,
+                          min: ThemeConfig.minActivityTextScale,
+                          max: ThemeConfig.maxActivityTextScale,
+                          divisions: 6,
+                          label: l10n.percent((theme.activityTextScale * 100).round()),
+                          semanticFormatterCallback: (v) => l10n.percent((v * 100).round()),
+                          onChanged: (v) =>
+                              controller.updateTheme((c) => c.withActivityTextScale(v)),
+                        ),
+                      ),
+                      Text('A', style: TextStyle(color: t.textMuted, fontSize: 20)),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                  child: Text(
+                    l10n.themeActivityTextHint(
+                      l10n.percent((theme.activityTextScale * 100).round()),
+                    ),
+                    style: TextStyle(color: t.textMuted, fontSize: 13),
+                  ),
+                ),
               ],
             ),
             header(l10n.appIcon),
@@ -368,31 +425,19 @@ class ThemePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final l10n = context.l10n;
-    Widget card(String name, Color border) => Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: t.card,
-        borderRadius: BorderRadius.circular(t.radius * 0.6),
-        border: Border.all(color: border, width: t.cardBorderWidth),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              name,
-              style: TextStyle(color: t.text, fontWeight: FontWeight.w600),
-            ),
+    Widget card(String name, Color border) => Padding(
+      padding: EdgeInsets.only(bottom: t.cardStyle == CardStyle.paper ? 0 : 8),
+      child: ActivityCardPreview(
+        compact: true,
+        color: border,
+        name: Text(
+          name,
+          style: TextStyle(
+            color: t.text,
+            fontSize: 14 * t.activityTextScale,
+            fontWeight: FontWeight.w600,
           ),
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: border, width: 2),
-            ),
-          ),
-        ],
+        ),
       ),
     );
 

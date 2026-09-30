@@ -96,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionRecurrence => 'Repeat';
 
   @override
+  String get recurrenceOnce => 'One day only';
+
+  @override
   String get recurrenceDaily => 'Every day';
 
   @override
@@ -105,6 +108,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recurrenceWeekly => 'Every week';
 
   @override
+  String get recurrenceEveryNWeeks => 'Every X weeks';
+
+  @override
   String get recurrenceMonthly => 'Once a month';
 
   @override
@@ -112,6 +118,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weekdayLabel => 'On';
+
+  @override
+  String everyWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Every $n weeks',
+      one: 'Every week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklyFirstTime(String date) {
+    return 'First time on $date, then at regular intervals, also across months.';
+  }
 
   @override
   String get monthDayLabel => 'Day of the month';
@@ -130,6 +152,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repeatEvery => 'Every month';
+
+  @override
+  String get onceDate => 'On';
 
   @override
   String get startDate => 'Starts on';
@@ -155,7 +180,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeAt => 'At';
 
   @override
-  String get sectionColor => 'Border color';
+  String get colorStyleHint => 'The border or shadow follow the style chosen in Personalization.';
+
+  @override
+  String get colorPreviewName => 'Your activity';
+
+  @override
+  String get sectionColor => 'Button color';
 
   @override
   String get sectionPartial => 'Partial completion';
@@ -182,7 +213,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goalNone => 'No goals yet: create them from the Calendar.';
 
   @override
-  String get goalImpact => 'Impact';
+  String get goalImpact => 'Value';
 
   @override
   String get impactAdditive => 'Adds';
@@ -327,7 +358,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String goalReachedBody(String title) {
-    return '\"$title\" is at 100%';
+    return 'You completed \"$title\"';
   }
 
   @override
@@ -426,6 +457,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalDeleteBody => 'Linked activities stay: they just stop counting for it.';
+
+  @override
+  String get subtasksToggle => 'Subtasks';
+
+  @override
+  String get subtaskAdd => 'Add subtask';
+
+  @override
+  String get subtaskHint => 'New subtask';
+
+  @override
+  String get subtaskEdit => 'Edit subtask';
+
+  @override
+  String get goalTargetLabel => 'Amount to reach';
+
+  @override
+  String get goalTargetHelp =>
+      'Each linked activity adds or removes its value. Use 1 for a single event.';
+
+  @override
+  String get errorGoalTarget => 'Enter a number from 1 up';
+
+  @override
+  String get goalImpactHelp =>
+      'How much it adds to or removes from the goal each time you complete it.';
+
+  @override
+  String goalAmount(int value, int target) {
+    return '$value / $target';
+  }
 
   @override
   String get goalReachedLabel => 'Reached';
@@ -569,6 +631,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get colorDefault => 'Default';
+
+  @override
+  String get themeCardStyle => 'Card style';
+
+  @override
+  String get cardStyleStandard => 'Standard';
+
+  @override
+  String get cardStyleStandardHint => 'Full border and a light shadow';
+
+  @override
+  String get cardStyleShadow => 'Colored shadow';
+
+  @override
+  String get cardStyleShadowHint =>
+      'No border: the color stays on the button and in a light shadow';
+
+  @override
+  String get cardStyleHalf => 'Half border';
+
+  @override
+  String get cardStyleHalfHint => 'Border on the lower half only, fading upwards';
+
+  @override
+  String get cardStyleButton => 'Only button';
+
+  @override
+  String get cardStyleButtonHint => 'No border: only the button is colored, very light shadow';
+
+  @override
+  String get cardStylePaper => 'Notebook';
+
+  @override
+  String get cardStylePaperHint =>
+      'Activities are lines on a notepad, with a small square to tick on the left';
+
+  @override
+  String get themeActivityText => 'Activity text';
+
+  @override
+  String themeActivityTextHint(String size) {
+    return '$size · names, details and subtasks, also in the widget. The preview above updates right away.';
+  }
 
   @override
   String get themeFont => 'Font';

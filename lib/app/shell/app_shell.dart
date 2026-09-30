@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/yoo_tokens.dart';
-import '../../core/widgets/goals_bag_icon.dart';
+import '../../core/widgets/goals_icon.dart';
 import '../../l10n/l10n.dart';
 
 /// Root layout with the bottom navigation bar (Calendar · Home · Goals).
@@ -38,7 +38,7 @@ class AppShell extends StatelessWidget {
           ),
           YooNavItem(
             label: l10n.navGoals,
-            icon: (color) => GoalsBagIcon(color: color),
+            icon: (color) => GoalsIcon(color: color),
           ),
         ],
       ),

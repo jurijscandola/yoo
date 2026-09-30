@@ -77,18 +77,26 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Give the goal a name'), findsOneWidget);
 
-    await tester.enterText(find.byType(TextField), 'Read 4 books');
+    await tester.enterText(find.byType(TextField).first, 'Read 4 books');
+    await tester.enterText(find.byType(TextField).last, '');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Enter a number from 1 up'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField).last, '4');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Read 4 books'), findsOneWidget);
-    expect(find.text('0%'), findsOneWidget);
+    expect(find.text('0 / 4'), findsOneWidget);
 
     await tester.tap(find.text('Read 4 books'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Read 5 books');
+    await tester.enterText(find.byType(TextField).first, 'Read 5 books');
+    await tester.enterText(find.byType(TextField).last, '5');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Read 5 books'), findsOneWidget);
+    expect(find.text('0 / 5'), findsOneWidget);
 
     await tester.tap(find.text('Read 5 books'));
     await tester.pumpAndSettle();
@@ -101,7 +109,7 @@ void main() {
     expect(find.text('No goals for this month'), findsOneWidget);
   });
 
-  testWidgets('goal percentage follows linked activities and notifies at 100%', (tester) async {
+  testWidgets('goal amount follows linked activities and notifies at the target', (tester) async {
     final gateway = FakeReminderGateway();
     final app = TestApp(settings: english, gateway: gateway);
     await openCalendar(tester, app);
@@ -109,28 +117,28 @@ void main() {
 
     final goal = await container
         .read(goalServiceProvider)
-        .create(year: 2026, month: 9, title: 'Stay hydrated');
+        .create(year: 2026, month: 9, title: 'Stay hydrated', target: 2);
     final activities = container.read(activityServiceProvider);
     final water = await activities.create(
       draft(
         'Water',
-        goalLink: GoalLink(goalId: goal.id, impact: 60, type: ImpactType.additive),
+        goalLink: GoalLink(goalId: goal.id, impact: 1, type: ImpactType.additive),
       ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Stay hydrated'), findsOneWidget);
-    expect(find.text('0%'), findsOneWidget);
+    expect(find.text('0 / 2'), findsOneWidget);
 
     await activities.setProgress(water.id, today, 100);
     await tester.pumpAndSettle();
-    expect(find.text('60%'), findsOneWidget);
+    expect(find.text('1 / 2'), findsOneWidget);
     expect(gateway.shown, isEmpty);
 
     await activities.setProgress(water.id, today.addDays(1), 100);
     await tester.pumpAndSettle();
     expect(find.text('Reached'), findsOneWidget);
     expect(gateway.shown.single.title, 'Yoo! Goal reached!');
-    expect(gateway.shown.single.body, '"Stay hydrated" is at 100%');
+    expect(gateway.shown.single.body, 'You completed "Stay hydrated"');
   });
 
   testWidgets('tapping a day opens its summary with what is planned', (tester) async {

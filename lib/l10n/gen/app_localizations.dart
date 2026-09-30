@@ -267,6 +267,12 @@ abstract class AppLocalizations {
   /// **'Repeat'**
   String get sectionRecurrence;
 
+  /// No description provided for @recurrenceOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'One day only'**
+  String get recurrenceOnce;
+
   /// No description provided for @recurrenceDaily.
   ///
   /// In en, this message translates to:
@@ -285,6 +291,12 @@ abstract class AppLocalizations {
   /// **'Every week'**
   String get recurrenceWeekly;
 
+  /// No description provided for @recurrenceEveryNWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Every X weeks'**
+  String get recurrenceEveryNWeeks;
+
   /// No description provided for @recurrenceMonthly.
   ///
   /// In en, this message translates to:
@@ -302,6 +314,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'On'**
   String get weekdayLabel;
+
+  /// No description provided for @everyWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Every week} other{Every {n} weeks}}'**
+  String everyWeeks(int n);
+
+  /// No description provided for @weeklyFirstTime.
+  ///
+  /// In en, this message translates to:
+  /// **'First time on {date}, then at regular intervals, also across months.'**
+  String weeklyFirstTime(String date);
 
   /// No description provided for @monthDayLabel.
   ///
@@ -338,6 +362,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Every month'**
   String get repeatEvery;
+
+  /// No description provided for @onceDate.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get onceDate;
 
   /// No description provided for @startDate.
   ///
@@ -381,10 +411,22 @@ abstract class AppLocalizations {
   /// **'At'**
   String get timeAt;
 
+  /// No description provided for @colorStyleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The border or shadow follow the style chosen in Personalization.'**
+  String get colorStyleHint;
+
+  /// No description provided for @colorPreviewName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your activity'**
+  String get colorPreviewName;
+
   /// No description provided for @sectionColor.
   ///
   /// In en, this message translates to:
-  /// **'Border color'**
+  /// **'Button color'**
   String get sectionColor;
 
   /// No description provided for @sectionPartial.
@@ -438,7 +480,7 @@ abstract class AppLocalizations {
   /// No description provided for @goalImpact.
   ///
   /// In en, this message translates to:
-  /// **'Impact'**
+  /// **'Value'**
   String get goalImpact;
 
   /// No description provided for @impactAdditive.
@@ -690,7 +732,7 @@ abstract class AppLocalizations {
   /// No description provided for @goalReachedBody.
   ///
   /// In en, this message translates to:
-  /// **'\"{title}\" is at 100%'**
+  /// **'You completed \"{title}\"'**
   String goalReachedBody(String title);
 
   /// No description provided for @channelReminders.
@@ -872,6 +914,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Linked activities stay: they just stop counting for it.'**
   String get goalDeleteBody;
+
+  /// No description provided for @subtasksToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtasks'**
+  String get subtasksToggle;
+
+  /// No description provided for @subtaskAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add subtask'**
+  String get subtaskAdd;
+
+  /// No description provided for @subtaskHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New subtask'**
+  String get subtaskHint;
+
+  /// No description provided for @subtaskEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit subtask'**
+  String get subtaskEdit;
+
+  /// No description provided for @goalTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount to reach'**
+  String get goalTargetLabel;
+
+  /// No description provided for @goalTargetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Each linked activity adds or removes its value. Use 1 for a single event.'**
+  String get goalTargetHelp;
+
+  /// No description provided for @errorGoalTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number from 1 up'**
+  String get errorGoalTarget;
+
+  /// No description provided for @goalImpactHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How much it adds to or removes from the goal each time you complete it.'**
+  String get goalImpactHelp;
+
+  /// No description provided for @goalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} / {target}'**
+  String goalAmount(int value, int target);
 
   /// No description provided for @goalReachedLabel.
   ///
@@ -1124,6 +1220,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default'**
   String get colorDefault;
+
+  /// No description provided for @themeCardStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Card style'**
+  String get themeCardStyle;
+
+  /// No description provided for @cardStyleStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get cardStyleStandard;
+
+  /// No description provided for @cardStyleStandardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Full border and a light shadow'**
+  String get cardStyleStandardHint;
+
+  /// No description provided for @cardStyleShadow.
+  ///
+  /// In en, this message translates to:
+  /// **'Colored shadow'**
+  String get cardStyleShadow;
+
+  /// No description provided for @cardStyleShadowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No border: the color stays on the button and in a light shadow'**
+  String get cardStyleShadowHint;
+
+  /// No description provided for @cardStyleHalf.
+  ///
+  /// In en, this message translates to:
+  /// **'Half border'**
+  String get cardStyleHalf;
+
+  /// No description provided for @cardStyleHalfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Border on the lower half only, fading upwards'**
+  String get cardStyleHalfHint;
+
+  /// No description provided for @cardStyleButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Only button'**
+  String get cardStyleButton;
+
+  /// No description provided for @cardStyleButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No border: only the button is colored, very light shadow'**
+  String get cardStyleButtonHint;
+
+  /// No description provided for @cardStylePaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Notebook'**
+  String get cardStylePaper;
+
+  /// No description provided for @cardStylePaperHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities are lines on a notepad, with a small square to tick on the left'**
+  String get cardStylePaperHint;
+
+  /// No description provided for @themeActivityText.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity text'**
+  String get themeActivityText;
+
+  /// No description provided for @themeActivityTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} · names, details and subtasks, also in the widget. The preview above updates right away.'**
+  String themeActivityTextHint(String size);
 
   /// No description provided for @themeFont.
   ///

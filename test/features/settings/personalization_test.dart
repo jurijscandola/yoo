@@ -35,6 +35,39 @@ void main() {
     }
   });
 
+  test('activity text size is clamped, kept across edits and stored', () {
+    const base = ThemeConfig(presetId: 'mist', fontFamily: 'Lora', cardColor: 5);
+    expect(base.activityTextScale, 1.0);
+    final big = base.withActivityTextScale(1.2);
+    expect(big.activityTextScale, 1.2);
+    expect(base.withActivityTextScale(9).activityTextScale, ThemeConfig.maxActivityTextScale);
+    expect(base.withActivityTextScale(0).activityTextScale, ThemeConfig.minActivityTextScale);
+    expect(big.withColor(ThemeColorSlot.cards, null).activityTextScale, 1.2);
+    expect(big.withFont(null).activityTextScale, 1.2);
+    expect(big.withPreset('night').activityTextScale, 1.2);
+    // Other settings survive the change, and resetting to defaults still works.
+    expect(big.fontFamily, 'Lora');
+    expect(big.cardColor, 5);
+    expect(big.withFont(null).fontFamily, isNull);
+    expect(big.withColor(ThemeColorSlot.cards, null).cardColor, isNull);
+    expect(ThemeConfig.fromJson(big.toJson()).activityTextScale, 1.2);
+    expect(ThemeConfig.fromJson({'presetId': 'paper'}).activityTextScale, 1.0);
+    expect(YooTokens.fromConfig(big).activityTextScale, 1.2);
+  });
+
+  test('card style is global, survives other edits and old saves', () {
+    const base = ThemeConfig(presetId: 'mist');
+    expect(base.cardStyle, CardStyle.standard);
+    final half = base.withCardStyle(CardStyle.halfBorder);
+    expect(half.withColor(ThemeColorSlot.cards, 1).cardStyle, CardStyle.halfBorder);
+    expect(half.withFont('Lora').cardStyle, CardStyle.halfBorder);
+    expect(half.withPreset('night').cardStyle, CardStyle.halfBorder);
+    expect(ThemeConfig.fromJson(half.toJson()).cardStyle, CardStyle.halfBorder);
+    // Settings saved before the option existed keep the classic look.
+    expect(ThemeConfig.fromJson({'presetId': 'paper'}).cardStyle, CardStyle.standard);
+    expect(YooTokens.fromConfig(half).cardStyle, CardStyle.halfBorder);
+  });
+
   test('tokens follow the overrides; notifications default to the accent', () {
     final tokens = YooTokens.fromConfig(
       const ThemeConfig(presetId: 'mist', cardColor: 0xFF000001, notificationColor: null),
@@ -90,6 +123,16 @@ void main() {
 
   YooTokens tokensOf(WidgetTester tester) =>
       Theme.of(tester.element(find.byType(Scaffold).last)).extension<YooTokens>()!;
+
+  testWidgets('the card style is picked in Personalization and stored', (tester) async {
+    final app = TestApp(settings: english);
+    await openPersonalization(tester, app);
+    await scrollTo(tester, find.text('Colored shadow'));
+    await tester.tap(find.text('Colored shadow'));
+    await tester.pumpAndSettle();
+    expect((await app.settings.load()).theme.cardStyle, CardStyle.coloredShadow);
+    expect(tokensOf(tester).cardStyle, CardStyle.coloredShadow);
+  });
 
   testWidgets('presets, colors and fonts apply immediately and are stored', (tester) async {
     final app = TestApp(settings: english);

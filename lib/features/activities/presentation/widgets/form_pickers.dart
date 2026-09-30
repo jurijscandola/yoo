@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/theme/yoo_palettes.dart';
 import '../../../../core/theme/yoo_tokens.dart';
@@ -185,7 +186,7 @@ class BorderColorPicker extends StatelessWidget {
   }
 }
 
-/// "−  value  +" counter.
+/// "−  value  +" counter. Tapping the value lets the user type it.
 class CountStepper extends StatelessWidget {
   const CountStepper({
     super.key,
@@ -209,18 +210,75 @@ class CountStepper extends StatelessWidget {
           onPressed: value > min ? () => onChanged(value - 1) : null,
           icon: const Icon(Icons.remove_rounded),
         ),
-        SizedBox(
-          width: 36,
-          child: Text(
-            '$value',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+        InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => _type(context),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text('$value', style: Theme.of(context).textTheme.titleMedium),
+              ),
+            ),
           ),
         ),
         IconButton.filledTonal(
           onPressed: value < max ? () => onChanged(value + 1) : null,
           icon: const Icon(Icons.add_rounded),
         ),
+      ],
+    );
+  }
+
+  Future<void> _type(BuildContext context) async {
+    final typed = await showDialog<int>(
+      context: context,
+      builder: (context) => _NumberDialog(initial: value, min: min, max: max),
+    );
+    if (typed != null) onChanged(typed.clamp(min, max));
+  }
+}
+
+/// Asks for a whole number between [min] and [max].
+class _NumberDialog extends StatefulWidget {
+  const _NumberDialog({required this.initial, required this.min, required this.max});
+
+  final int initial;
+  final int min;
+  final int max;
+
+  @override
+  State<_NumberDialog> createState() => _NumberDialogState();
+}
+
+class _NumberDialogState extends State<_NumberDialog> {
+  late final _controller = TextEditingController(text: '${widget.initial}')
+    ..selection = TextSelection(baseOffset: 0, extentOffset: '${widget.initial}'.length);
+
+  void _submit() => Navigator.pop(context, int.tryParse(_controller.text));
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = MaterialLocalizations.of(context);
+    return AlertDialog(
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        decoration: InputDecoration(helperText: '${widget.min} – ${widget.max}'),
+        onSubmitted: (_) => _submit(),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(labels.cancelButtonLabel)),
+        TextButton(onPressed: _submit, child: Text(labels.okButtonLabel)),
       ],
     );
   }

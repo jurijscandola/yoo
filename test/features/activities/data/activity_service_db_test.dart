@@ -262,7 +262,7 @@ void main() {
   });
 
   test('partial progress feeds the goal and notifies once at 100%', () async {
-    final goal = await goals.create(year: 2026, month: 9, title: 'Haircut');
+    final goal = await goals.create(year: 2026, month: 9, title: 'Haircut', target: 100);
     final a = await service.create(
       draft(
         'Book the barber',

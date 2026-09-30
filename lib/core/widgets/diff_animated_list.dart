@@ -93,15 +93,26 @@ class ListItemTransition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-    return SizeTransition(
-      sizeFactor: curved,
-      child: FadeTransition(
-        opacity: curved,
-        child: SlideTransition(
-          position: Tween(begin: const Offset(0.08, 0), end: Offset.zero).animate(curved),
-          child: child,
+    // Like SizeTransition, but clips only while the size animates: at rest the
+    // card's shadow can spill outside its slot.
+    final content = FadeTransition(
+      opacity: curved,
+      child: SlideTransition(
+        position: Tween(begin: const Offset(0.08, 0), end: Offset.zero).animate(curved),
+        child: child,
+      ),
+    );
+    return AnimatedBuilder(
+      animation: curved,
+      builder: (context, content) => ClipRect(
+        clipBehavior: curved.value >= 1 ? Clip.none : Clip.hardEdge,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          heightFactor: curved.value.clamp(0.0, 1.0),
+          child: content,
         ),
       ),
+      child: content,
     );
   }
 }

@@ -141,11 +141,11 @@ enum ImpactType { additive, subtractive }
 /// Link between an activity and a monthly goal.
 class GoalLink {
   const GoalLink({required this.goalId, required this.impact, required this.type})
-    : assert(impact >= 0 && impact <= 100);
+    : assert(impact >= 0);
 
   final String goalId;
 
-  /// Percentage points applied to the goal per full completion (0–100).
+  /// Amount added to (or removed from) the goal per full completion.
   final int impact;
 
   final ImpactType type;

@@ -29,18 +29,37 @@
   "fieldNotification": "Testo della notifica",
   "fieldNotificationHint": "Cosa deve dire il promemoria",
   "sectionRecurrence": "Ricorrenza",
+  "recurrenceOnce": "Solo un giorno",
   "recurrenceDaily": "Tutti i giorni",
   "recurrenceEveryOtherDay": "Un giorno sì e uno no",
   "recurrenceWeekly": "Ogni settimana",
+  "recurrenceEveryNWeeks": "Ogni X settimane",
   "recurrenceMonthly": "Una volta al mese",
   "recurrenceSpecificDays": "Giorni specifici",
   "weekdayLabel": "Il giorno",
+  "everyWeeks": "{n, plural, =1{Ogni settimana} other{Ogni {n} settimane}}",
+  "@everyWeeks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyFirstTime": "Prima volta {date}, poi a intervalli regolari anche nei mesi successivi.",
+  "@weeklyFirstTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "monthDayLabel": "Giorno del mese",
   "monthlyClampNote": "Nei mesi più corti cade l'ultimo giorno del mese.",
   "specificDaysLabel": "Giorni del mese",
   "repeatNone": "Solo questo mese",
   "repeatNext": "Anche il mese prossimo",
   "repeatEvery": "Tutti i mesi",
+  "onceDate": "Il giorno",
   "startDate": "Inizia il",
   "sectionTimes": "Volte al giorno",
   "timeSlotLabel": "Volta {n}",
@@ -55,7 +74,9 @@
   "timeFrom": "Dalle",
   "timeTo": "Alle",
   "timeAt": "Alle",
-  "sectionColor": "Colore del bordo",
+  "colorStyleHint": "Il bordo o l'ombra seguono lo stile scelto in Personalizzazione.",
+  "colorPreviewName": "La tua attività",
+  "sectionColor": "Colore del pulsante",
   "sectionPartial": "Completamento parziale",
   "partialDescription": "La notifica chiede quanto hai completato.",
   "partialReminders": "Promemoria aggiuntivi",
@@ -64,7 +85,7 @@
   "goalLinkToggle": "Contribuisce a un obiettivo",
   "goalPick": "Obiettivo",
   "goalNone": "Nessun obiettivo: creali dal Calendario.",
-  "goalImpact": "Impatto",
+  "goalImpact": "Valore",
   "impactAdditive": "Aggiunge",
   "impactSubtractive": "Sottrae",
   "save": "Salva",
@@ -147,7 +168,7 @@
     }
   },
   "goalReachedTitle": "Obiettivo raggiunto!",
-  "goalReachedBody": "\"{title}\" è al 100%",
+  "goalReachedBody": "Hai completato \"{title}\"",
   "@goalReachedBody": {
     "placeholders": {
       "title": {
@@ -185,6 +206,25 @@
   "goalRename": "Rinomina",
   "goalDeleteTitle": "Eliminare \"{title}\"?",
   "goalDeleteBody": "Le attività collegate restano: smettono solo di contare per questo obiettivo.",
+  "subtasksToggle": "Sotto attività",
+  "subtaskAdd": "Aggiungi sotto attività",
+  "subtaskHint": "Nuova sotto attività",
+  "subtaskEdit": "Modifica sotto attività",
+  "goalTargetLabel": "Quantità da raggiungere",
+  "goalTargetHelp": "Ogni attività collegata aggiunge o toglie il suo valore. Usa 1 per un evento singolo.",
+  "errorGoalTarget": "Inserisci un numero da 1 in su",
+  "goalImpactHelp": "Quanto aggiunge o toglie all'obiettivo ogni volta che la completi.",
+  "goalAmount": "{value} / {target}",
+  "@goalAmount": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "goalReachedLabel": "Raggiunto",
   "errorEmptyGoal": "Dai un nome all'obiettivo",
   "externalSectionTitle": "Dai tuoi calendari",
@@ -227,6 +267,26 @@
   "colorNotification": "Notifiche",
   "colorNotificationHint": "Solo Android",
   "colorDefault": "Predefinito",
+  "themeCardStyle": "Stile delle card",
+  "cardStyleStandard": "Standard",
+  "cardStyleStandardHint": "Bordo intero e ombra leggera",
+  "cardStyleShadow": "Ombra colorata",
+  "cardStyleShadowHint": "Niente bordo: il colore resta sul pulsante e in un'ombra leggera",
+  "cardStyleHalf": "Mezzo bordo",
+  "cardStyleHalfHint": "Bordo solo nella metà bassa, sfumato verso l'alto",
+  "cardStyleButton": "Solo pulsante",
+  "cardStyleButtonHint": "Niente bordo: colorato solo il pulsante, ombra leggerissima",
+  "cardStylePaper": "Taccuino",
+  "cardStylePaperHint": "Le attività sono righe di un blocco note, con un quadratino da spuntare a sinistra",
+  "themeActivityText": "Testo delle attività",
+  "themeActivityTextHint": "{size} · nomi, dettagli e sotto attività, anche nel widget. L'anteprima in alto si aggiorna subito.",
+  "@themeActivityTextHint": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "themeFont": "Carattere",
   "fontSystem": "Sistema",
   "fontSample": "Un piccolo passo ogni giorno",

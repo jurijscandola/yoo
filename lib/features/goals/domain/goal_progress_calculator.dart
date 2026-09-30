@@ -5,13 +5,14 @@ import 'monthly_goal.dart';
 /// Computes how far a monthly goal is, from the occurrences of the activities
 /// linked to it.
 ///
-/// progress = clamp(Σ ±impact × completion, 0, 100), over the occurrences of
+/// progress = clamp(Σ ±impact × completion, 0, target), over the occurrences of
 /// the goal's month (+ additive, − subtractive links). Skipped occurrences do
 /// not count. The link is read from the activity's current settings.
 class GoalProgressCalculator {
   const GoalProgressCalculator();
 
-  /// Progress of [goal] in percent (0–100).
+  /// Progress of [goal] as an amount, from 0 to its target. Partial
+  /// activities contribute a share of their impact.
   double progressOf({
     required MonthlyGoal goal,
     required Map<String, Activity> activitiesById,
@@ -25,10 +26,10 @@ class GoalProgressCalculator {
       if (activity == null || link == null || link.goalId != goal.id) continue;
       total += link.signedImpact * o.completionFor(activity);
     }
-    return total.clamp(0, 100).toDouble();
+    return total.clamp(0, goal.target).toDouble();
   }
 
   /// Whether the "goal reached" notification must be sent now.
   bool shouldNotifyCompletion(MonthlyGoal goal, double progress) =>
-      progress >= 100 && goal.completionNotifiedAt == null;
+      progress >= goal.target && goal.completionNotifiedAt == null;
 }

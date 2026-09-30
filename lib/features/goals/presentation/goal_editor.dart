@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/services.dart';
@@ -10,24 +11,28 @@ import '../domain/monthly_goal.dart';
 abstract final class GoalEditor {
   /// Creates a goal for [year]/[month].
   static Future<void> create(BuildContext context, WidgetRef ref, int year, int month) async {
-    final title = await showDialog<String>(
+    final result = await showDialog<_Save>(
       context: context,
       builder: (context) => _GoalDialog(title: context.l10n.goalAdd),
     );
-    if (title == null) return;
-    await ref.read(goalServiceProvider).create(year: year, month: month, title: title);
+    if (result == null) return;
+    await ref
+        .read(goalServiceProvider)
+        .create(year: year, month: month, title: result.title, target: result.target);
   }
 
-  /// Renames or deletes [goal].
+  /// Renames, changes the target of, or deletes [goal].
   static Future<void> edit(BuildContext context, WidgetRef ref, MonthlyGoal goal) async {
     final result = await showDialog<_EditResult>(
       context: context,
-      builder: (context) => _GoalDialog(title: context.l10n.goalEdit, initial: goal.title),
+      builder: (context) => _GoalDialog(title: context.l10n.goalEdit, initial: goal),
     );
     if (result == null || !context.mounted) return;
     final service = ref.read(goalServiceProvider);
-    if (result is _Rename) {
-      if (result.title != goal.title) await service.rename(goal, result.title);
+    if (result is _Save) {
+      if (result.title != goal.title || result.target != goal.target) {
+        await service.update(goal, title: result.title, target: result.target);
+      }
       return;
     }
     final l10n = context.l10n;
@@ -52,45 +57,54 @@ abstract final class GoalEditor {
 
 sealed class _EditResult {}
 
-class _Rename extends _EditResult {
-  _Rename(this.title);
+class _Save extends _EditResult {
+  _Save(this.title, this.target);
   final String title;
+  final int target;
 }
 
 class _Delete extends _EditResult {}
 
-/// Title field with Save/Cancel; in edit mode also a Delete action. Pops a
-/// `String` in create mode and an [_EditResult] in edit mode.
+/// Title and target fields with Save/Cancel; in edit mode also a Delete
+/// action. Pops an [_EditResult].
 class _GoalDialog extends StatefulWidget {
   const _GoalDialog({required this.title, this.initial});
 
   final String title;
 
-  /// Current title when editing; `null` when creating.
-  final String? initial;
+  /// The goal being edited; `null` when creating.
+  final MonthlyGoal? initial;
 
   @override
   State<_GoalDialog> createState() => _GoalDialogState();
 }
 
 class _GoalDialogState extends State<_GoalDialog> {
-  late final _controller = TextEditingController(text: widget.initial);
+  late final _controller = TextEditingController(text: widget.initial?.title);
+  late final _target = TextEditingController(text: '${widget.initial?.target ?? 1}');
   bool _showError = false;
+  bool _showTargetError = false;
 
   bool get _editing => widget.initial != null;
 
   void _save() {
     final text = _controller.text.trim();
-    if (text.isEmpty) {
-      setState(() => _showError = true);
+    final target = int.tryParse(_target.text.trim());
+    final validTarget = target != null && target >= 1;
+    if (text.isEmpty || !validTarget) {
+      setState(() {
+        _showError = text.isEmpty;
+        _showTargetError = !validTarget;
+      });
       return;
     }
-    Navigator.pop(context, _editing ? _Rename(text) : text);
+    Navigator.pop(context, _Save(text, target));
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _target.dispose();
     super.dispose();
   }
 
@@ -99,20 +113,43 @@ class _GoalDialogState extends State<_GoalDialog> {
     final l10n = context.l10n;
     final t = context.tokens;
     return AlertDialog(
+      // Two fields: scroll instead of overflowing with large text.
+      scrollable: true,
       title: Text(widget.title),
-      content: TextField(
-        controller: _controller,
-        autofocus: true,
-        textCapitalization: TextCapitalization.sentences,
-        decoration: InputDecoration(
-          labelText: l10n.goalTitleLabel,
-          hintText: l10n.goalTitleHint,
-          errorText: _showError ? l10n.errorEmptyGoal : null,
-        ),
-        onChanged: (_) {
-          if (_showError) setState(() => _showError = false);
-        },
-        onSubmitted: (_) => _save(),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              labelText: l10n.goalTitleLabel,
+              hintText: l10n.goalTitleHint,
+              errorText: _showError ? l10n.errorEmptyGoal : null,
+            ),
+            onChanged: (_) {
+              if (_showError) setState(() => _showError = false);
+            },
+            textInputAction: TextInputAction.next,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _target,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(
+              labelText: l10n.goalTargetLabel,
+              helperText: l10n.goalTargetHelp,
+              helperMaxLines: 3,
+              errorText: _showTargetError ? l10n.errorGoalTarget : null,
+            ),
+            onChanged: (_) {
+              if (_showTargetError) setState(() => _showTargetError = false);
+            },
+            onSubmitted: (_) => _save(),
+          ),
+        ],
       ),
       actions: [
         if (_editing)

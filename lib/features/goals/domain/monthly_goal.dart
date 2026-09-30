@@ -7,6 +7,7 @@ class MonthlyGoal {
     required this.year,
     required this.month,
     required this.title,
+    required this.target,
     required this.createdAt,
     required this.updatedAt,
     this.completionNotifiedAt,
@@ -17,6 +18,10 @@ class MonthlyGoal {
   final int year;
   final int month;
   final String title;
+
+  /// Amount to reach (e.g. 4 books, or 1 for a single event). Completing a
+  /// linked activity adds or removes its impact from the progress.
+  final int target;
 
   /// When the "goal reached" notification was sent (sent only once).
   final DateTime? completionNotifiedAt;
@@ -32,6 +37,7 @@ class MonthlyGoal {
 
   MonthlyGoal copyWith({
     String? title,
+    int? target,
     DateTime? Function()? completionNotifiedAt,
     DateTime? updatedAt,
     DateTime? Function()? deletedAt,
@@ -41,6 +47,7 @@ class MonthlyGoal {
       year: year,
       month: month,
       title: title ?? this.title,
+      target: target ?? this.target,
       completionNotifiedAt: completionNotifiedAt != null
           ? completionNotifiedAt()
           : this.completionNotifiedAt,

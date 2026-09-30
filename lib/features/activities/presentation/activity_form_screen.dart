@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/services.dart';
+import '../../../core/theme/yoo_palettes.dart';
 import '../../../core/theme/yoo_tokens.dart';
 import '../../../core/time/date_labels.dart';
 import '../../../core/time/local_date.dart';
 import '../../../core/time/local_time.dart';
+import '../../../core/widgets/activity_card_preview.dart';
 import '../../../l10n/l10n.dart';
 import '../../goals/presentation/goal_providers.dart';
 import '../domain/entities/activity.dart';
@@ -16,7 +18,7 @@ import 'activity_providers.dart';
 import 'widgets/form_pickers.dart';
 
 /// Recurrence choices offered by the form.
-enum _Kind { daily, everyOtherDay, weekly, monthly, specificDays }
+enum _Kind { once, daily, everyOtherDay, weekly, everyNWeeks, monthly, specificDays }
 
 /// Editable state of one daily time.
 class _Slot {
@@ -65,6 +67,7 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
   _Kind _kind = _Kind.daily;
   late LocalDate _startDate;
   int _weekday = DateTime.monday;
+  int _everyWeeks = 2;
   int _monthDay = 1;
   Set<int> _specificDays = {};
   MonthRepeat _repeat = MonthRepeat.everyMonth;
@@ -75,7 +78,7 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
   LocalTime _until = const LocalTime(21, 0);
   bool _linkGoal = false;
   String? _goalId;
-  double _impact = 10;
+  int _impact = 1;
   ImpactType _impactType = ImpactType.additive;
 
   @override
@@ -100,6 +103,8 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
         _Slot(from: time, to: LocalTime.fromMinutes(time.inMinutes + 60), random: false),
     ];
     _name.text = widget.initialName ?? '';
+    // Calendar events usually happen once: default to that day only.
+    if (widget.initialName != null) _kind = _Kind.once;
     if (activity == null) return;
 
     _editing = activity;
@@ -111,13 +116,19 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
       for (final s in activity.timeSlots) _Slot(from: s.from, to: s.to, random: !s.isExact),
     ];
     switch (activity.recurrence) {
+      case OnceRecurrence():
+        _kind = _Kind.once;
       case DailyRecurrence():
         _kind = _Kind.daily;
       case EveryOtherDayRecurrence():
         _kind = _Kind.everyOtherDay;
-      case WeeklyRecurrence(:final weekday):
+      case WeeklyRecurrence(:final weekday, everyWeeks: 1):
         _kind = _Kind.weekly;
         _weekday = weekday;
+      case WeeklyRecurrence(:final weekday, :final everyWeeks):
+        _kind = _Kind.everyNWeeks;
+        _weekday = weekday;
+        _everyWeeks = everyWeeks;
       case MonthlyRecurrence(:final day):
         _kind = _Kind.monthly;
         _monthDay = day;
@@ -136,15 +147,21 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
     if (link != null) {
       _linkGoal = true;
       _goalId = link.goalId;
-      _impact = link.impact.toDouble();
+      _impact = link.impact;
       _impactType = link.type;
     }
   }
 
   Recurrence _recurrence() => switch (_kind) {
+    _Kind.once => OnceRecurrence(date: _startDate),
     _Kind.daily => const DailyRecurrence(),
     _Kind.everyOtherDay => EveryOtherDayRecurrence(anchor: _startDate),
     _Kind.weekly => WeeklyRecurrence(weekday: _weekday),
+    _Kind.everyNWeeks => WeeklyRecurrence(
+      weekday: _weekday,
+      everyWeeks: _everyWeeks,
+      anchor: _firstWeekday,
+    ),
     _Kind.monthly => MonthlyRecurrence(day: _monthDay),
     _Kind.specificDays => SpecificDaysRecurrence(
       days: _specificDays,
@@ -153,6 +170,10 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
       anchorMonth: _startDate.month,
     ),
   };
+
+  /// The first [_weekday] on or after the start date: where an "every N
+  /// weeks" rhythm begins.
+  LocalDate get _firstWeekday => _startDate.addDays((_weekday - _startDate.weekday) % 7);
 
   Future<void> _save() async {
     final l10n = context.l10n;
@@ -166,7 +187,7 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
       startDate: _startDate,
       partial: _partial ? PartialConfig(reminderCount: _reminders, until: _until) : null,
       goalLink: _linkGoal && _goalId != null
-          ? GoalLink(goalId: _goalId!, impact: _impact.round(), type: _impactType)
+          ? GoalLink(goalId: _goalId!, impact: _impact, type: _impactType)
           : null,
     );
 
@@ -224,13 +245,7 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
             _nameSection(context),
             _recurrenceSection(context),
             _timesSection(context),
-            FormSection(
-              title: l10n.sectionColor,
-              child: BorderColorPicker(
-                selected: _color,
-                onChanged: (i) => setState(() => _color = i),
-              ),
-            ),
+            _colorSection(context),
             _partialSection(context),
             _goalSection(context),
             Padding(
@@ -285,9 +300,11 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
     final l10n = context.l10n;
     final t = context.tokens;
     final labels = {
+      _Kind.once: l10n.recurrenceOnce,
       _Kind.daily: l10n.recurrenceDaily,
       _Kind.everyOtherDay: l10n.recurrenceEveryOtherDay,
       _Kind.weekly: l10n.recurrenceWeekly,
+      _Kind.everyNWeeks: l10n.recurrenceEveryNWeeks,
       _Kind.monthly: l10n.recurrenceMonthly,
       _Kind.specificDays: l10n.recurrenceSpecificDays,
     };
@@ -318,6 +335,32 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
                 _Kind.weekly => WeekdayPicker(
                   selected: _weekday,
                   onChanged: (d) => setState(() => _weekday = d),
+                ),
+                _Kind.everyNWeeks => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WeekdayPicker(
+                      selected: _weekday,
+                      onChanged: (d) => setState(() => _weekday = d),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(child: Text(l10n.everyWeeks(_everyWeeks))),
+                        CountStepper(
+                          value: _everyWeeks,
+                          min: 2,
+                          max: 52,
+                          onChanged: (n) => setState(() => _everyWeeks = n),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.weeklyFirstTime(context.fullDate(_firstWeekday)),
+                      style: TextStyle(color: t.textMuted, fontSize: 12),
+                    ),
+                  ],
                 ),
                 _Kind.monthly => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,7 +415,7 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.event_outlined),
-            title: Text(l10n.startDate),
+            title: Text(_kind == _Kind.once ? l10n.onceDate : l10n.startDate),
             // Subtitle, not trailing: the full date can be long.
             subtitle: Text(context.fullDate(_startDate), style: TextStyle(color: t.textMuted)),
             trailing: Icon(Icons.chevron_right, color: t.textMuted),
@@ -387,6 +430,44 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
               if (picked != null) setState(() => _startDate = LocalDate.fromDateTime(picked));
             },
           ),
+        ],
+      ),
+    );
+  }
+
+  /// The activity's color, shown on the completion button of a live preview
+  /// card; the card's border or shadow follow the global card style.
+  Widget _colorSection(BuildContext context) {
+    final l10n = context.l10n;
+    final t = context.tokens;
+    final color = YooPalettes.borderColor(_color);
+    return FormSection(
+      title: l10n.sectionColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ActivityCardPreview(
+            color: color,
+            partial: _partial,
+            name: ValueListenableBuilder(
+              valueListenable: _name,
+              builder: (context, name, _) => Text(
+                name.text.trim().isEmpty ? l10n.colorPreviewName : name.text.trim(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize:
+                      (Theme.of(context).textTheme.titleMedium?.fontSize ?? 16) *
+                      t.activityTextScale,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          BorderColorPicker(selected: _color, onChanged: (i) => setState(() => _color = i)),
+          const SizedBox(height: 10),
+          Text(l10n.colorStyleHint, style: TextStyle(color: t.textMuted, fontSize: 12)),
         ],
       ),
     );
@@ -563,19 +644,17 @@ class _ActivityFormScreenState extends ConsumerState<ActivityFormScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Text(l10n.goalImpact),
-                      Expanded(
-                        child: Slider(
-                          value: _impact,
-                          max: 100,
-                          divisions: 20,
-                          label: l10n.percent(_impact.round()),
-                          onChanged: (v) => setState(() => _impact = v),
-                        ),
+                      Expanded(child: Text(l10n.goalImpact)),
+                      CountStepper(
+                        value: _impact,
+                        min: 1,
+                        max: 9999,
+                        onChanged: (v) => setState(() => _impact = v),
                       ),
-                      SizedBox(width: 44, child: Text(l10n.percent(_impact.round()))),
                     ],
                   ),
+                  const SizedBox(height: 4),
+                  Text(l10n.goalImpactHelp, style: TextStyle(color: t.textMuted, fontSize: 12)),
                   SegmentedButton<ImpactType>(
                     segments: [
                       ButtonSegment(

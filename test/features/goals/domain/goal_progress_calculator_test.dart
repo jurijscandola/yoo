@@ -15,6 +15,8 @@ void main() {
     year: 2026,
     month: 9,
     title: 'Get a haircut',
+    // Goals created before quantities existed keep 100 as target.
+    target: 100,
     createdAt: testNow,
     updatedAt: testNow,
   );
@@ -84,6 +86,24 @@ void main() {
       ),
       100,
     );
+  });
+
+  test('counts whole amounts towards a small target', () {
+    final books = goal.copyWith(target: 4);
+    final a = activity('a', goalLink: link(1));
+    final days = [for (var i = 0; i < 6; i++) sept.addDays(i)];
+    double progressOf(int done) => calculator.progressOf(
+      goal: books,
+      activitiesById: {'a': a},
+      occurrences: [
+        for (final (i, d) in days.take(done).indexed)
+          occurrence('$i', 'a', d, status: OccurrenceStatus.completed),
+      ],
+    );
+    expect(progressOf(3), 3);
+    expect(progressOf(6), 4);
+    expect(calculator.shouldNotifyCompletion(books, progressOf(3)), isFalse);
+    expect(calculator.shouldNotifyCompletion(books, progressOf(4)), isTrue);
   });
 
   test('ignores other months, other goals, skipped and unlinked occurrences', () {

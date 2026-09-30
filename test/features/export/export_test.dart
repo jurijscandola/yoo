@@ -43,6 +43,7 @@ void main() {
     year: 2026,
     month: 9,
     title: 'Read more',
+    target: 100,
     createdAt: testNow,
     updatedAt: testNow,
   );
@@ -100,7 +101,7 @@ void main() {
     final lines = text.split('\r\n');
     expect(lines.first, 'Yoo · September 2026');
     expect(lines, contains('Exported on 29 September 2026'));
-    expect(lines, contains('  • Read more — 62%'));
+    expect(lines, contains('  • Read more — 62 / 100'));
     expect(lines, containsAllInOrder(['Day 27', '  ✅ Activity v', 'Day 28']));
     expect(lines, contains('  ❌ Activity v'));
     expect(lines, contains('  ✅ Activity r — 100%'));
@@ -139,7 +140,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Preview'), findsOneWidget);
-    expect(find.textContaining('• Read more — 0%'), findsOneWidget);
+    expect(find.textContaining('• Read more — 0 / 1'), findsOneWidget);
     // The current month is the last one available.
     expect(
       tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right)).onPressed,

@@ -29,18 +29,37 @@
   "fieldNotification": "Notification text",
   "fieldNotificationHint": "What the reminder should say",
   "sectionRecurrence": "Repeat",
+  "recurrenceOnce": "One day only",
   "recurrenceDaily": "Every day",
   "recurrenceEveryOtherDay": "Every other day",
   "recurrenceWeekly": "Every week",
+  "recurrenceEveryNWeeks": "Every X weeks",
   "recurrenceMonthly": "Once a month",
   "recurrenceSpecificDays": "Specific days",
   "weekdayLabel": "On",
+  "everyWeeks": "{n, plural, =1{Every week} other{Every {n} weeks}}",
+  "@everyWeeks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyFirstTime": "First time on {date}, then at regular intervals, also across months.",
+  "@weeklyFirstTime": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "monthDayLabel": "Day of the month",
   "monthlyClampNote": "In shorter months it falls on the last day.",
   "specificDaysLabel": "Days of the month",
   "repeatNone": "This month only",
   "repeatNext": "Also next month",
   "repeatEvery": "Every month",
+  "onceDate": "On",
   "startDate": "Starts on",
   "sectionTimes": "Times per day",
   "timeSlotLabel": "Time {n}",
@@ -55,7 +74,9 @@
   "timeFrom": "From",
   "timeTo": "To",
   "timeAt": "At",
-  "sectionColor": "Border color",
+  "colorStyleHint": "The border or shadow follow the style chosen in Personalization.",
+  "colorPreviewName": "Your activity",
+  "sectionColor": "Button color",
   "sectionPartial": "Partial completion",
   "partialDescription": "The notification asks how much you completed.",
   "partialReminders": "Extra reminders",
@@ -64,7 +85,7 @@
   "goalLinkToggle": "Contributes to a goal",
   "goalPick": "Goal",
   "goalNone": "No goals yet: create them from the Calendar.",
-  "goalImpact": "Impact",
+  "goalImpact": "Value",
   "impactAdditive": "Adds",
   "impactSubtractive": "Subtracts",
   "save": "Save",
@@ -147,7 +168,7 @@
     }
   },
   "goalReachedTitle": "Goal reached!",
-  "goalReachedBody": "\"{title}\" is at 100%",
+  "goalReachedBody": "You completed \"{title}\"",
   "@goalReachedBody": {
     "placeholders": {
       "title": {
@@ -199,6 +220,25 @@
     }
   },
   "goalDeleteBody": "Linked activities stay: they just stop counting for it.",
+  "subtasksToggle": "Subtasks",
+  "subtaskAdd": "Add subtask",
+  "subtaskHint": "New subtask",
+  "subtaskEdit": "Edit subtask",
+  "goalTargetLabel": "Amount to reach",
+  "goalTargetHelp": "Each linked activity adds or removes its value. Use 1 for a single event.",
+  "errorGoalTarget": "Enter a number from 1 up",
+  "goalImpactHelp": "How much it adds to or removes from the goal each time you complete it.",
+  "goalAmount": "{value} / {target}",
+  "@goalAmount": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "goalReachedLabel": "Reached",
   "errorEmptyGoal": "Give the goal a name",
   "externalSectionTitle": "From your calendars",
@@ -279,6 +319,26 @@
   "colorNotification": "Notifications",
   "colorNotificationHint": "Android only",
   "colorDefault": "Default",
+  "themeCardStyle": "Card style",
+  "cardStyleStandard": "Standard",
+  "cardStyleStandardHint": "Full border and a light shadow",
+  "cardStyleShadow": "Colored shadow",
+  "cardStyleShadowHint": "No border: the color stays on the button and in a light shadow",
+  "cardStyleHalf": "Half border",
+  "cardStyleHalfHint": "Border on the lower half only, fading upwards",
+  "cardStyleButton": "Only button",
+  "cardStyleButtonHint": "No border: only the button is colored, very light shadow",
+  "cardStylePaper": "Notebook",
+  "cardStylePaperHint": "Activities are lines on a notepad, with a small square to tick on the left",
+  "themeActivityText": "Activity text",
+  "themeActivityTextHint": "{size} · names, details and subtasks, also in the widget. The preview above updates right away.",
+  "@themeActivityTextHint": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "themeFont": "Font",
   "fontSystem": "System",
   "fontSample": "A small step every day",

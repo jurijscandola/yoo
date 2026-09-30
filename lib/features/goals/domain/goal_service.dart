@@ -18,8 +18,16 @@ class GoalProgress {
 
   final MonthlyGoal goal;
 
-  /// Percent, 0–100.
+  /// Amount reached, 0 to the goal's target.
   final double progress;
+
+  /// Whole units reached (partial shares only count once complete).
+  int get reached => progress.floor();
+
+  /// Share of the target reached, 0–1.
+  double get fraction => goal.target == 0 ? 0 : (progress / goal.target).clamp(0, 1);
+
+  bool get isReached => progress >= goal.target;
 }
 
 /// Use cases around monthly goals.
@@ -43,13 +51,19 @@ class GoalService {
   final GoalProgressCalculator _calculator;
 
   /// Creates a goal for [year]/[month].
-  Future<MonthlyGoal> create({required int year, required int month, required String title}) async {
+  Future<MonthlyGoal> create({
+    required int year,
+    required int month,
+    required String title,
+    int target = 1,
+  }) async {
     final now = _clock.now();
     final goal = MonthlyGoal(
       id: _newId(),
       year: year,
       month: month,
       title: title.trim(),
+      target: target,
       createdAt: now,
       updatedAt: now,
     );
@@ -57,9 +71,17 @@ class GoalService {
     return goal;
   }
 
-  /// Renames a goal.
-  Future<void> rename(MonthlyGoal goal, String title) =>
-      _goals.save(goal.copyWith(title: title.trim(), updatedAt: _clock.now()));
+  /// Renames a goal and/or changes its target. Raising the target of a
+  /// reached goal allows a new "goal reached" notification.
+  Future<void> update(MonthlyGoal goal, {required String title, required int target}) =>
+      _goals.save(
+        goal.copyWith(
+          title: title.trim(),
+          target: target,
+          completionNotifiedAt: target > goal.target ? () => null : null,
+          updatedAt: _clock.now(),
+        ),
+      );
 
   /// Soft-deletes a goal. Linked activities keep their link, which simply no
   /// longer matches a visible goal.
@@ -85,7 +107,7 @@ class GoalService {
   }
 
   /// Sends the one-shot notification for goals of [year]/[month] that just
-  /// reached 100%, and remembers it.
+  /// reached their target, and remembers it.
   Future<void> checkCompletions(int year, int month) async {
     for (final p in await progressOfMonth(year, month)) {
       if (!_calculator.shouldNotifyCompletion(p.goal, p.progress)) continue;

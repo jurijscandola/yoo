@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:yoo/app/services.dart';
 import 'package:yoo/core/time/local_date.dart';
 import 'package:yoo/core/time/local_time.dart';
-import 'package:yoo/core/widgets/goals_bag_icon.dart';
+import 'package:yoo/core/widgets/goals_icon.dart';
 import 'package:yoo/features/activities/domain/entities/activity.dart';
 import 'package:yoo/features/activities/domain/entities/activity_draft.dart';
 import 'package:yoo/features/activities/domain/entities/recurrence.dart';
@@ -116,7 +116,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Settings and its pages.
-      await open(find.byType(GoalsBagIcon));
+      await open(find.byType(GoalsIcon));
       await open(find.byIcon(Icons.more_horiz));
       for (final icon in [
         Icons.file_download_outlined,

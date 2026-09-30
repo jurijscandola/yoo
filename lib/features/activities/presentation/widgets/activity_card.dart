@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/yoo_palettes.dart';
 import '../../../../core/theme/yoo_tokens.dart';
+import '../../../../core/widgets/check_button_face.dart';
+import '../../../../core/widgets/raised_surface.dart';
 import '../../../../l10n/l10n.dart';
+import '../../../settings/domain/app_settings.dart';
 import '../../domain/entities/occurrence.dart';
 import '../../domain/services/occurrence_planner.dart';
+import 'subtask_list.dart';
 
 /// How a card can be interacted with, depending on the day it belongs to.
 enum CardMode {
@@ -21,7 +25,8 @@ enum CardMode {
 /// Rectangular card of an activity on a day.
 ///
 /// Filled with the `card` token, bordered with the activity's color. The
-/// check button fills with an animation before the card leaves the list.
+/// check button fills with an animation before the card leaves the list. The
+/// arrow next to "⋯" expands the activity's subtasks.
 class ActivityCard extends StatefulWidget {
   const ActivityCard({
     super.key,
@@ -51,6 +56,7 @@ class ActivityCard extends StatefulWidget {
 
 class _ActivityCardState extends State<ActivityCard> {
   bool _completing = false;
+  bool _expanded = false;
 
   Occurrence? get _occurrence => widget.entry.occurrence;
 
@@ -77,72 +83,130 @@ class _ActivityCardState extends State<ActivityCard> {
     final border = YooPalettes.borderColor(activity.borderColorIndex);
     final subtitle = _subtitle(context);
     final dimmed = widget.mode == CardMode.preview;
+    // Paper style: a notebook line instead of a card, with the completion
+    // square in the left margin; the other buttons stay on the right.
+    final paper = t.cardStyle == CardStyle.paper;
+    final radius = paper ? BorderRadius.zero : BorderRadius.circular(t.radius);
+    final scale = t.activityTextScale;
+    final nameStyle = Theme.of(context).textTheme.titleMedium;
+
+    // The completion button sits on the left in every style. On days that
+    // cannot be ticked a faded one keeps the names aligned.
+    final buttonSize = paper ? 22.0 : 26.0;
+    final Widget button = widget.mode == CardMode.actionable
+        ? _CheckButton(
+            color: border,
+            done: _completing,
+            partial: activity.isPartial,
+            size: buttonSize,
+            onPressed: _press,
+          )
+        : Opacity(
+            opacity: 0.35,
+            child: CheckButtonFace(color: border, partial: activity.isPartial, size: buttonSize),
+          );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      padding: paper ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 200),
         opacity: dimmed ? 0.75 : 1,
-        child: Material(
+        child: RaisedSurface(
           color: t.card,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(t.radius),
-            side: BorderSide(color: border, width: t.cardBorderWidth),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: widget.onTap,
-            onLongPress: widget.onMenu,
+          borderRadius: radius,
+          accent: border,
+          borderWidth: t.cardBorderWidth,
+          paperMargin: true,
+          child: Material(
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: radius),
+            clipBehavior: Clip.antiAlias,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 4, 14),
-                  child: Row(
+                InkWell(
+                  onTap: widget.onTap,
+                  onLongPress: widget.onMenu,
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: paper
+                            ? const EdgeInsets.fromLTRB(0, 8, 4, 8)
+                            : const EdgeInsets.fromLTRB(10, 12, 4, 12),
+                        child: Row(
                           children: [
-                            Text(
-                              activity.name,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                decoration: widget.mode == CardMode.missed
-                                    ? TextDecoration.lineThrough
-                                    : null,
-                                decorationColor: t.danger,
+                            if (paper) ...[
+                              SizedBox(
+                                width: RaisedSurface.paperMarginWidth,
+                                child: Center(child: button),
+                              ),
+                              const SizedBox(width: 12),
+                            ] else ...[
+                              button,
+                              const SizedBox(width: 8),
+                            ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    activity.name,
+                                    style: nameStyle?.copyWith(
+                                      fontSize: (nameStyle.fontSize ?? 16) * scale,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: widget.mode == CardMode.missed
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      decorationColor: t.danger,
+                                    ),
+                                  ),
+                                  if (subtitle != null) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      subtitle,
+                                      style: TextStyle(color: t.textMuted, fontSize: 13 * scale),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
-                            if (subtitle != null) ...[
-                              const SizedBox(height: 2),
-                              Text(subtitle, style: TextStyle(color: t.textMuted, fontSize: 13)),
-                            ],
+                            if (widget.mode == CardMode.missed)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Icon(Icons.close_rounded, color: t.danger),
+                              ),
+                            SubtaskToggle(
+                              activityId: activity.id,
+                              date: widget.entry.date,
+                              expanded: _expanded,
+                              onPressed: () => setState(() => _expanded = !_expanded),
+                            ),
+                            if (widget.onMenu != null)
+                              IconButton(
+                                tooltip: context.l10n.moreOptions,
+                                icon: Icon(Icons.more_vert, color: t.textMuted),
+                                onPressed: widget.onMenu,
+                              ),
                           ],
                         ),
                       ),
-                      if (widget.mode == CardMode.actionable)
-                        _CheckButton(
-                          color: border,
-                          done: _completing,
-                          partial: activity.isPartial,
-                          onPressed: _press,
-                        ),
-                      if (widget.mode == CardMode.missed)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Icon(Icons.close_rounded, color: t.danger),
-                        ),
-                      if (widget.onMenu != null)
-                        IconButton(
-                          tooltip: context.l10n.moreOptions,
-                          icon: Icon(Icons.more_vert, color: t.textMuted),
-                          onPressed: widget.onMenu,
-                        ),
+                      if (activity.isPartial)
+                        _ProgressLine(value: (_occurrence?.progress ?? 0) / 100, color: border),
                     ],
                   ),
                 ),
-                if (activity.isPartial)
-                  _ProgressLine(value: (_occurrence?.progress ?? 0) / 100, color: border),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeOutCubic,
+                  alignment: Alignment.topCenter,
+                  child: _expanded
+                      ? SubtaskList(
+                          activityId: activity.id,
+                          date: widget.entry.date,
+                          canCheck: widget.mode == CardMode.actionable,
+                          color: border,
+                        )
+                      : const SizedBox(width: double.infinity),
+                ),
               ],
             ),
           ),
@@ -163,23 +227,25 @@ class _ActivityCardState extends State<ActivityCard> {
   }
 }
 
-/// Round check button; fills with [color] and shows a check when [done].
+/// Round check button in the activity's [color]; fills and shows a check
+/// when [done].
 class _CheckButton extends StatelessWidget {
   const _CheckButton({
     required this.color,
     required this.done,
     required this.partial,
     required this.onPressed,
+    this.size = 26,
   });
 
   final Color color;
   final bool done;
   final bool partial;
+  final double size;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final t = context.tokens;
     return Semantics(
       button: true,
       label: context.l10n.progressDone,
@@ -188,34 +254,7 @@ class _CheckButton extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: Padding(
           padding: const EdgeInsets.all(6),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutBack,
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: done ? color : Colors.transparent,
-              border: Border.all(color: color, width: 2),
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              transitionBuilder: (child, a) => ScaleTransition(scale: a, child: child),
-              child: done
-                  ? Icon(
-                      Icons.check_rounded,
-                      key: const ValueKey('done'),
-                      size: 20,
-                      color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-                    )
-                  : Icon(
-                      partial ? Icons.percent_rounded : Icons.check_rounded,
-                      key: const ValueKey('todo'),
-                      size: 18,
-                      color: t.textMuted.withValues(alpha: 0.35),
-                    ),
-            ),
-          ),
+          child: CheckButtonFace(color: color, done: done, partial: partial, size: size),
         ),
       ),
     );

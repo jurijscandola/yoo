@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.ColorFilter
@@ -28,6 +29,8 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.ContentScale
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -50,7 +53,7 @@ import org.json.JSONObject
 
 /**
  * Home screen widget: today's date and the activities still to do, in the
- * colors of the user's theme.
+ * colors and card style of the user's theme.
  *
  * The data is a JSON snapshot written by the app (lib/features/home_widget/)
  * under [DATA_KEY]. It holds today and tomorrow, so at midnight (a redraw is
@@ -109,8 +112,15 @@ class YooWidget : GlanceAppWidget() {
             LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
               items(day.items, itemId = { it.activityId.hashCode().toLong() }) { item ->
                 Column {
-                  ItemCard(item, day.date, colors)
-                  Spacer(GlanceModifier.height(6.dp))
+                  ItemCard(
+                      item,
+                      day.date,
+                      colors,
+                      snapshot?.cardStyle ?: CardStyle.STANDARD,
+                      snapshot?.textScale ?: 1f,
+                  )
+                  // Notebook lines follow one another; cards are spaced.
+                  if (snapshot?.cardStyle != CardStyle.PAPER) Spacer(GlanceModifier.height(6.dp))
                 }
               }
             }
@@ -128,9 +138,15 @@ class YooWidget : GlanceAppWidget() {
     }
   }
 
-  /** A card "bordered" with the activity color (Glance has no borders: an outer box does it). */
+  /**
+   * An activity in the user's card style (see CardStyle in app_settings.dart).
+   *
+   * Glance has no borders, shadows or gradient strokes, so they are imitated
+   * with an outer box: a solid one for the border, a tinted fade
+   * (widget_fade_up) for the half border and the colored shadow.
+   */
   @Composable
-  private fun ItemCard(item: Item, date: String, colors: Colors) {
+  private fun ItemCard(item: Item, date: String, colors: Colors, style: String, textScale: Float) {
     val link =
         Uri.Builder()
             .scheme("yoo")
@@ -140,14 +156,36 @@ class YooWidget : GlanceAppWidget() {
             .appendQueryParameter("action", item.action)
             .build()
             .toString()
-    Box(
-        modifier =
-            GlanceModifier.fillMaxWidth()
-                .background(item.border)
-                .cornerRadius(12.dp)
-                .padding(2.dp)
-                .clickable(actionRunCallback<CompleteActivityAction>(actionParametersOf(LINK to link))),
-    ) {
+    val complete = actionRunCallback<CompleteActivityAction>(actionParametersOf(LINK to link))
+
+    if (style == CardStyle.PAPER) {
+      PaperRow(item, colors, textScale, GlanceModifier.clickable(complete))
+      return
+    }
+
+    val fade = ImageProvider(R.drawable.widget_fade_up)
+    val outer =
+        when (style) {
+          CardStyle.ONLY_BUTTON ->
+              GlanceModifier.fillMaxWidth()
+                  .background(colors.text.copy(alpha = 0.07f))
+                  .cornerRadius(12.dp)
+                  .padding(bottom = 2.dp)
+          CardStyle.COLORED_SHADOW ->
+              GlanceModifier.fillMaxWidth()
+                  .background(
+                      fade,
+                      ContentScale.FillBounds,
+                      ColorFilter.tint(ColorProvider(item.border.copy(alpha = 0.45f))),
+                  )
+                  .padding(start = 1.dp, end = 1.dp, bottom = 4.dp)
+          CardStyle.HALF_BORDER ->
+              GlanceModifier.fillMaxWidth()
+                  .background(fade, ContentScale.FillBounds, ColorFilter.tint(ColorProvider(item.border)))
+                  .padding(2.dp)
+          else -> GlanceModifier.fillMaxWidth().background(item.border).cornerRadius(12.dp).padding(2.dp)
+        }
+    Box(modifier = outer.clickable(complete)) {
       Row(
           modifier =
               GlanceModifier.fillMaxWidth()
@@ -156,30 +194,77 @@ class YooWidget : GlanceAppWidget() {
                   .padding(horizontal = 12.dp, vertical = 9.dp),
           verticalAlignment = Alignment.CenterVertically,
       ) {
-        Column(modifier = GlanceModifier.defaultWeight()) {
-          Text(
-              item.name,
-              maxLines = 1,
-              style = TextStyle(color = ColorProvider(colors.text), fontSize = 14.sp, fontWeight = FontWeight.Medium),
-          )
-          item.detail?.let {
-            Text(it, style = TextStyle(color = ColorProvider(colors.textMuted), fontSize = 12.sp))
-          }
-        }
-        Spacer(GlanceModifier.width(8.dp))
-        Image(
-            provider = ImageProvider(R.drawable.widget_check_ring),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(ColorProvider(item.border)),
-            modifier = GlanceModifier.size(22.dp),
-        )
+        // The completion button on the left, as in the app.
+        CheckFace(item.border, square = false, size = 17.dp)
+        Spacer(GlanceModifier.width(10.dp))
+        Column(modifier = GlanceModifier.defaultWeight()) { ItemTexts(item, colors, textScale) }
       }
+    }
+  }
+
+  /** Notebook style: a ruled line, the check square in the red-lined margin. */
+  @Composable
+  private fun PaperRow(item: Item, colors: Colors, textScale: Float, modifier: GlanceModifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+      Row(
+          modifier = GlanceModifier.fillMaxWidth().padding(vertical = 7.dp),
+          verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Box(modifier = GlanceModifier.width(38.dp), contentAlignment = Alignment.Center) {
+          CheckFace(item.border, square = true, size = 22.dp)
+        }
+        Box(modifier = GlanceModifier.width(1.dp).fillMaxHeight().background(PAPER_MARGIN)) {}
+        Spacer(GlanceModifier.width(10.dp))
+        Column(modifier = GlanceModifier.defaultWeight()) { ItemTexts(item, colors, textScale) }
+      }
+      Box(modifier = GlanceModifier.fillMaxWidth().height(1.dp).background(PAPER_RULE)) {}
+    }
+  }
+
+  @Composable
+  private fun ItemTexts(item: Item, colors: Colors, textScale: Float) {
+    Text(
+        item.name,
+        maxLines = 1,
+        style =
+            TextStyle(
+                color = ColorProvider(colors.text),
+                fontSize = (14 * textScale).sp,
+                fontWeight = FontWeight.Medium,
+            ),
+    )
+    item.detail?.let {
+      Text(it, style = TextStyle(color = ColorProvider(colors.textMuted), fontSize = (12 * textScale).sp))
+    }
+  }
+
+  /** The completion button: a light tint and the colored outline, empty until done. */
+  @Composable
+  private fun CheckFace(color: Color, square: Boolean, size: Dp) {
+    Box(modifier = GlanceModifier.size(size), contentAlignment = Alignment.Center) {
+      Image(
+          provider =
+              ImageProvider(if (square) R.drawable.widget_check_square_fill else R.drawable.widget_check_ring_fill),
+          contentDescription = null,
+          colorFilter = ColorFilter.tint(ColorProvider(color.copy(alpha = 0.07f))),
+          modifier = GlanceModifier.size(size),
+      )
+      Image(
+          provider = ImageProvider(if (square) R.drawable.widget_check_square else R.drawable.widget_check_ring),
+          contentDescription = null,
+          colorFilter = ColorFilter.tint(ColorProvider(color)),
+          modifier = GlanceModifier.size(size),
+      )
     }
   }
 
   companion object {
     /** Key of the snapshot written by AndroidHomeScreenWidget (Dart). */
     const val DATA_KEY = "yoo_widget"
+
+    /** Notebook ruling and margin line (same as the app's paper style). */
+    val PAPER_RULE = Color(0x736E9BD1)
+    val PAPER_MARGIN = Color(0x8CD9606A)
 
     val LINK = ActionParameters.Key<String>("link")
   }
@@ -223,6 +308,15 @@ internal data class Colors(
   }
 }
 
+/** Names of CardStyle in app_settings.dart. */
+internal object CardStyle {
+  const val STANDARD = "standard"
+  const val ONLY_BUTTON = "onlyButton"
+  const val COLORED_SHADOW = "coloredShadow"
+  const val HALF_BORDER = "halfBorder"
+  const val PAPER = "paper"
+}
+
 internal data class Item(
     val activityId: String,
     val name: String,
@@ -239,7 +333,13 @@ internal data class Day(
     val items: List<Item>,
 )
 
-internal data class Snapshot(val colors: Colors, val days: List<Day>, val staleText: String) {
+internal data class Snapshot(
+    val colors: Colors,
+    val days: List<Day>,
+    val staleText: String,
+    val cardStyle: String,
+    val textScale: Float,
+) {
   companion object {
     fun parse(raw: String?): Snapshot? {
       if (raw == null) return null
@@ -282,6 +382,9 @@ internal data class Snapshot(val colors: Colors, val days: List<Day>, val staleT
                   )
                 },
             staleText = json.getString("staleText"),
+            // Snapshots written before card styles existed: the classic cards.
+            cardStyle = json.optString("cardStyle", CardStyle.STANDARD),
+            textScale = json.optDouble("textScale", 1.0).toFloat(),
         )
       } catch (e: Exception) {
         null

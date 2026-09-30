@@ -4,6 +4,7 @@ import '../../../app/providers.dart';
 import '../../../core/time/local_date.dart';
 import '../domain/entities/activity.dart';
 import '../domain/entities/occurrence.dart';
+import '../domain/entities/subtask.dart';
 import '../domain/services/occurrence_planner.dart';
 
 /// Every activity, deleted ones included (history needs them), by id.
@@ -45,4 +46,17 @@ final dayEntriesProvider = Provider.autoDispose.family<AsyncValue<List<DayEntry>
 /// Missed occurrences waiting for the user's decision.
 final unresolvedMissedProvider = StreamProvider<List<Occurrence>>(
   (ref) => ref.watch(occurrenceRepositoryProvider).watchUnresolvedMissed(),
+);
+
+/// Subtasks of an activity, in order.
+final subtasksProvider = StreamProvider.autoDispose.family<List<Subtask>, String>(
+  (ref, activityId) => ref.watch(subtaskRepositoryProvider).watchForActivity(activityId),
+);
+
+/// Ids of the subtasks of an activity checked on a day.
+final checkedSubtasksProvider = StreamProvider.autoDispose.family<Set<String>, (String, LocalDate)>(
+  (ref, key) {
+    final (activityId, date) = key;
+    return ref.watch(subtaskRepositoryProvider).watchChecked(activityId, date);
+  },
 );

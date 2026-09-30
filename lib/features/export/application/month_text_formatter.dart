@@ -35,7 +35,7 @@ class MonthTextFormatter {
       ..writeln(l10n.reportGoals);
     if (report.goals.isEmpty) out.writeln('  ${l10n.reportNoGoals}');
     for (final g in report.goals) {
-      out.writeln('  • ${g.goal.title} — ${l10n.percent(g.progress.round())}');
+      out.writeln('  • ${g.goal.title} — ${l10n.goalAmount(g.reached, g.goal.target)}');
     }
 
     out

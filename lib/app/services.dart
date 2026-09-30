@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/time/local_date.dart';
 import '../features/activities/domain/services/activity_service.dart';
+import '../features/activities/domain/services/subtask_service.dart';
 import '../features/goals/domain/goal_service.dart';
 import '../features/home_widget/presentation/home_widget_providers.dart';
 import '../features/reminders/presentation/reminder_providers.dart';
@@ -52,5 +53,13 @@ final activityServiceProvider = Provider<ActivityService>(
     clock: ref.watch(clockProvider),
     newId: ref.watch(idGeneratorProvider),
     onChanged: ref.watch(changeHookProvider),
+  ),
+);
+
+final subtaskServiceProvider = Provider<SubtaskService>(
+  (ref) => SubtaskService(
+    subtasks: ref.watch(subtaskRepositoryProvider),
+    clock: ref.watch(clockProvider),
+    newId: ref.watch(idGeneratorProvider),
   ),
 );

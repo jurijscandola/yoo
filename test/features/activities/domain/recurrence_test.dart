@@ -13,6 +13,13 @@ void main() {
     ];
   }
 
+  test('once occurs only on its day', () {
+    final r = OnceRecurrence(date: LocalDate(2026, 9, 30));
+    expect(daysIn(r, 2026, 9), [30]);
+    expect(daysIn(r, 2026, 10), isEmpty);
+    expect(Recurrence.fromJson(r.toJson()), r);
+  });
+
   test('daily occurs every day', () {
     expect(daysIn(const DailyRecurrence(), 2026, 2).length, 28);
   });
@@ -30,6 +37,26 @@ void main() {
   test('weekly occurs on the chosen weekday', () {
     const r = WeeklyRecurrence(weekday: DateTime.tuesday);
     expect(daysIn(r, 2026, 9), [1, 8, 15, 22, 29]);
+  });
+
+  test('every other week keeps its rhythm across months', () {
+    // Saturday 3 October 2026 is the first time.
+    final r = WeeklyRecurrence(
+      weekday: DateTime.saturday,
+      everyWeeks: 2,
+      anchor: LocalDate(2026, 10, 3),
+    );
+    expect(daysIn(r, 2026, 10), [3, 17, 31]);
+    expect(daysIn(r, 2026, 11), [14, 28]);
+    expect(daysIn(r, 2026, 9), [5, 19]);
+    expect(Recurrence.fromJson(r.toJson()), r);
+  });
+
+  test('weekly without interval reads old data', () {
+    expect(
+      Recurrence.fromJson({'type': 'weekly', 'weekday': 6}),
+      const WeeklyRecurrence(weekday: 6),
+    );
   });
 
   test('monthly clamps to the last day of short months', () {

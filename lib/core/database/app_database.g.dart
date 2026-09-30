@@ -1329,6 +1329,16 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<int> target = GeneratedColumn<int>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(100),
+  );
   static const VerificationMeta _completionNotifiedAtMeta = const VerificationMeta(
     'completionNotifiedAt',
   );
@@ -1373,6 +1383,7 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     year,
     month,
     title,
+    target,
     completionNotifiedAt,
     createdAt,
     updatedAt,
@@ -1406,6 +1417,9 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
       context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(_targetMeta, target.isAcceptableOrUnknown(data['target']!, _targetMeta));
     }
     if (data.containsKey('completion_notified_at')) {
       context.handle(
@@ -1454,6 +1468,10 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
         DriftSqlType.string,
         data['${effectivePrefix}title'],
       )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target'],
+      )!,
       completionNotifiedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}completion_notified_at'],
@@ -1484,6 +1502,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
   final int year;
   final int month;
   final String title;
+
+  /// Amount to reach. Goals created before quantities existed were
+  /// percentages, so they keep 100 as target (added in schema 2).
+  final int target;
   final DateTime? completionNotifiedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -1493,6 +1515,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     required this.year,
     required this.month,
     required this.title,
+    required this.target,
     this.completionNotifiedAt,
     required this.createdAt,
     required this.updatedAt,
@@ -1505,6 +1528,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     map['year'] = Variable<int>(year);
     map['month'] = Variable<int>(month);
     map['title'] = Variable<String>(title);
+    map['target'] = Variable<int>(target);
     if (!nullToAbsent || completionNotifiedAt != null) {
       map['completion_notified_at'] = Variable<DateTime>(completionNotifiedAt);
     }
@@ -1522,6 +1546,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       year: Value(year),
       month: Value(month),
       title: Value(title),
+      target: Value(target),
       completionNotifiedAt: completionNotifiedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(completionNotifiedAt),
@@ -1538,6 +1563,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       year: serializer.fromJson<int>(json['year']),
       month: serializer.fromJson<int>(json['month']),
       title: serializer.fromJson<String>(json['title']),
+      target: serializer.fromJson<int>(json['target']),
       completionNotifiedAt: serializer.fromJson<DateTime?>(json['completionNotifiedAt']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1552,6 +1578,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       'year': serializer.toJson<int>(year),
       'month': serializer.toJson<int>(month),
       'title': serializer.toJson<String>(title),
+      'target': serializer.toJson<int>(target),
       'completionNotifiedAt': serializer.toJson<DateTime?>(completionNotifiedAt),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1564,6 +1591,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     int? year,
     int? month,
     String? title,
+    int? target,
     Value<DateTime?> completionNotifiedAt = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -1573,6 +1601,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     year: year ?? this.year,
     month: month ?? this.month,
     title: title ?? this.title,
+    target: target ?? this.target,
     completionNotifiedAt: completionNotifiedAt.present
         ? completionNotifiedAt.value
         : this.completionNotifiedAt,
@@ -1586,6 +1615,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       year: data.year.present ? data.year.value : this.year,
       month: data.month.present ? data.month.value : this.month,
       title: data.title.present ? data.title.value : this.title,
+      target: data.target.present ? data.target.value : this.target,
       completionNotifiedAt: data.completionNotifiedAt.present
           ? data.completionNotifiedAt.value
           : this.completionNotifiedAt,
@@ -1602,6 +1632,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
           ..write('year: $year, ')
           ..write('month: $month, ')
           ..write('title: $title, ')
+          ..write('target: $target, ')
           ..write('completionNotifiedAt: $completionNotifiedAt, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -1611,8 +1642,17 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, year, month, title, completionNotifiedAt, createdAt, updatedAt, deletedAt);
+  int get hashCode => Object.hash(
+    id,
+    year,
+    month,
+    title,
+    target,
+    completionNotifiedAt,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1621,6 +1661,7 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
           other.year == this.year &&
           other.month == this.month &&
           other.title == this.title &&
+          other.target == this.target &&
           other.completionNotifiedAt == this.completionNotifiedAt &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
@@ -1632,6 +1673,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
   final Value<int> year;
   final Value<int> month;
   final Value<String> title;
+  final Value<int> target;
   final Value<DateTime?> completionNotifiedAt;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1642,6 +1684,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     this.year = const Value.absent(),
     this.month = const Value.absent(),
     this.title = const Value.absent(),
+    this.target = const Value.absent(),
     this.completionNotifiedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1653,6 +1696,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     required int year,
     required int month,
     required String title,
+    this.target = const Value.absent(),
     this.completionNotifiedAt = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -1669,6 +1713,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     Expression<int>? year,
     Expression<int>? month,
     Expression<String>? title,
+    Expression<int>? target,
     Expression<DateTime>? completionNotifiedAt,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1680,6 +1725,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       if (year != null) 'year': year,
       if (month != null) 'month': month,
       if (title != null) 'title': title,
+      if (target != null) 'target': target,
       if (completionNotifiedAt != null) 'completion_notified_at': completionNotifiedAt,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1693,6 +1739,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     Value<int>? year,
     Value<int>? month,
     Value<String>? title,
+    Value<int>? target,
     Value<DateTime?>? completionNotifiedAt,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1704,6 +1751,7 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       year: year ?? this.year,
       month: month ?? this.month,
       title: title ?? this.title,
+      target: target ?? this.target,
       completionNotifiedAt: completionNotifiedAt ?? this.completionNotifiedAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1726,6 +1774,9 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<int>(target.value);
     }
     if (completionNotifiedAt.present) {
       map['completion_notified_at'] = Variable<DateTime>(completionNotifiedAt.value);
@@ -1752,10 +1803,640 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
           ..write('year: $year, ')
           ..write('month: $month, ')
           ..write('title: $title, ')
+          ..write('target: $target, ')
           ..write('completionNotifiedAt: $completionNotifiedAt, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SubtasksTable extends Subtasks with TableInfo<$SubtasksTable, SubtaskRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubtasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _activityIdMeta = const VerificationMeta('activityId');
+  @override
+  late final GeneratedColumn<String> activityId = GeneratedColumn<String>(
+    'activity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta('position');
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, activityId, title, position, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subtasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubtaskRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('activity_id')) {
+      context.handle(
+        _activityIdMeta,
+        activityId.isAcceptableOrUnknown(data['activity_id']!, _activityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_activityIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SubtaskRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubtaskRow(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      activityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}activity_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SubtasksTable createAlias(String alias) {
+    return $SubtasksTable(attachedDatabase, alias);
+  }
+}
+
+class SubtaskRow extends DataClass implements Insertable<SubtaskRow> {
+  final String id;
+  final String activityId;
+  final String title;
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SubtaskRow({
+    required this.id,
+    required this.activityId,
+    required this.title,
+    required this.position,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['activity_id'] = Variable<String>(activityId);
+    map['title'] = Variable<String>(title);
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SubtasksCompanion toCompanion(bool nullToAbsent) {
+    return SubtasksCompanion(
+      id: Value(id),
+      activityId: Value(activityId),
+      title: Value(title),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SubtaskRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubtaskRow(
+      id: serializer.fromJson<String>(json['id']),
+      activityId: serializer.fromJson<String>(json['activityId']),
+      title: serializer.fromJson<String>(json['title']),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'activityId': serializer.toJson<String>(activityId),
+      'title': serializer.toJson<String>(title),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SubtaskRow copyWith({
+    String? id,
+    String? activityId,
+    String? title,
+    int? position,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SubtaskRow(
+    id: id ?? this.id,
+    activityId: activityId ?? this.activityId,
+    title: title ?? this.title,
+    position: position ?? this.position,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SubtaskRow copyWithCompanion(SubtasksCompanion data) {
+    return SubtaskRow(
+      id: data.id.present ? data.id.value : this.id,
+      activityId: data.activityId.present ? data.activityId.value : this.activityId,
+      title: data.title.present ? data.title.value : this.title,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubtaskRow(')
+          ..write('id: $id, ')
+          ..write('activityId: $activityId, ')
+          ..write('title: $title, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, activityId, title, position, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubtaskRow &&
+          other.id == this.id &&
+          other.activityId == this.activityId &&
+          other.title == this.title &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SubtasksCompanion extends UpdateCompanion<SubtaskRow> {
+  final Value<String> id;
+  final Value<String> activityId;
+  final Value<String> title;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SubtasksCompanion({
+    this.id = const Value.absent(),
+    this.activityId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SubtasksCompanion.insert({
+    required String id,
+    required String activityId,
+    required String title,
+    required int position,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       activityId = Value(activityId),
+       title = Value(title),
+       position = Value(position),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SubtaskRow> custom({
+    Expression<String>? id,
+    Expression<String>? activityId,
+    Expression<String>? title,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (activityId != null) 'activity_id': activityId,
+      if (title != null) 'title': title,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SubtasksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? activityId,
+    Value<String>? title,
+    Value<int>? position,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SubtasksCompanion(
+      id: id ?? this.id,
+      activityId: activityId ?? this.activityId,
+      title: title ?? this.title,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (activityId.present) {
+      map['activity_id'] = Variable<String>(activityId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubtasksCompanion(')
+          ..write('id: $id, ')
+          ..write('activityId: $activityId, ')
+          ..write('title: $title, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SubtaskChecksTable extends SubtaskChecks
+    with TableInfo<$SubtaskChecksTable, SubtaskCheckRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SubtaskChecksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _subtaskIdMeta = const VerificationMeta('subtaskId');
+  @override
+  late final GeneratedColumn<String> subtaskId = GeneratedColumn<String>(
+    'subtask_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta('checkedAt');
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [subtaskId, date, checkedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subtask_checks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubtaskCheckRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('subtask_id')) {
+      context.handle(
+        _subtaskIdMeta,
+        subtaskId.isAcceptableOrUnknown(data['subtask_id']!, _subtaskIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtaskIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {subtaskId, date};
+  @override
+  SubtaskCheckRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubtaskCheckRow(
+      subtaskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subtask_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}date'])!,
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SubtaskChecksTable createAlias(String alias) {
+    return $SubtaskChecksTable(attachedDatabase, alias);
+  }
+}
+
+class SubtaskCheckRow extends DataClass implements Insertable<SubtaskCheckRow> {
+  final String subtaskId;
+  final String date;
+  final DateTime checkedAt;
+  const SubtaskCheckRow({required this.subtaskId, required this.date, required this.checkedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['subtask_id'] = Variable<String>(subtaskId);
+    map['date'] = Variable<String>(date);
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  SubtaskChecksCompanion toCompanion(bool nullToAbsent) {
+    return SubtaskChecksCompanion(
+      subtaskId: Value(subtaskId),
+      date: Value(date),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory SubtaskCheckRow.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubtaskCheckRow(
+      subtaskId: serializer.fromJson<String>(json['subtaskId']),
+      date: serializer.fromJson<String>(json['date']),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'subtaskId': serializer.toJson<String>(subtaskId),
+      'date': serializer.toJson<String>(date),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  SubtaskCheckRow copyWith({String? subtaskId, String? date, DateTime? checkedAt}) =>
+      SubtaskCheckRow(
+        subtaskId: subtaskId ?? this.subtaskId,
+        date: date ?? this.date,
+        checkedAt: checkedAt ?? this.checkedAt,
+      );
+  SubtaskCheckRow copyWithCompanion(SubtaskChecksCompanion data) {
+    return SubtaskCheckRow(
+      subtaskId: data.subtaskId.present ? data.subtaskId.value : this.subtaskId,
+      date: data.date.present ? data.date.value : this.date,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubtaskCheckRow(')
+          ..write('subtaskId: $subtaskId, ')
+          ..write('date: $date, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(subtaskId, date, checkedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubtaskCheckRow &&
+          other.subtaskId == this.subtaskId &&
+          other.date == this.date &&
+          other.checkedAt == this.checkedAt);
+}
+
+class SubtaskChecksCompanion extends UpdateCompanion<SubtaskCheckRow> {
+  final Value<String> subtaskId;
+  final Value<String> date;
+  final Value<DateTime> checkedAt;
+  final Value<int> rowid;
+  const SubtaskChecksCompanion({
+    this.subtaskId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SubtaskChecksCompanion.insert({
+    required String subtaskId,
+    required String date,
+    required DateTime checkedAt,
+    this.rowid = const Value.absent(),
+  }) : subtaskId = Value(subtaskId),
+       date = Value(date),
+       checkedAt = Value(checkedAt);
+  static Insertable<SubtaskCheckRow> custom({
+    Expression<String>? subtaskId,
+    Expression<String>? date,
+    Expression<DateTime>? checkedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (subtaskId != null) 'subtask_id': subtaskId,
+      if (date != null) 'date': date,
+      if (checkedAt != null) 'checked_at': checkedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SubtaskChecksCompanion copyWith({
+    Value<String>? subtaskId,
+    Value<String>? date,
+    Value<DateTime>? checkedAt,
+    Value<int>? rowid,
+  }) {
+    return SubtaskChecksCompanion(
+      subtaskId: subtaskId ?? this.subtaskId,
+      date: date ?? this.date,
+      checkedAt: checkedAt ?? this.checkedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (subtaskId.present) {
+      map['subtask_id'] = Variable<String>(subtaskId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<String>(date.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubtaskChecksCompanion(')
+          ..write('subtaskId: $subtaskId, ')
+          ..write('date: $date, ')
+          ..write('checkedAt: $checkedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1959,6 +2640,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ActivitiesTable activities = $ActivitiesTable(this);
   late final $OccurrencesTable occurrences = $OccurrencesTable(this);
   late final $GoalsTable goals = $GoalsTable(this);
+  late final $SubtasksTable subtasks = $SubtasksTable(this);
+  late final $SubtaskChecksTable subtaskChecks = $SubtaskChecksTable(this);
   late final $KeyValuesTable keyValues = $KeyValuesTable(this);
   late final Index occurrencesDate = Index(
     'occurrences_date',
@@ -1972,6 +2655,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'goals_month',
     'CREATE INDEX goals_month ON goals (year, month)',
   );
+  late final Index subtasksActivity = Index(
+    'subtasks_activity',
+    'CREATE INDEX subtasks_activity ON subtasks (activity_id)',
+  );
+  late final Index subtaskChecksDate = Index(
+    'subtask_checks_date',
+    'CREATE INDEX subtask_checks_date ON subtask_checks (date)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1980,10 +2671,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     activities,
     occurrences,
     goals,
+    subtasks,
+    subtaskChecks,
     keyValues,
     occurrencesDate,
     occurrencesActivityDate,
     goalsMonth,
+    subtasksActivity,
+    subtaskChecksDate,
   ];
 }
 
@@ -2550,6 +3245,7 @@ typedef $$GoalsTableCreateCompanionBuilder =
       required int year,
       required int month,
       required String title,
+      Value<int> target,
       Value<DateTime?> completionNotifiedAt,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -2562,6 +3258,7 @@ typedef $$GoalsTableUpdateCompanionBuilder =
       Value<int> year,
       Value<int> month,
       Value<String> title,
+      Value<int> target,
       Value<DateTime?> completionNotifiedAt,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -2588,6 +3285,9 @@ class $$GoalsTableFilterComposer extends Composer<_$AppDatabase, $GoalsTable> {
 
   ColumnFilters<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get completionNotifiedAt => $composableBuilder(
     column: $table.completionNotifiedAt,
@@ -2624,6 +3324,9 @@ class $$GoalsTableOrderingComposer extends Composer<_$AppDatabase, $GoalsTable> 
   ColumnOrderings<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get completionNotifiedAt => $composableBuilder(
     column: $table.completionNotifiedAt,
     builder: (column) => ColumnOrderings(column),
@@ -2658,6 +3361,9 @@ class $$GoalsTableAnnotationComposer extends Composer<_$AppDatabase, $GoalsTable
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<int> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
 
   GeneratedColumn<DateTime> get completionNotifiedAt =>
       $composableBuilder(column: $table.completionNotifiedAt, builder: (column) => column);
@@ -2701,6 +3407,7 @@ class $$GoalsTableTableManager
                 Value<int> year = const Value.absent(),
                 Value<int> month = const Value.absent(),
                 Value<String> title = const Value.absent(),
+                Value<int> target = const Value.absent(),
                 Value<DateTime?> completionNotifiedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -2711,6 +3418,7 @@ class $$GoalsTableTableManager
                 year: year,
                 month: month,
                 title: title,
+                target: target,
                 completionNotifiedAt: completionNotifiedAt,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -2723,6 +3431,7 @@ class $$GoalsTableTableManager
                 required int year,
                 required int month,
                 required String title,
+                Value<int> target = const Value.absent(),
                 Value<DateTime?> completionNotifiedAt = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -2733,6 +3442,7 @@ class $$GoalsTableTableManager
                 year: year,
                 month: month,
                 title: title,
+                target: target,
                 completionNotifiedAt: completionNotifiedAt,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -2764,6 +3474,340 @@ typedef $$GoalsTableProcessedTableManager =
       $$GoalsTableUpdateCompanionBuilder,
       (GoalRow, BaseReferences<_$AppDatabase, $GoalsTable, GoalRow>),
       GoalRow,
+      PrefetchHooks Function()
+    >;
+typedef $$SubtasksTableCreateCompanionBuilder =
+    SubtasksCompanion Function({
+      required String id,
+      required String activityId,
+      required String title,
+      required int position,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SubtasksTableUpdateCompanionBuilder =
+    SubtasksCompanion Function({
+      Value<String> id,
+      Value<String> activityId,
+      Value<String> title,
+      Value<int> position,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SubtasksTableFilterComposer extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$SubtasksTableOrderingComposer extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SubtasksTableAnnotationComposer extends Composer<_$AppDatabase, $SubtasksTable> {
+  $$SubtasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get activityId =>
+      $composableBuilder(column: $table.activityId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SubtasksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SubtasksTable,
+          SubtaskRow,
+          $$SubtasksTableFilterComposer,
+          $$SubtasksTableOrderingComposer,
+          $$SubtasksTableAnnotationComposer,
+          $$SubtasksTableCreateCompanionBuilder,
+          $$SubtasksTableUpdateCompanionBuilder,
+          (SubtaskRow, BaseReferences<_$AppDatabase, $SubtasksTable, SubtaskRow>),
+          SubtaskRow,
+          PrefetchHooks Function()
+        > {
+  $$SubtasksTableTableManager(_$AppDatabase db, $SubtasksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$SubtasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () => $$SubtasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubtasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> activityId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SubtasksCompanion(
+                id: id,
+                activityId: activityId,
+                title: title,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String activityId,
+                required String title,
+                required int position,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SubtasksCompanion.insert(
+                id: id,
+                activityId: activityId,
+                title: title,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SubtasksTable, SubtaskRow>(table),
+                  BaseReferences<_$AppDatabase, $SubtasksTable, SubtaskRow>(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SubtasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SubtasksTable,
+      SubtaskRow,
+      $$SubtasksTableFilterComposer,
+      $$SubtasksTableOrderingComposer,
+      $$SubtasksTableAnnotationComposer,
+      $$SubtasksTableCreateCompanionBuilder,
+      $$SubtasksTableUpdateCompanionBuilder,
+      (SubtaskRow, BaseReferences<_$AppDatabase, $SubtasksTable, SubtaskRow>),
+      SubtaskRow,
+      PrefetchHooks Function()
+    >;
+typedef $$SubtaskChecksTableCreateCompanionBuilder =
+    SubtaskChecksCompanion Function({
+      required String subtaskId,
+      required String date,
+      required DateTime checkedAt,
+      Value<int> rowid,
+    });
+typedef $$SubtaskChecksTableUpdateCompanionBuilder =
+    SubtaskChecksCompanion Function({
+      Value<String> subtaskId,
+      Value<String> date,
+      Value<DateTime> checkedAt,
+      Value<int> rowid,
+    });
+
+class $$SubtaskChecksTableFilterComposer extends Composer<_$AppDatabase, $SubtaskChecksTable> {
+  $$SubtaskChecksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get subtaskId =>
+      $composableBuilder(column: $table.subtaskId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$SubtaskChecksTableOrderingComposer extends Composer<_$AppDatabase, $SubtaskChecksTable> {
+  $$SubtaskChecksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get subtaskId =>
+      $composableBuilder(column: $table.subtaskId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SubtaskChecksTableAnnotationComposer extends Composer<_$AppDatabase, $SubtaskChecksTable> {
+  $$SubtaskChecksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get subtaskId =>
+      $composableBuilder(column: $table.subtaskId, builder: (column) => column);
+
+  GeneratedColumn<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+}
+
+class $$SubtaskChecksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SubtaskChecksTable,
+          SubtaskCheckRow,
+          $$SubtaskChecksTableFilterComposer,
+          $$SubtaskChecksTableOrderingComposer,
+          $$SubtaskChecksTableAnnotationComposer,
+          $$SubtaskChecksTableCreateCompanionBuilder,
+          $$SubtaskChecksTableUpdateCompanionBuilder,
+          (SubtaskCheckRow, BaseReferences<_$AppDatabase, $SubtaskChecksTable, SubtaskCheckRow>),
+          SubtaskCheckRow,
+          PrefetchHooks Function()
+        > {
+  $$SubtaskChecksTableTableManager(_$AppDatabase db, $SubtaskChecksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () => $$SubtaskChecksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SubtaskChecksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SubtaskChecksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> subtaskId = const Value.absent(),
+                Value<String> date = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SubtaskChecksCompanion(
+                subtaskId: subtaskId,
+                date: date,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String subtaskId,
+                required String date,
+                required DateTime checkedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SubtaskChecksCompanion.insert(
+                subtaskId: subtaskId,
+                date: date,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SubtaskChecksTable, SubtaskCheckRow>(table),
+                  BaseReferences<_$AppDatabase, $SubtaskChecksTable, SubtaskCheckRow>(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SubtaskChecksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SubtaskChecksTable,
+      SubtaskCheckRow,
+      $$SubtaskChecksTableFilterComposer,
+      $$SubtaskChecksTableOrderingComposer,
+      $$SubtaskChecksTableAnnotationComposer,
+      $$SubtaskChecksTableCreateCompanionBuilder,
+      $$SubtaskChecksTableUpdateCompanionBuilder,
+      (SubtaskCheckRow, BaseReferences<_$AppDatabase, $SubtaskChecksTable, SubtaskCheckRow>),
+      SubtaskCheckRow,
       PrefetchHooks Function()
     >;
 typedef $$KeyValuesTableCreateCompanionBuilder =
@@ -2888,5 +3932,8 @@ class $AppDatabaseManager {
   $$OccurrencesTableTableManager get occurrences =>
       $$OccurrencesTableTableManager(_db, _db.occurrences);
   $$GoalsTableTableManager get goals => $$GoalsTableTableManager(_db, _db.goals);
+  $$SubtasksTableTableManager get subtasks => $$SubtasksTableTableManager(_db, _db.subtasks);
+  $$SubtaskChecksTableTableManager get subtaskChecks =>
+      $$SubtaskChecksTableTableManager(_db, _db.subtaskChecks);
   $$KeyValuesTableTableManager get keyValues => $$KeyValuesTableTableManager(_db, _db.keyValues);
 }

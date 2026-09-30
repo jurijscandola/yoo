@@ -16,11 +16,19 @@ sealed class Recurrence {
   /// Restores a recurrence serialized with [toJson].
   static Recurrence fromJson(Map<String, Object?> json) {
     return switch (json['type']) {
+      'once' => OnceRecurrence(date: LocalDate.parse(json['date']! as String)),
       'daily' => const DailyRecurrence(),
       'everyOtherDay' => EveryOtherDayRecurrence(
         anchor: LocalDate.parse(json['anchor']! as String),
       ),
-      'weekly' => WeeklyRecurrence(weekday: json['weekday']! as int),
+      'weekly' => WeeklyRecurrence(
+        weekday: json['weekday']! as int,
+        everyWeeks: json['everyWeeks'] as int? ?? 1,
+        anchor: switch (json['anchor']) {
+          final String a => LocalDate.parse(a),
+          _ => null,
+        },
+      ),
       'monthly' => MonthlyRecurrence(day: json['day']! as int),
       'specificDays' => SpecificDaysRecurrence(
         days: {for (final d in json['days']! as List<Object?>) d! as int},
@@ -31,6 +39,25 @@ sealed class Recurrence {
       final type => throw FormatException('Unknown recurrence type: $type'),
     };
   }
+}
+
+/// A single day, with no repetition (e.g. an event imported from a calendar).
+class OnceRecurrence extends Recurrence {
+  const OnceRecurrence({required this.date});
+
+  final LocalDate date;
+
+  @override
+  bool occursOn(LocalDate date) => date == this.date;
+
+  @override
+  Map<String, Object?> toJson() => {'type': 'once', 'date': date.toString()};
+
+  @override
+  bool operator ==(Object other) => other is OnceRecurrence && other.date == date;
+
+  @override
+  int get hashCode => Object.hash('once', date);
 }
 
 /// Every day.
@@ -69,23 +96,47 @@ class EveryOtherDayRecurrence extends Recurrence {
   int get hashCode => Object.hash('everyOtherDay', anchor);
 }
 
-/// The same weekday every week (ISO: 1 = Monday … 7 = Sunday).
+/// The same weekday every [everyWeeks] weeks (ISO: 1 = Monday … 7 = Sunday).
+///
+/// With [everyWeeks] > 1 the weeks are counted from [anchor] (an "on" day), so
+/// the rhythm carries over month boundaries: "every other Saturday" stays two
+/// weeks apart whatever the day of the month.
 class WeeklyRecurrence extends Recurrence {
-  const WeeklyRecurrence({required this.weekday}) : assert(weekday >= 1 && weekday <= 7);
+  const WeeklyRecurrence({required this.weekday, this.everyWeeks = 1, this.anchor})
+    : assert(weekday >= 1 && weekday <= 7),
+      assert(everyWeeks >= 1),
+      assert(everyWeeks == 1 || anchor != null, 'An interval needs an anchor day');
 
   final int weekday;
+  final int everyWeeks;
+
+  /// A day on which the activity occurs; only used when [everyWeeks] > 1.
+  final LocalDate? anchor;
 
   @override
-  bool occursOn(LocalDate date) => date.weekday == weekday;
+  bool occursOn(LocalDate date) {
+    if (date.weekday != weekday) return false;
+    if (everyWeeks == 1) return true;
+    // Dart's % is never negative, so days before the anchor work too.
+    return anchor!.daysUntil(date) % (7 * everyWeeks) == 0;
+  }
 
   @override
-  Map<String, Object?> toJson() => {'type': 'weekly', 'weekday': weekday};
+  Map<String, Object?> toJson() => {
+    'type': 'weekly',
+    'weekday': weekday,
+    if (everyWeeks > 1) ...{'everyWeeks': everyWeeks, 'anchor': anchor.toString()},
+  };
 
   @override
-  bool operator ==(Object other) => other is WeeklyRecurrence && other.weekday == weekday;
+  bool operator ==(Object other) =>
+      other is WeeklyRecurrence &&
+      other.weekday == weekday &&
+      other.everyWeeks == everyWeeks &&
+      (everyWeeks == 1 || other.anchor == anchor);
 
   @override
-  int get hashCode => Object.hash('weekly', weekday);
+  int get hashCode => Object.hash('weekly', weekday, everyWeeks, everyWeeks == 1 ? null : anchor);
 }
 
 /// One day per month. Days past the end of a short month fall on its last day

@@ -28,6 +28,8 @@ class YooTokens extends ThemeExtension<YooTokens> {
     required this.fontFamily,
     this.radius = 16,
     this.cardBorderWidth = 2,
+    this.cardStyle = CardStyle.standard,
+    this.activityTextScale = 1.0,
   });
 
   /// Whether the palette is light or dark (drives system UI overlays).
@@ -78,6 +80,12 @@ class YooTokens extends ThemeExtension<YooTokens> {
   /// Width of the colored activity card border.
   final double cardBorderWidth;
 
+  /// How cards draw their border and shadow (see [RaisedSurface]).
+  final CardStyle cardStyle;
+
+  /// Multiplier of the activity text sizes (cards, subtasks, widget).
+  final double activityTextScale;
+
   /// Builds the tokens from the user's [config] applied over its preset.
   factory YooTokens.fromConfig(ThemeConfig config) {
     final preset = YooPalettes.presetById(config.presetId);
@@ -101,6 +109,8 @@ class YooTokens extends ThemeExtension<YooTokens> {
       notification: pick(config.notificationColor, accent),
       divider: text.withValues(alpha: 0.08),
       fontFamily: config.fontFamily ?? preset.fontFamily,
+      cardStyle: config.cardStyle,
+      activityTextScale: config.activityTextScale,
     );
   }
 
@@ -134,6 +144,8 @@ class YooTokens extends ThemeExtension<YooTokens> {
       fontFamily: fontFamily,
       radius: radius,
       cardBorderWidth: cardBorderWidth,
+      cardStyle: cardStyle,
+      activityTextScale: activityTextScale,
     );
   }
 
@@ -159,6 +171,8 @@ class YooTokens extends ThemeExtension<YooTokens> {
       fontFamily: t < 0.5 ? fontFamily : other.fontFamily,
       radius: lerpDouble(radius, other.radius, t)!,
       cardBorderWidth: lerpDouble(cardBorderWidth, other.cardBorderWidth, t)!,
+      cardStyle: t < 0.5 ? cardStyle : other.cardStyle,
+      activityTextScale: lerpDouble(activityTextScale, other.activityTextScale, t)!,
     );
   }
 }

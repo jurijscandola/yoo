@@ -97,6 +97,8 @@ class HomeWidgetUpdater {
       ),
       days: days,
       staleText: l10n.widgetStale,
+      cardStyle: tokens.cardStyle.name,
+      textScale: tokens.activityTextScale,
     );
     // Redraw just after the next two midnights: tomorrow is in the snapshot,
     // the day after shows the "open the app" text until the app refreshes.

@@ -76,7 +76,12 @@ void main() {
       settings = InMemorySettingsRepository(
         const AppSettings(
           localeCode: 'en',
-          theme: ThemeConfig(presetId: 'night', cardColor: 0xFF123456),
+          theme: ThemeConfig(
+            presetId: 'night',
+            cardColor: 0xFF123456,
+            cardStyle: CardStyle.paper,
+            activityTextScale: 1.2,
+          ),
         ),
       );
       final clock = FixedClock(DateTime(2026, 9, 29, 10));
@@ -132,6 +137,10 @@ void main() {
       expect(snapshot.colors.card, 0xFF123456);
       expect(snapshot.colors.page, tokens.page.toARGB32());
       expect(snapshot.colors.accent, tokens.accent.toARGB32());
+      // The widget draws its cards in the user's card style.
+      expect(snapshot.cardStyle, 'paper');
+      expect(snapshot.toJson()['cardStyle'], 'paper');
+      expect(snapshot.textScale, 1.2);
 
       final (todayDay, tomorrow) = (snapshot.days[0], snapshot.days[1]);
       expect(todayDay.date, today);

@@ -8,8 +8,10 @@ import '../core/time/clock.dart';
 import '../core/time/local_date.dart';
 import '../features/activities/data/drift_activity_repository.dart';
 import '../features/activities/data/drift_occurrence_repository.dart';
+import '../features/activities/data/drift_subtask_repository.dart';
 import '../features/activities/domain/repositories/activity_repository.dart';
 import '../features/activities/domain/repositories/occurrence_repository.dart';
+import '../features/activities/domain/repositories/subtask_repository.dart';
 import '../features/activities/domain/services/occurrence_planner.dart';
 import '../features/goals/data/drift_goal_repository.dart';
 import '../features/goals/domain/goal_repository.dart';
@@ -32,6 +34,10 @@ final activityRepositoryProvider = Provider<ActivityRepository>(
 
 final occurrenceRepositoryProvider = Provider<OccurrenceRepository>(
   (ref) => DriftOccurrenceRepository(ref.watch(databaseProvider)),
+);
+
+final subtaskRepositoryProvider = Provider<SubtaskRepository>(
+  (ref) => DriftSubtaskRepository(ref.watch(databaseProvider)),
 );
 
 final goalRepositoryProvider = Provider<GoalRepository>(

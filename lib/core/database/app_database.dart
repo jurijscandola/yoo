@@ -54,6 +54,10 @@ class Goals extends Table {
   IntColumn get year => integer()();
   IntColumn get month => integer()();
   TextColumn get title => text()();
+
+  /// Amount to reach. Goals created before quantities existed were
+  /// percentages, so they keep 100 as target (added in schema 2).
+  IntColumn get target => integer().withDefault(const Constant(100))();
   DateTimeColumn get completionNotifiedAt => dateTime().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
@@ -61,6 +65,33 @@ class Goals extends Table {
 
   @override
   Set<Column> get primaryKey => {id};
+}
+
+/// Checklist items shown under an activity (added in schema 2).
+@DataClassName('SubtaskRow')
+@TableIndex(name: 'subtasks_activity', columns: {#activityId})
+class Subtasks extends Table {
+  TextColumn get id => text()();
+  TextColumn get activityId => text()();
+  TextColumn get title => text()();
+  IntColumn get position => integer()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Which subtasks are checked on which day (added in schema 2).
+@DataClassName('SubtaskCheckRow')
+@TableIndex(name: 'subtask_checks_date', columns: {#date})
+class SubtaskChecks extends Table {
+  TextColumn get subtaskId => text()();
+  TextColumn get date => text()();
+  DateTimeColumn get checkedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {subtaskId, date};
 }
 
 /// Generic key/value pairs (settings, bookkeeping).
@@ -74,7 +105,7 @@ class KeyValues extends Table {
 }
 
 /// The local SQLite database of Yoo.
-@DriftDatabase(tables: [Activities, Occurrences, Goals, KeyValues])
+@DriftDatabase(tables: [Activities, Occurrences, Goals, Subtasks, SubtaskChecks, KeyValues])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
@@ -85,12 +116,21 @@ class AppDatabase extends _$AppDatabase {
   );
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
+    // Only additive steps: existing rows are never dropped or rewritten.
     // Future schema changes add `if (from < N)` steps here.
-    onUpgrade: (m, from, to) async {},
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(goals, goals.target);
+        await m.createTable(subtasks);
+        await m.createTable(subtaskChecks);
+        await m.createIndex(subtasksActivity);
+        await m.createIndex(subtaskChecksDate);
+      }
+    },
   );
 }

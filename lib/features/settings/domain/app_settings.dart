@@ -67,6 +67,25 @@ class ExternalCalendarSettings {
   );
 }
 
+/// How activity and goal cards are drawn (applies to all of them).
+enum CardStyle {
+  /// Full colored border and a soft neutral shadow.
+  standard,
+
+  /// No border: only the completion button is colored; soft neutral shadow.
+  onlyButton,
+
+  /// Full colored border and a shadow tinted with the card's color.
+  coloredShadow,
+
+  /// Colored border only on the lower half, fading out towards the top.
+  halfBorder,
+
+  /// No cards: activities are lines of a notebook page, with a colored square
+  /// to tick in the left margin.
+  paper,
+}
+
 /// The customizable colors of the theme.
 enum ThemeColorSlot { text, page, surface, cards, navBar, accent, notification }
 
@@ -84,7 +103,13 @@ class ThemeConfig {
     this.accentColor,
     this.notificationColor,
     this.fontFamily,
+    this.cardStyle = CardStyle.standard,
+    this.activityTextScale = 1.0,
   });
+
+  /// Range of [activityTextScale] offered in Personalization.
+  static const minActivityTextScale = 0.8;
+  static const maxActivityTextScale = 1.4;
 
   /// Identifier of the base preset the overrides are applied on.
   final String presetId;
@@ -113,6 +138,13 @@ class ThemeConfig {
   /// Font family name; `null` uses the preset font.
   final String? fontFamily;
 
+  /// How cards are drawn.
+  final CardStyle cardStyle;
+
+  /// Size of the activity texts (names, details, subtasks, widget) relative
+  /// to the default; 1.0 is the default.
+  final double activityTextScale;
+
   /// The override of [slot]; `null` means the preset default.
   int? colorOf(ThemeColorSlot slot) => switch (slot) {
     ThemeColorSlot.text => textColor,
@@ -135,10 +167,39 @@ class ThemeConfig {
     accentColor: slot == ThemeColorSlot.accent ? argb : accentColor,
     notificationColor: slot == ThemeColorSlot.notification ? argb : notificationColor,
     fontFamily: fontFamily,
+    cardStyle: cardStyle,
+    activityTextScale: activityTextScale,
   );
 
   /// A copy using [family] (`null` restores the preset font).
-  ThemeConfig withFont(String? family) => ThemeConfig(
+  ThemeConfig withFont(String? family) => _copy(fontFamily: family);
+
+  /// A copy drawing cards with [style].
+  ThemeConfig withCardStyle(CardStyle style) => _copy(cardStyle: style);
+
+  /// A copy with activity texts at [scale] (clamped to the offered range).
+  ThemeConfig withActivityTextScale(double scale) =>
+      _copy(activityTextScale: scale.clamp(minActivityTextScale, maxActivityTextScale));
+
+  /// Switches to [presetId], dropping the color overrides (they were chosen
+  /// for the previous palette) but keeping font, card style and text size.
+  ThemeConfig withPreset(String presetId) => ThemeConfig(
+    presetId: presetId,
+    fontFamily: fontFamily,
+    cardStyle: cardStyle,
+    activityTextScale: activityTextScale,
+  );
+
+  /// Marks an argument of [_copy] as "keep the current value".
+  static const _keep = Object();
+
+  /// A copy keeping every color; the other settings change when given
+  /// ([fontFamily] may be set to `null`).
+  ThemeConfig _copy({
+    Object? fontFamily = _keep,
+    CardStyle? cardStyle,
+    double? activityTextScale,
+  }) => ThemeConfig(
     presetId: presetId,
     textColor: textColor,
     pageColor: pageColor,
@@ -147,13 +208,10 @@ class ThemeConfig {
     navBarColor: navBarColor,
     accentColor: accentColor,
     notificationColor: notificationColor,
-    fontFamily: family,
+    fontFamily: identical(fontFamily, _keep) ? this.fontFamily : fontFamily as String?,
+    cardStyle: cardStyle ?? this.cardStyle,
+    activityTextScale: activityTextScale ?? this.activityTextScale,
   );
-
-  /// Switches to [presetId], dropping the color overrides (they were chosen
-  /// for the previous palette) but keeping the font.
-  ThemeConfig withPreset(String presetId) =>
-      ThemeConfig(presetId: presetId, fontFamily: fontFamily);
 
   /// Serializes to a plain map (used by persistence).
   Map<String, Object?> toJson() => {
@@ -166,6 +224,8 @@ class ThemeConfig {
     'accentColor': accentColor,
     'notificationColor': notificationColor,
     'fontFamily': fontFamily,
+    'cardStyle': cardStyle.name,
+    'activityTextScale': activityTextScale,
   };
 
   /// Restores a config serialized with [toJson]; unknown keys are ignored.
@@ -179,5 +239,7 @@ class ThemeConfig {
     accentColor: json['accentColor'] as int?,
     notificationColor: json['notificationColor'] as int?,
     fontFamily: json['fontFamily'] as String?,
+    cardStyle: CardStyle.values.asNameMap()[json['cardStyle']] ?? CardStyle.standard,
+    activityTextScale: (json['activityTextScale'] as num?)?.toDouble() ?? 1.0,
   );
 }

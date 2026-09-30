@@ -6,9 +6,22 @@ import '../../../core/time/local_date.dart';
 /// It holds today and tomorrow: at midnight the native side switches to the
 /// day matching the device date without running any Dart code.
 class WidgetSnapshot {
-  const WidgetSnapshot({required this.colors, required this.days, required this.staleText});
+  const WidgetSnapshot({
+    required this.colors,
+    required this.days,
+    required this.staleText,
+    this.cardStyle = 'standard',
+    this.textScale = 1.0,
+  });
 
   final WidgetColors colors;
+
+  /// Name of the user's card style (`CardStyle.name`), so the widget draws
+  /// its cards like the app does.
+  final String cardStyle;
+
+  /// Activity text size multiplier chosen in Personalization.
+  final double textScale;
   final List<WidgetDay> days;
 
   /// Shown when no day matches the device date (the app has not run for a
@@ -18,6 +31,8 @@ class WidgetSnapshot {
   Map<String, Object?> toJson() => {
     'version': 1,
     'colors': colors.toJson(),
+    'cardStyle': cardStyle,
+    'textScale': textScale,
     'days': [for (final d in days) d.toJson()],
     'staleText': staleText,
   };

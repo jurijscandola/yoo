@@ -96,6 +96,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sectionRecurrence => 'Ricorrenza';
 
   @override
+  String get recurrenceOnce => 'Solo un giorno';
+
+  @override
   String get recurrenceDaily => 'Tutti i giorni';
 
   @override
@@ -105,6 +108,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get recurrenceWeekly => 'Ogni settimana';
 
   @override
+  String get recurrenceEveryNWeeks => 'Ogni X settimane';
+
+  @override
   String get recurrenceMonthly => 'Una volta al mese';
 
   @override
@@ -112,6 +118,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get weekdayLabel => 'Il giorno';
+
+  @override
+  String everyWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Ogni $n settimane',
+      one: 'Ogni settimana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklyFirstTime(String date) {
+    return 'Prima volta $date, poi a intervalli regolari anche nei mesi successivi.';
+  }
 
   @override
   String get monthDayLabel => 'Giorno del mese';
@@ -130,6 +152,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get repeatEvery => 'Tutti i mesi';
+
+  @override
+  String get onceDate => 'Il giorno';
 
   @override
   String get startDate => 'Inizia il';
@@ -155,7 +180,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get timeAt => 'Alle';
 
   @override
-  String get sectionColor => 'Colore del bordo';
+  String get colorStyleHint => 'Il bordo o l\'ombra seguono lo stile scelto in Personalizzazione.';
+
+  @override
+  String get colorPreviewName => 'La tua attività';
+
+  @override
+  String get sectionColor => 'Colore del pulsante';
 
   @override
   String get sectionPartial => 'Completamento parziale';
@@ -182,7 +213,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get goalNone => 'Nessun obiettivo: creali dal Calendario.';
 
   @override
-  String get goalImpact => 'Impatto';
+  String get goalImpact => 'Valore';
 
   @override
   String get impactAdditive => 'Aggiunge';
@@ -326,7 +357,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String goalReachedBody(String title) {
-    return '\"$title\" è al 100%';
+    return 'Hai completato \"$title\"';
   }
 
   @override
@@ -426,6 +457,37 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get goalDeleteBody =>
       'Le attività collegate restano: smettono solo di contare per questo obiettivo.';
+
+  @override
+  String get subtasksToggle => 'Sotto attività';
+
+  @override
+  String get subtaskAdd => 'Aggiungi sotto attività';
+
+  @override
+  String get subtaskHint => 'Nuova sotto attività';
+
+  @override
+  String get subtaskEdit => 'Modifica sotto attività';
+
+  @override
+  String get goalTargetLabel => 'Quantità da raggiungere';
+
+  @override
+  String get goalTargetHelp =>
+      'Ogni attività collegata aggiunge o toglie il suo valore. Usa 1 per un evento singolo.';
+
+  @override
+  String get errorGoalTarget => 'Inserisci un numero da 1 in su';
+
+  @override
+  String get goalImpactHelp =>
+      'Quanto aggiunge o toglie all\'obiettivo ogni volta che la completi.';
+
+  @override
+  String goalAmount(int value, int target) {
+    return '$value / $target';
+  }
 
   @override
   String get goalReachedLabel => 'Raggiunto';
@@ -569,6 +631,49 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get colorDefault => 'Predefinito';
+
+  @override
+  String get themeCardStyle => 'Stile delle card';
+
+  @override
+  String get cardStyleStandard => 'Standard';
+
+  @override
+  String get cardStyleStandardHint => 'Bordo intero e ombra leggera';
+
+  @override
+  String get cardStyleShadow => 'Ombra colorata';
+
+  @override
+  String get cardStyleShadowHint =>
+      'Niente bordo: il colore resta sul pulsante e in un\'ombra leggera';
+
+  @override
+  String get cardStyleHalf => 'Mezzo bordo';
+
+  @override
+  String get cardStyleHalfHint => 'Bordo solo nella metà bassa, sfumato verso l\'alto';
+
+  @override
+  String get cardStyleButton => 'Solo pulsante';
+
+  @override
+  String get cardStyleButtonHint => 'Niente bordo: colorato solo il pulsante, ombra leggerissima';
+
+  @override
+  String get cardStylePaper => 'Taccuino';
+
+  @override
+  String get cardStylePaperHint =>
+      'Le attività sono righe di un blocco note, con un quadratino da spuntare a sinistra';
+
+  @override
+  String get themeActivityText => 'Testo delle attività';
+
+  @override
+  String themeActivityTextHint(String size) {
+    return '$size · nomi, dettagli e sotto attività, anche nel widget. L\'anteprima in alto si aggiorna subito.';
+  }
 
   @override
   String get themeFont => 'Carattere';
