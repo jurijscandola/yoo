@@ -623,4 +623,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get widgetStale => 'Apri Yoo per aggiornare';
+
+  @override
+  String get reopenTooltip => 'Segna come da fare';
+
+  @override
+  String reopenTitle(String name) {
+    return 'Segnare \"$name\" come da fare?';
+  }
+
+  @override
+  String get reopenBody => 'Torna nella Home e i promemoria ripartono.';
+
+  @override
+  String get reopenConfirm => 'Da fare';
 }

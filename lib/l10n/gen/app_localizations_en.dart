@@ -623,4 +623,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetStale => 'Open Yoo to update';
+
+  @override
+  String get reopenTooltip => 'Mark as not done';
+
+  @override
+  String reopenTitle(String name) {
+    return 'Mark \"$name\" as not done?';
+  }
+
+  @override
+  String get reopenBody => 'It goes back to Home and its reminders start again.';
+
+  @override
+  String get reopenConfirm => 'Not done';
 }

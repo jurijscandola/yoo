@@ -1232,6 +1232,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Yoo to update'**
   String get widgetStale;
+
+  /// No description provided for @reopenTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as not done'**
+  String get reopenTooltip;
+
+  /// No description provided for @reopenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark \"{name}\" as not done?'**
+  String reopenTitle(String name);
+
+  /// No description provided for @reopenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It goes back to Home and its reminders start again.'**
+  String get reopenBody;
+
+  /// No description provided for @reopenConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Not done'**
+  String get reopenConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

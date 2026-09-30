@@ -296,5 +296,16 @@
   "settingsAbout": "About Yoo",
   "settingsAboutSubtitle": "Open-source licenses",
   "aboutLegalese": "Small recurring activities, reliable reminders.",
-  "widgetStale": "Open Yoo to update"
+  "widgetStale": "Open Yoo to update",
+  "reopenTooltip": "Mark as not done",
+  "reopenTitle": "Mark \"{name}\" as not done?",
+  "@reopenTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reopenBody": "It goes back to Home and its reminders start again.",
+  "reopenConfirm": "Not done"
 }

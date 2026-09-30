@@ -26,6 +26,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: Routes.home,
+    // An unknown location (e.g. a link from outside) goes to Home instead of
+    // an error page the user cannot leave.
+    onException: (context, state, router) => router.go(Routes.home),
     routes: [
       StatefulShellRoute(
         builder: (context, state, shell) => shell,

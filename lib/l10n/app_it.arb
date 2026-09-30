@@ -244,5 +244,9 @@
   "settingsAbout": "Informazioni su Yoo",
   "settingsAboutSubtitle": "Licenze open source",
   "aboutLegalese": "Piccole attività ricorrenti, promemoria affidabili.",
-  "widgetStale": "Apri Yoo per aggiornare"
+  "widgetStale": "Apri Yoo per aggiornare",
+  "reopenTooltip": "Segna come da fare",
+  "reopenTitle": "Segnare \"{name}\" come da fare?",
+  "reopenBody": "Torna nella Home e i promemoria ripartono.",
+  "reopenConfirm": "Da fare"
 }

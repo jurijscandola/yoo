@@ -131,6 +131,42 @@ void main() {
     expect((await occurrences.find(a.id, today))!.isCompleted, isTrue);
   });
 
+  test('a completion by mistake can be undone today', () async {
+    final a = await service.create(
+      draft('Stretch', slots: const [TimeSlot.at(LocalTime(9, 0)), TimeSlot.at(LocalTime(18, 0))]),
+    );
+    final p = await service.create(
+      draft('Read', partial: const PartialConfig(reminderCount: 0, until: LocalTime(20, 0))),
+    );
+    // Nothing to undo yet.
+    expect(await service.reopen(a.id, today), isFalse);
+
+    await service.markTimeDone(a.id, today);
+    await service.markTimeDone(a.id, today);
+    await service.setProgress(p.id, today, 100);
+    changes.clear();
+
+    expect(await service.reopen(a.id, today), isTrue);
+    final counter = (await occurrences.find(a.id, today))!;
+    expect(counter.isOpen, isTrue);
+    expect(counter.completedCount, 1); // only the last time is undone
+    expect(counter.completedAt, isNull);
+    expect(changes.single, {today});
+
+    expect(await service.reopen(p.id, today), isTrue);
+    final partial = (await occurrences.find(p.id, today))!;
+    expect(partial.isOpen, isTrue);
+    expect(partial.progress, 0);
+  });
+
+  test('past days cannot be reopened', () async {
+    final a = await service.create(draft('Water'));
+    await service.markTimeDone(a.id, today);
+    clock.current = DateTime(2026, 9, 30, 8);
+    expect(await service.reopen(a.id, today), isFalse);
+    expect((await occurrences.find(a.id, today))!.isCompleted, isTrue);
+  });
+
   test('day rollover turns yesterday into a missed, unresolved occurrence', () async {
     final a = await service.create(draft('Water'));
     clock.current = DateTime(2026, 9, 30, 8);

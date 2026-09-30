@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:yoo/core/time/local_date.dart';
 import 'package:yoo/features/activities/data/drift_occurrence_repository.dart';
 import 'package:yoo/features/activities/domain/entities/occurrence.dart';
@@ -40,6 +41,40 @@ void main() {
     expect(find.text('Daily summary'), findsOneWidget);
     expect(find.text('Take vitamins'), findsOneWidget);
     expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+  });
+
+  testWidgets('a completion can be undone from the summary', (tester) async {
+    final app = TestApp(settings: english);
+    await tester.pumpWidget(app.build());
+    await tester.pumpAndSettle();
+    await createActivity(tester, 'Take vitamins');
+    await tester.tap(find.byIcon(Icons.check_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('All done for today'), findsOneWidget);
+
+    await tester.tap(find.text('Today'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Mark as not done'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mark "Take vitamins" as not done?'), findsOneWidget);
+    await tester.tap(find.text('Not done'));
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.check_circle_rounded), findsNothing);
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.text('Take vitamins'), findsOneWidget);
+    expect(find.text('All done for today'), findsNothing);
+  });
+
+  testWidgets('an unknown location lands on Home instead of an error page', (tester) async {
+    await tester.pumpWidget(TestApp(settings: english).build());
+    await tester.pumpAndSettle();
+    final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
+    router.go('yoo://home/');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Page Not Found'), findsNothing);
+    expect(find.text('Nothing planned for this day'), findsOneWidget);
   });
 
   testWidgets('swiping shows other days; future days are previews', (tester) async {

@@ -38,6 +38,10 @@
   The same actions are available from the daily summary.
 - **Goal progress**: `clamp(Σ ±impact × progress/100, 0, 100)` over linked occurrences of the
   month (+ additive, − subtractive). A notification fires once when a goal reaches 100%.
+- **Undo a completion**: in today's daily summary the green check can be tapped (after a
+  confirmation) to mark the activity as not done: counters lose their last time (3/3 → 2/3),
+  partial activities go back to 0%. It returns to Home, reminders and widget follow. Past days
+  cannot be reopened.
 - **No deadlines** on activities or goals.
 - **Splash**: an opening animation on every cold start.
 - **Bundle id**: `com.app.yoo`.
@@ -175,6 +179,9 @@ Implementation:
   it, reading the same JSON from an App Group).
 - Refresh: change hook (after reminders), `DayWatcher`, periodic task, theme/language changes
   (`followWidgetSettings`).
+- No deep links: `flutter_deeplinking_enabled` is off in the manifest, otherwise the header's
+  `yoo://home` reached go_router as a page ("no routes for location"); go_router's `onException`
+  also sends any unknown location to Home.
 - Card tap: Glance `CompleteActivityAction` → `HomeWidgetBackgroundIntent` →
   `onHomeWidgetInteraction` (bootstrap.dart) → `NotificationActionHandler` ("done", or 100% for
   partial activities) → change hook → widget refreshed. Header tap opens `yoo://home`, which the

@@ -136,6 +136,19 @@ class ActivityService {
     return updated;
   }
 
+  /// Undoes today's completion of an activity (ticked by mistake): it goes
+  /// back to Home and its reminders start again. Other days are unchanged.
+  /// Returns whether something changed.
+  Future<bool> reopen(String activityId, LocalDate date) async {
+    if (date != _today) return false;
+    final activity = await _activities.getById(activityId);
+    final occurrence = await _occurrences.find(activityId, date);
+    if (activity == null || occurrence == null || !occurrence.isCompleted) return false;
+    await _occurrences.saveAll([occurrence.reopen(activity, _clock.now())]);
+    await _changed({date});
+    return true;
+  }
+
   /// Marks a past occurrence as done ("I forgot to tick it"). If it had been
   /// moved, the open copy is removed so it is not done twice.
   Future<void> completeRetroactively(String occurrenceId) async {

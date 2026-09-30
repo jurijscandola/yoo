@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/services.dart';
 import '../../../core/theme/yoo_palettes.dart';
 import '../../../core/theme/yoo_tokens.dart';
 import '../../../core/time/local_date.dart';
@@ -100,8 +101,18 @@ class _SummaryRow extends ConsumerWidget {
     final resolvable =
         o != null && o.status == OccurrenceStatus.missed && o.resolution != MissedResolution.moved;
 
+    // Today's green check can be tapped to undo a completion by mistake.
+    final reopenable = status == _Status.done && entry.date == today;
+
     return ListTile(
-      leading: _StatusIcon(status: status),
+      leading: reopenable
+          ? IconButton(
+              tooltip: l10n.reopenTooltip,
+              padding: EdgeInsets.zero,
+              icon: _StatusIcon(status: status),
+              onPressed: () => _reopen(context, ref),
+            )
+          : _StatusIcon(status: status),
       title: Row(
         children: [
           Container(
@@ -122,6 +133,27 @@ class _SummaryRow extends ConsumerWidget {
       trailing: resolvable ? Icon(Icons.chevron_right, color: t.textMuted) : null,
       onTap: resolvable ? () => ActivitySheets.resolveMissed(context, ref, o, activity) : null,
     );
+  }
+
+  Future<void> _reopen(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.reopenTitle(entry.activity.name)),
+        content: Text(l10n.reopenBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.reopenConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await ref.read(activityServiceProvider).reopen(entry.activity.id, entry.date);
+    }
   }
 
   _Status _statusOf(Occurrence? o) {

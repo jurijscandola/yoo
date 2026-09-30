@@ -117,6 +117,17 @@ class Occurrence {
     );
   }
 
+  /// Undoes the completion ("I ticked it by mistake"): counters lose their
+  /// last time (3/3 → 2/3), partial activities go back to 0%.
+  Occurrence reopen(Activity activity, DateTime now) => copyWith(
+    status: OccurrenceStatus.pending,
+    completedCount: activity.isPartial ? completedCount : (activity.timesPerDay - 1).clamp(0, 99),
+    progress: 0,
+    completedAt: () => null,
+    retroactive: false,
+    updatedAt: now,
+  );
+
   /// Marks a missed occurrence as done after its day ended.
   Occurrence completeRetroactively(Activity activity, DateTime now) => copyWith(
     status: OccurrenceStatus.completed,
