@@ -24,6 +24,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get goalsTitle => 'Obiettivi';
 
   @override
+  String get monthlyGoalsTitle => 'Obiettivi mensili';
+
+  @override
+  String get monthlyGoalsSubtitle => 'Questo mese, i prossimi e quelli passati';
+
+  @override
+  String monthlyGoalsToDecide(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count obiettivi da decidere',
+      one: '1 obiettivo da decidere',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalsReachedCount(int reached, int total) {
+    return '$reached su $total raggiunti';
+  }
+
+  @override
+  String get monthlyGoalsBackToCurrent => 'Torna a questo mese';
+
+  @override
   String get settingsTitle => 'Impostazioni';
 
   @override
@@ -524,9 +549,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il loro mese è finito e non sono stati raggiunti. Cosa facciamo?';
 
   @override
-  String get goalsPast => 'Mesi passati';
-
-  @override
   String get goalMarkCompleted => 'Segna completato';
 
   @override
@@ -536,6 +558,20 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get goalMoveHint => 'Riparte da zero; le attività collegate lo seguono.';
+
+  @override
+  String goalAddToMonth(String month) {
+    return 'Aggiungi anche a $month';
+  }
+
+  @override
+  String get goalAddToMonthHint =>
+      'Questo resta com\'è; le attività collegate alimentano quello nuovo.';
+
+  @override
+  String goalAddedTo(String month) {
+    return 'Aggiunto a $month';
+  }
 
   @override
   String get goalLeaveIncomplete => 'Lascia stare';

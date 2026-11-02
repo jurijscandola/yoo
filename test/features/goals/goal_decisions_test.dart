@@ -171,4 +171,46 @@ void main() {
   test('December moves to January', () {
     expect(MonthlyGoal.moveTarget(2026, 12, LocalDate(2026, 12, 10)), (2027, 1));
   });
+
+  test('a goal can also be added to this month: per-day targets follow the days', () {
+    MonthlyGoal goal(int month, int target) => MonthlyGoal(
+      id: 'g',
+      year: 2026,
+      month: month,
+      title: 'Creatine',
+      target: target,
+      createdAt: DateTime(2026),
+      updatedAt: DateTime(2026),
+    );
+    expect(GoalService.adaptedTarget(goal(10, 31), 2026, 11), 30);
+    expect(GoalService.adaptedTarget(goal(11, 30), 2027, 2), 28);
+    expect(GoalService.adaptedTarget(goal(10, 5), 2026, 11), 5);
+  });
+
+  test('adding to this month keeps the old goal as it was and moves the activities', () async {
+    final creatine = await goals.create(year: 2026, month: 9, title: 'Creatine', target: 30);
+    final taking = await linkedTo(creatine, 'Take creatine');
+    await service.markTimeDone(taking.id, september);
+    expect((await progressOf(creatine)).progress, 1);
+
+    goTo(DateTime(2026, 10, 1, 9));
+    await service.rollover();
+    final copy = (await goals.addToCurrentMonth(creatine, title: 'Creatine', target: 31))!;
+    expect((copy.year, copy.month, copy.target), (2026, 10, 31));
+    expect((await activities.getById(taking.id))!.goalLink!.goalId, copy.id);
+
+    // September keeps its progress and still waits for a decision.
+    final old = await progressOf(creatine);
+    expect(old.progress, 1);
+    expect(old.goal.outcome, isNull);
+    await goals.leaveIncomplete(old.goal);
+    expect((await progressOf(creatine)).progress, 1);
+    await goals.reopen((await progressOf(creatine)).goal);
+    expect((await progressOf(creatine)).progress, 1);
+
+    await service.markTimeDone(taking.id, LocalDate(2026, 10, 1));
+    expect((await progressOf(copy)).progress, 1);
+    // Not for goals of this month.
+    expect(await goals.addToCurrentMonth(copy, title: 'x', target: 1), isNull);
+  });
 }

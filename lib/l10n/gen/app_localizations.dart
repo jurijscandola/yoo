@@ -123,6 +123,36 @@ abstract class AppLocalizations {
   /// **'Goals'**
   String get goalsTitle;
 
+  /// No description provided for @monthlyGoalsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly goals'**
+  String get monthlyGoalsTitle;
+
+  /// No description provided for @monthlyGoalsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This month, the coming ones and the past ones'**
+  String get monthlyGoalsSubtitle;
+
+  /// No description provided for @monthlyGoalsToDecide.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 goal to decide} other{{count} goals to decide}}'**
+  String monthlyGoalsToDecide(int count);
+
+  /// No description provided for @goalsReachedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{reached} of {total} reached'**
+  String goalsReachedCount(int reached, int total);
+
+  /// No description provided for @monthlyGoalsBackToCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to this month'**
+  String get monthlyGoalsBackToCurrent;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
@@ -1035,12 +1065,6 @@ abstract class AppLocalizations {
   /// **'Their month is over and they were not reached. What should we do?'**
   String get goalsToDecideHint;
 
-  /// No description provided for @goalsPast.
-  ///
-  /// In en, this message translates to:
-  /// **'Past months'**
-  String get goalsPast;
-
   /// No description provided for @goalMarkCompleted.
   ///
   /// In en, this message translates to:
@@ -1058,6 +1082,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'It starts again from zero; the linked activities follow it.'**
   String get goalMoveHint;
+
+  /// No description provided for @goalAddToMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Also add to {month}'**
+  String goalAddToMonth(String month);
+
+  /// No description provided for @goalAddToMonthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This one stays as it is; the linked activities feed the new one.'**
+  String get goalAddToMonthHint;
+
+  /// No description provided for @goalAddedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to {month}'**
+  String goalAddedTo(String month);
 
   /// No description provided for @goalLeaveIncomplete.
   ///

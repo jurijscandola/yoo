@@ -16,10 +16,19 @@ import 'goal_providers.dart';
 /// The goals of a month with their live progress, plus the button to add
 /// one (current and future months only). Tapping a goal opens its actions.
 class MonthGoalsSection extends ConsumerWidget {
-  const MonthGoalsSection({super.key, required this.year, required this.month});
+  const MonthGoalsSection({
+    super.key,
+    required this.year,
+    required this.month,
+    this.showMonth = true,
+  });
 
   final int year;
   final int month;
+
+  /// Whether the title names the month; otherwise (the month is shown
+  /// around it) it says how many goals were reached.
+  final bool showMonth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,12 +46,22 @@ class MonthGoalsSection extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  l10n.calendarGoalsTitle(context.monthYear(year, month)),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
+                child: showMonth
+                    ? Text(
+                        l10n.calendarGoalsTitle(context.monthYear(year, month)),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      )
+                    : Text(
+                        goals == null || goals.isEmpty
+                            ? ''
+                            : l10n.goalsReachedCount(
+                                goals.where((g) => g.isReached).length,
+                                goals.length,
+                              ),
+                        style: TextStyle(color: t.textMuted, fontWeight: FontWeight.w600),
+                      ),
               ),
               if (canAdd)
                 IconButton.filledTonal(

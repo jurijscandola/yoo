@@ -119,15 +119,20 @@ void main() {
       await tester.tapAt(const Offset(5, 5)); // dismiss the dialog
       await tester.pumpAndSettle();
 
-      // Goals tab: the goal to decide, and the actions of a goal.
+      // Goals tab, then the monthly goals: this month, the goals to decide
+      // and the actions of a goal.
       await open(find.byType(GoalsIcon));
-      await tester.drag(find.byType(Scrollable).first, const Offset(0, -2000));
+      await open(find.byIcon(Icons.calendar_view_month_rounded));
+      await open(find.byIcon(Icons.flag_outlined));
+      await open(find.textContaining('Paint the fence'));
+      await tester.tapAt(const Offset(5, 5)); // close the actions
       await tester.pumpAndSettle();
-      await open(find.textContaining('Read four long books').last);
-      await tester.tapAt(const Offset(5, 5)); // close the sheet
+      await tester.tapAt(const Offset(5, 5)); // close the goals to decide
       await tester.pumpAndSettle();
-      await tester.drag(find.byType(Scrollable).first, const Offset(0, 4000));
+      await open(find.textContaining('Read four long books'));
+      await tester.tapAt(const Offset(5, 5)); // close the actions
       await tester.pumpAndSettle();
+      await back();
 
       // Settings and its pages.
       await open(find.byIcon(Icons.more_horiz));

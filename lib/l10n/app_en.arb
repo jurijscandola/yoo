@@ -5,6 +5,28 @@
   "navHome": "Home",
   "navGoals": "Goals",
   "goalsTitle": "Goals",
+  "monthlyGoalsTitle": "Monthly goals",
+  "monthlyGoalsSubtitle": "This month, the coming ones and the past ones",
+  "monthlyGoalsToDecide": "{count, plural, =1{1 goal to decide} other{{count} goals to decide}}",
+  "@monthlyGoalsToDecide": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goalsReachedCount": "{reached} of {total} reached",
+  "@goalsReachedCount": {
+    "placeholders": {
+      "reached": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyGoalsBackToCurrent": "Back to this month",
   "settingsTitle": "Settings",
   "settingsExport": "Export data",
   "settingsExportSubtitle": "One .txt file per month",
@@ -250,7 +272,6 @@
   "goalReachedLabel": "Reached",
   "goalsToDecide": "To decide",
   "goalsToDecideHint": "Their month is over and they were not reached. What should we do?",
-  "goalsPast": "Past months",
   "goalMarkCompleted": "Mark as completed",
   "goalMoveTo": "Move to {month}",
   "@goalMoveTo": {
@@ -261,6 +282,23 @@
     }
   },
   "goalMoveHint": "It starts again from zero; the linked activities follow it.",
+  "goalAddToMonth": "Also add to {month}",
+  "@goalAddToMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "goalAddToMonthHint": "This one stays as it is; the linked activities feed the new one.",
+  "goalAddedTo": "Added to {month}",
+  "@goalAddedTo": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "goalLeaveIncomplete": "Leave it",
   "goalReopen": "Reopen",
   "goalOutcomeCompleted": "Completed",

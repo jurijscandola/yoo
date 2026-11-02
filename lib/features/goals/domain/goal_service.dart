@@ -144,6 +144,11 @@ class GoalService {
   // Decisions (monthly summary)
   // ---------------------------------------------------------------------------
 
+  /// Progress of [goal] as it is now: frozen once its activities moved on or
+  /// a decision was taken, live otherwise.
+  Future<double> _currentProgress(MonthlyGoal goal) async =>
+      goal.frozenProgress ?? await _liveProgress(goal);
+
   /// Marks [goal] as completed by hand, whatever its progress (e.g. a goal no
   /// activity feeds). No notification: the user did it.
   Future<void> markCompleted(MonthlyGoal goal) async {
@@ -151,7 +156,7 @@ class GoalService {
     final now = _clock.now();
     await _goals.save(
       goal
-          .resolved(GoalOutcome.completed, await _liveProgress(goal), now)
+          .resolved(GoalOutcome.completed, await _currentProgress(goal), now)
           .copyWith(completionNotifiedAt: () => goal.completionNotifiedAt ?? now),
     );
   }
@@ -160,15 +165,18 @@ class GoalService {
   Future<void> leaveIncomplete(MonthlyGoal goal) async {
     if (goal.isResolved) return;
     final now = _clock.now();
-    await _goals.save(goal.resolved(GoalOutcome.leftIncomplete, await _liveProgress(goal), now));
+    await _goals.save(goal.resolved(GoalOutcome.leftIncomplete, await _currentProgress(goal), now));
   }
 
-  /// Undoes "completed" or "left incomplete": the goal is open again and its
-  /// progress comes from its activities. Moved goals stay moved.
+  /// Undoes "completed" or "left incomplete": the goal is open again. Goals
+  /// of months already over keep the progress they had (their activities may
+  /// feed another goal by now); the others are computed live again. Moved
+  /// goals stay moved.
   Future<void> reopen(MonthlyGoal goal) async {
     if (!goal.isResolved || goal.outcome == GoalOutcome.moved) return;
-    final open = goal.reopened(_clock.now());
-    final reached = await _liveProgress(open) >= goal.target;
+    final keep = goal.isPastAt(_clock.today()) ? goal.frozenProgress : null;
+    final open = goal.reopened(_clock.now(), frozenProgress: keep);
+    final reached = (keep ?? await _liveProgress(open)) >= goal.target;
     // Marked by hand, it never notified: let a real completion do it.
     await _goals.save(open.copyWith(completionNotifiedAt: reached ? null : () => null));
   }
@@ -196,19 +204,61 @@ class GoalService {
       createdAt: now,
       updatedAt: now,
     );
-    await _goals.save(goal.resolved(GoalOutcome.moved, await _liveProgress(goal), now));
+    await _goals.save(goal.resolved(GoalOutcome.moved, await _currentProgress(goal), now));
     await _goals.save(copy);
+    await _relink(goal.id, copy.id, now);
+    return copy;
+  }
+
+  /// The target a copy of [goal] gets in [year]/[month]: a goal of one per day
+  /// of its month (e.g. 31 in October) gets the days of the new month (30 in
+  /// November); any other amount stays.
+  static int adaptedTarget(MonthlyGoal goal, int year, int month) {
+    final sourceDays = LocalDate(goal.year, goal.month, 1).daysInMonth;
+    return goal.target == sourceDays ? LocalDate(year, month, 1).daysInMonth : goal.target;
+  }
+
+  /// Adds a copy of [goal], from another month, to the current one, with
+  /// [title] and [target] (see [adaptedTarget]). Unlike a move, [goal] stays
+  /// as it is (open or decided) and keeps the progress it had; the activities
+  /// linked to it now feed the copy. Returns `null` for goals of this month.
+  Future<MonthlyGoal?> addToCurrentMonth(
+    MonthlyGoal goal, {
+    required String title,
+    required int target,
+  }) async {
+    final today = _clock.today();
+    if (goal.year == today.year && goal.month == today.month) return null;
+    final now = _clock.now();
+    if (goal.frozenProgress == null) {
+      await _goals.save(goal.frozenAt(await _liveProgress(goal), now));
+    }
+    final copy = MonthlyGoal(
+      id: _newId(),
+      year: today.year,
+      month: today.month,
+      title: title.trim(),
+      target: target,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await _goals.save(copy);
+    await _relink(goal.id, copy.id, now);
+    return copy;
+  }
+
+  /// The activities linked to goal [fromId] now feed goal [toId].
+  Future<void> _relink(String fromId, String toId, DateTime now) async {
     for (final activity in await _activities.getAll()) {
       final link = activity.goalLink;
-      if (link == null || link.goalId != goal.id) continue;
+      if (link == null || link.goalId != fromId) continue;
       await _activities.save(
         activity.copyWith(
-          goalLink: () => GoalLink(goalId: copy.id, impact: link.impact, type: link.type),
+          goalLink: () => GoalLink(goalId: toId, impact: link.impact, type: link.type),
           updatedAt: now,
         ),
       );
     }
-    return copy;
   }
 
   // ---------------------------------------------------------------------------

@@ -6,6 +6,7 @@ abstract final class Routes {
   static const calendar = '/calendar';
   static const home = '/home';
   static const goals = '/goals';
+  static const monthlyGoals = '/goals/monthly';
   static const settings = '/settings';
   static const externalCalendars = '/settings/calendars';
   static const export = '/settings/export';

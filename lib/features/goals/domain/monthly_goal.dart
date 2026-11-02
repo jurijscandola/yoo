@@ -88,8 +88,14 @@ class MonthlyGoal {
   MonthlyGoal resolved(GoalOutcome outcome, double progress, DateTime now) =>
       _with(outcome: outcome, frozenProgress: progress, resolvedAt: now, updatedAt: now);
 
-  /// A copy back to open, with its progress computed live again.
-  MonthlyGoal reopened(DateTime now) => _with(updatedAt: now);
+  /// A copy back to open. Its progress is computed live again, unless
+  /// [frozenProgress] is kept (e.g. its activities now feed another goal).
+  MonthlyGoal reopened(DateTime now, {double? frozenProgress}) =>
+      _with(frozenProgress: frozenProgress, updatedAt: now);
+
+  /// A copy whose progress stays at [progress], with the same decision.
+  MonthlyGoal frozenAt(double progress, DateTime now) =>
+      _with(outcome: outcome, frozenProgress: progress, resolvedAt: resolvedAt, updatedAt: now);
 
   MonthlyGoal _with({
     GoalOutcome? outcome,

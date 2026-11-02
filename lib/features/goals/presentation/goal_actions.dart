@@ -25,7 +25,9 @@ abstract final class GoalActions {
     final canLeave = open && goal.isPastAt(today);
     final canReopen =
         goal.outcome == GoalOutcome.completed || goal.outcome == GoalOutcome.leftIncomplete;
-    if (!open && !canReopen) return GoalEditor.edit(context, ref, goal);
+    final isCurrent = goal.year == today.year && goal.month == today.month;
+    final canAddHere = !isCurrent && goal.outcome != GoalOutcome.moved;
+    if (!open && !canReopen && !canAddHere) return GoalEditor.edit(context, ref, goal);
 
     final l10n = context.l10n;
     final service = ref.read(goalServiceProvider);
@@ -61,6 +63,13 @@ abstract final class GoalActions {
                   subtitle: Text(l10n.goalMoveHint),
                   onTap: () => Navigator.pop(context, _Choice.move),
                 ),
+              if (canAddHere)
+                ListTile(
+                  leading: const Icon(Icons.add_circle_outline_rounded),
+                  title: Text(l10n.goalAddToMonth(context.monthYear(today.year, today.month))),
+                  subtitle: Text(l10n.goalAddToMonthHint),
+                  onTap: () => Navigator.pop(context, _Choice.addHere),
+                ),
               if (canLeave)
                 ListTile(
                   leading: const Icon(Icons.do_not_disturb_on_outlined),
@@ -90,6 +99,14 @@ abstract final class GoalActions {
         await service.markCompleted(goal);
       case _Choice.move:
         await moveToNextMonth(context, ref, goal);
+      case _Choice.addHere:
+        final messenger = ScaffoldMessenger.of(context);
+        final added = l10n.goalAddedTo(context.monthYear(today.year, today.month));
+        if (await GoalEditor.addToCurrentMonth(context, ref, goal) != null) {
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text(added)));
+        }
       case _Choice.leave:
         await service.leaveIncomplete(goal);
       case _Choice.reopen:
@@ -113,7 +130,7 @@ abstract final class GoalActions {
   }
 }
 
-enum _Choice { complete, move, leave, reopen, edit }
+enum _Choice { complete, move, addHere, leave, reopen, edit }
 
 /// The three choices for a goal whose month is over: completed, move, leave.
 class GoalDecisionButtons extends ConsumerWidget {

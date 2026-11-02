@@ -49,12 +49,17 @@
   for goals. Undo: the snackbar right after, or the daily summary (today and later days).
   Notifications show at most three actions on Android: simple activities get Done · Not needed,
   partial ones 100% · Other % (25/50/75 or typed) · Not needed.
-- **Goal decisions** (Goals tab, the monthly summary): a goal can be marked as completed by hand,
-  moved to the next month or, once its month is over, left as not reached. Moving creates a copy
+- **Goal decisions** (Goals tab → "Monthly goals", the monthly summary; the Goals tab itself is
+  kept free for other content): a goal can be marked as completed by hand, moved to the next
+  month or, once its month is over, left as not reached. Moving creates a copy
   with the same title and target in the next month (or the current one, for months long over),
   starting from zero; the linked activities follow the copy. A decided goal keeps the progress it
   had (`frozenProgress`), so relinking activities never rewrites past months. Goals of past
   months not reached and not decided appear under "To decide", with a dot on the Goals tab.
+  A goal of another month can also be **added to the current month**: the original stays as it
+  is (with the progress it had), the copy gets the linked activities, and a target of one per day
+  of its month (e.g. 31 in October) becomes the days of the current month (30 in November); the
+  dialog shows the proposal before saving.
 - **Backup**: Settings → Backup exports everything (activities with their history, goals,
   subtasks, language and appearance) as `Yoo-backup-YYYY-MM-DD.json`. Importing never deletes:
   missing rows are added, a row on both sides is replaced only when the backup's copy is newer,
@@ -237,10 +242,15 @@ and "every N weeks" repeats, five card styles and an activity text size. Schema 
   `flutter run` only looks for a launcher `<activity>`. The widget header opens the enabled
   entry (redrawn after a switch). At startup the stored choice follows the launcher
   (`followLauncherIcon`). Opening animation: the first frame is deferred until the settings are
-  loaded, then it starts exactly like the Android 12+ system splash (the icon in a 160 dp circle
-  on `yoo_splash`) and morphs into the logo and the theme colors.
-- **Goals tab**: "To decide" (past goals not reached), this month, coming months, past months.
-  Tapping a goal (here or in the calendar) opens its actions. Schema 3 (additive: `goals.outcome`,
+  loaded, then it starts exactly like the Android 12+ system splash (the icon at 160 dp on
+  `yoo_splash`, in the device's icon shape: measured from the system icon mask, a rounded square
+  on the Motorola, a circle on Pixels) and morphs into the logo and the theme colors. The
+  animation only starts once the first frame is on screen (`firstFrameShownProvider`), so a slow
+  start (debug builds) does not eat it.
+- **Monthly goals** (button at the top of the Goals tab, a route inside the tab): one month at a
+  time (swipe or arrows, tap the month to come back to this one), with "N of M reached"; a banner
+  opens the goals to decide (past goals not reached) in a sheet. Tapping a goal (here, in that
+  sheet or in the calendar) opens its actions. Schema 3 (additive: `goals.outcome`,
   `frozen_progress`, `resolved_at`, `moved_from_id`), with a migration test from schema 2.
 - **Backup** (`features/backup/`): `BackupFile` (JSON envelope: format, version, schema, rows by
   table as Drift JSON), `DriftBackupStore` (export / merge in one transaction), `BackupService`

@@ -24,6 +24,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goalsTitle => 'Goals';
 
   @override
+  String get monthlyGoalsTitle => 'Monthly goals';
+
+  @override
+  String get monthlyGoalsSubtitle => 'This month, the coming ones and the past ones';
+
+  @override
+  String monthlyGoalsToDecide(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count goals to decide',
+      one: '1 goal to decide',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String goalsReachedCount(int reached, int total) {
+    return '$reached of $total reached';
+  }
+
+  @override
+  String get monthlyGoalsBackToCurrent => 'Back to this month';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -524,9 +549,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Their month is over and they were not reached. What should we do?';
 
   @override
-  String get goalsPast => 'Past months';
-
-  @override
   String get goalMarkCompleted => 'Mark as completed';
 
   @override
@@ -536,6 +558,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalMoveHint => 'It starts again from zero; the linked activities follow it.';
+
+  @override
+  String goalAddToMonth(String month) {
+    return 'Also add to $month';
+  }
+
+  @override
+  String get goalAddToMonthHint =>
+      'This one stays as it is; the linked activities feed the new one.';
+
+  @override
+  String goalAddedTo(String month) {
+    return 'Added to $month';
+  }
 
   @override
   String get goalLeaveIncomplete => 'Leave it';

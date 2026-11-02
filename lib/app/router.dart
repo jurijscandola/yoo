@@ -12,6 +12,7 @@ import '../features/export/presentation/export_screen.dart';
 import '../features/external_calendars/presentation/external_calendars_screen.dart';
 import '../features/external_calendars/presentation/external_events.dart';
 import '../features/goals/presentation/goals_screen.dart';
+import '../features/goals/presentation/monthly_goals_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/settings/presentation/app_icon_screen.dart';
 import '../features/settings/presentation/personalization_screen.dart';
@@ -45,7 +46,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [GoRoute(path: Routes.home, builder: (context, state) => const HomeScreen())],
           ),
           StatefulShellBranch(
-            routes: [GoRoute(path: Routes.goals, builder: (context, state) => const GoalsScreen())],
+            routes: [
+              GoRoute(
+                path: Routes.goals,
+                builder: (context, state) => const GoalsScreen(),
+                routes: [
+                  // Inside the Goals tab: the navigation bar stays.
+                  GoRoute(path: 'monthly', builder: (context, state) => const MonthlyGoalsScreen()),
+                ],
+              ),
+            ],
           ),
         ],
       ),

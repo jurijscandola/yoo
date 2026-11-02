@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/providers.dart';
 import '../../../app/services.dart';
 import '../../../core/theme/yoo_tokens.dart';
+import '../../../core/time/date_labels.dart';
 import '../../../l10n/l10n.dart';
+import '../domain/goal_service.dart';
 import '../domain/monthly_goal.dart';
 
 /// Dialogs to create, rename and delete monthly goals.
@@ -19,6 +22,29 @@ abstract final class GoalEditor {
     await ref
         .read(goalServiceProvider)
         .create(year: year, month: month, title: result.title, target: result.target);
+  }
+
+  /// Adds a copy of [goal] to the current month, after the user checks its
+  /// title and amount (adapted to the days of the month when it was one per
+  /// day). Returns the copy, or `null` if cancelled.
+  static Future<MonthlyGoal?> addToCurrentMonth(
+    BuildContext context,
+    WidgetRef ref,
+    MonthlyGoal goal,
+  ) async {
+    final today = ref.read(todayProvider);
+    final result = await showDialog<_EditResult>(
+      context: context,
+      builder: (context) => _GoalDialog(
+        title: context.l10n.goalAddToMonth(context.monthYear(today.year, today.month)),
+        draftTitle: goal.title,
+        draftTarget: GoalService.adaptedTarget(goal, today.year, today.month),
+      ),
+    );
+    if (result is! _Save) return null;
+    return ref
+        .read(goalServiceProvider)
+        .addToCurrentMonth(goal, title: result.title, target: result.target);
   }
 
   /// Renames, changes the target of, or deletes [goal].
@@ -68,20 +94,26 @@ class _Delete extends _EditResult {}
 /// Title and target fields with Save/Cancel; in edit mode also a Delete
 /// action. Pops an [_EditResult].
 class _GoalDialog extends StatefulWidget {
-  const _GoalDialog({required this.title, this.initial});
+  const _GoalDialog({required this.title, this.initial, this.draftTitle, this.draftTarget});
 
   final String title;
 
   /// The goal being edited; `null` when creating.
   final MonthlyGoal? initial;
 
+  /// Values proposed for a new goal.
+  final String? draftTitle;
+  final int? draftTarget;
+
   @override
   State<_GoalDialog> createState() => _GoalDialogState();
 }
 
 class _GoalDialogState extends State<_GoalDialog> {
-  late final _controller = TextEditingController(text: widget.initial?.title);
-  late final _target = TextEditingController(text: '${widget.initial?.target ?? 1}');
+  late final _controller = TextEditingController(text: widget.initial?.title ?? widget.draftTitle);
+  late final _target = TextEditingController(
+    text: '${widget.initial?.target ?? widget.draftTarget ?? 1}',
+  );
   bool _showError = false;
   bool _showTargetError = false;
 

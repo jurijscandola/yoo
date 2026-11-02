@@ -20,14 +20,6 @@ final linkableGoalsProvider = StreamProvider<List<MonthlyGoal>>((ref) {
       );
 });
 
-/// Months that have at least one goal, for the monthly summary.
-final goalMonthsProvider = StreamProvider.autoDispose<Set<(int, int)>>(
-  (ref) => ref
-      .watch(goalRepositoryProvider)
-      .watchAll()
-      .map((goals) => {for (final g in goals) (g.year, g.month)}),
-);
-
 /// Goals of months already over, not reached, waiting for a decision.
 final goalsToDecideProvider = StreamProvider.autoDispose<List<GoalProgress>>((ref) async* {
   ref.watch(todayProvider);
