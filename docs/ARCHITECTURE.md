@@ -42,11 +42,32 @@
   confirmation) to mark the activity as not done: counters lose their last time (3/3 → 2/3),
   partial activities go back to 0%. It returns to Home, reminders and widget follow. Past days
   cannot be reopened.
+- **Not needed**: an activity can be marked "not needed" for a day (e.g. watering the plants
+  after the rain), from the card menu, from its notification ("Not needed" button) or for a
+  missed day. It leaves Home, its reminders stop, it counts neither as done nor as missed (the
+  calendar day stays green, the export shows ➖ and leaves it out of the total) and it is neutral
+  for goals. Undo: the snackbar right after, or the daily summary (today and later days).
+  Notifications show at most three actions on Android: simple activities get Done · Not needed,
+  partial ones 100% · Other % (25/50/75 or typed) · Not needed.
+- **Goal decisions** (Goals tab, the monthly summary): a goal can be marked as completed by hand,
+  moved to the next month or, once its month is over, left as not reached. Moving creates a copy
+  with the same title and target in the next month (or the current one, for months long over),
+  starting from zero; the linked activities follow the copy. A decided goal keeps the progress it
+  had (`frozenProgress`), so relinking activities never rewrites past months. Goals of past
+  months not reached and not decided appear under "To decide", with a dot on the Goals tab.
+- **Backup**: Settings → Backup exports everything (activities with their history, goals,
+  subtasks, language and appearance) as `Yoo-backup-YYYY-MM-DD.json`. Importing never deletes:
+  missing rows are added, a row on both sides is replaced only when the backup's copy is newer,
+  occurrences are matched by activity and day. The app icon and device calendars are not part of
+  it (they belong to the device).
+- **App icons**: six variants (Classic, Light, Dark, Ocean, Forest, Sunset). On Android the
+  choice replaces the launcher icon: the app closes and is reopened from the new icon (launchers
+  usually drop the old home screen shortcut). The opening animation starts from the same icon.
 - **No deadlines** on activities or goals.
 - **Splash**: an opening animation on every cold start.
 - **Bundle id**: `com.app.yoo`.
 
-## Current status (updated 2026-09-30)
+## Current status (updated 2026-11-02)
 
 ### Done (committed)
 - **Phase 0** – setup, bundle id `com.app.yoo`, dependencies, lints, l10n. (The Gradle helper
@@ -141,10 +162,8 @@ recurring, other accounts) appear on the right days, hiding a calendar, and "Add
   "Default"), font (system, Inter, Nunito, Lora, JetBrains Mono: bundled static 400/600/700,
   SIL OFL, licenses registered in the license page), reset. Language or notification color
   changes reconfigure the notification channels/color and reschedule (`followReminderSettings`).
-- **App icon**: `AppIconScreen` with six placeholder previews; the choice is stored
-  (`AppSettings.appIconId`) but the launcher icon does not change yet. It needs the final
-  artwork plus native setup (Android `activity-alias` per icon, iOS alternate icons).
-- **Goals tab**: still empty on purpose; the owner will decide its content.
+- **App icon**: see "Feedback after a month of use" below (the six icons are now real).
+- **Goals tab**: became the monthly goal summary (see below).
 
 ### Phase 9 – polish (done)
 - Large text: `test/polish/large_text_test.dart` opens every main screen on a 360×690 phone with
@@ -199,6 +218,38 @@ afterwards: CRLF in the exported file, lists behind the edge-to-edge navigation 
 swatch invisible on dark themes. Not tested: reboot (it would restart the owner's phone), partial
 actions and typed percentage from the notification (unit-tested).
 
+### Subtasks, quantity goals, card styles (2026-09-30)
+Subtasks per activity (checked per day), goals with a target amount ("3 / 4"), "one day only"
+and "every N weeks" repeats, five card styles and an activity text size. Schema 2 (additive:
+`goals.target`, `subtasks`, `subtask_checks`).
+
+### Feedback after a month of use (2026-11-02)
+- **Not needed** (rules above): `OccurrenceStatus.notNeeded`, stored in the existing `status`
+  column (no schema change); `ActivityService.markNotNeeded` / `undoNotNeeded`;
+  `ReminderActions.notNeeded`. The old "50%" action id is still handled for notifications already
+  on screen.
+- **Logo and app icons**: `tool/generate_icons.py` (replaces the placeholder script) generates
+  the six adaptive icons (vector background with gradient, vector "Y", shared monochrome layer),
+  legacy PNGs and the iOS app icon. `YooIcon` (`core/widgets/yoo_icon.dart`) draws the same
+  artwork in the app. Android switching (`AppIcons.kt`): MainActivity is the Classic launcher
+  entry, each other icon is a disabled launcher `<activity>` subclassing it; exactly one is
+  enabled. Real activities rather than `activity-alias`, because MainActivity gets disabled and
+  `flutter run` only looks for a launcher `<activity>`. The widget header opens the enabled
+  entry (redrawn after a switch). At startup the stored choice follows the launcher
+  (`followLauncherIcon`). Opening animation: the first frame is deferred until the settings are
+  loaded, then it starts exactly like the Android 12+ system splash (the icon in a 160 dp circle
+  on `yoo_splash`) and morphs into the logo and the theme colors.
+- **Goals tab**: "To decide" (past goals not reached), this month, coming months, past months.
+  Tapping a goal (here or in the calendar) opens its actions. Schema 3 (additive: `goals.outcome`,
+  `frozen_progress`, `resolved_at`, `moved_from_id`), with a migration test from schema 2.
+- **Backup** (`features/backup/`): `BackupFile` (JSON envelope: format, version, schema, rows by
+  table as Drift JSON), `DriftBackupStore` (export / merge in one transaction), `BackupService`
+  (settings, then day rollover and change hook). Import on Android through the system file picker
+  (`com.app.yoo/files` channel in MainActivity); the export goes through the share sheet.
+- Development note: after switching to a non-Classic icon, MainActivity is disabled and
+  `flutter run` cannot start it. Switch back to Classic first, or run
+  `adb shell pm enable com.app.yoo/.MainActivity`.
+
 ### Open items (need the owner, a device or a Mac)
 - **Device tests**: reboot with pending reminders, partial/typed-percentage notification actions,
   the home screen widget (phase 10).
@@ -206,9 +257,11 @@ actions and typed percentage from the notification (unit-tested).
   release keystore (kept out of git) is needed before publishing.
 - **iOS**: never built (no Mac). Also: Italian permission texts need an `it.lproj/InfoPlist.strings`
   added through Xcode.
-- **App icons**: final artwork, then native switching (Android `activity-alias` per icon, iOS
-  alternate icons) for the choice already stored in `AppSettings.appIconId`.
-- **Goals tab**: content to be decided.
+- **Device checks for 2026-11-02**: switch the app icon (the app closes, the new icon is in the
+  app drawer, the widget header and notifications open the app), the opening animation from the
+  system splash, "Not needed" from a notification, export a backup to Drive and import it.
+- **iOS**: alternate app icons (Info.plist + assets, needs Xcode) and a document picker for
+  backups; today the icon choice only changes the logo there and importing is hidden.
 - **Build warning**: flutter_timezone, workmanager_android and home_widget still apply the Kotlin Gradle Plugin;
   future Flutter versions will refuse it until those plugins are updated (already at their latest
   versions).
