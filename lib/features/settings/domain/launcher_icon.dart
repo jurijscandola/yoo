@@ -10,6 +10,11 @@ abstract interface class LauncherIcon {
   /// when unknown.
   Future<String?> current();
 
+  /// Corner radius of the device's icon shape, as a share of the side (0.5
+  /// for a circle), or `null` when unknown. The system splash screen shows
+  /// the icon with this shape.
+  Future<double?> maskCorner();
+
   /// Switches the launcher icon to [id]. On Android the app closes right
   /// after, as the launcher entry it was opened from is replaced. Returns
   /// whether the icon changed.
@@ -25,6 +30,9 @@ class UnsupportedLauncherIcon implements LauncherIcon {
 
   @override
   Future<String?> current() async => null;
+
+  @override
+  Future<double?> maskCorner() async => null;
 
   @override
   Future<bool> apply(String id) async => false;

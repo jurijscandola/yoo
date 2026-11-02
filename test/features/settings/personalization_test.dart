@@ -24,6 +24,9 @@ class _FakeLauncherIcon implements LauncherIcon {
   Future<String?> current() async => shown;
 
   @override
+  Future<double?> maskCorner() async => 0.34;
+
+  @override
   Future<bool> apply(String id) async {
     applied.add(id);
     shown = id;

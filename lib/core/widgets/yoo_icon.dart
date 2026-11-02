@@ -1,5 +1,3 @@
-import 'dart:ui' show lerpDouble;
-
 import 'package:flutter/material.dart';
 
 /// An app icon of Yoo: the "Y" on a solid or gradient background.
@@ -31,31 +29,30 @@ class AppIconOption {
 }
 
 /// Draws an [AppIconOption] as the launcher shows it.
-///
-/// [roundness] goes from the rounded square of the icon (0) to a circle (1),
-/// the shape of the icon on the Android splash screen.
 class YooIcon extends StatelessWidget {
   const YooIcon({
     super.key,
     required this.option,
     this.size = 72,
-    this.roundness = 0,
+    this.cornerShare = defaultCornerShare,
     this.shadow = false,
   });
 
   final AppIconOption option;
   final double size;
-  final double roundness;
+
+  /// Corner radius as a share of [size]: from a square (0) to a circle (0.5).
+  final double cornerShare;
 
   /// A soft shadow, so light icons stand out on light pages.
   final bool shadow;
 
-  /// Corner radius of the rounded square, relative to the size.
-  static const cornerShare = 0.26;
+  /// Corner radius of the icon in the app, relative to the size.
+  static const defaultCornerShare = 0.26;
 
   @override
   Widget build(BuildContext context) {
-    final radius = lerpDouble(size * cornerShare, size / 2, roundness.clamp(0, 1))!;
+    final radius = size * cornerShare.clamp(0, 0.5);
     final icon = CustomPaint(
       size: Size.square(size),
       painter: _YooIconPainter(option: option, radius: radius),

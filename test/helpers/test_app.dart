@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
+import 'package:yoo/app/startup/startup_gate.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
 import 'package:yoo/features/backup/domain/backup_service.dart';
@@ -85,6 +86,8 @@ class TestApp {
     homeScreenWidgetProvider.overrideWithValue(homeScreenWidget),
     launcherIconProvider.overrideWithValue(launcherIcon),
     backupFileSourceProvider.overrideWithValue(backupFiles),
+    // No engine in tests: the first frame counts as shown right away.
+    firstFrameShownProvider.overrideWithValue(() async {}),
   ];
 
   /// The whole app, ready to pump.

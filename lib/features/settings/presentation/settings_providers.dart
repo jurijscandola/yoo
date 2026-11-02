@@ -24,6 +24,16 @@ final launcherIconIdProvider = FutureProvider<String?>((ref) async {
   }
 });
 
+/// Corner of the device's icon shape (see [LauncherIcon.maskCorner]); the
+/// opening animation starts from it.
+final systemIconCornerProvider = FutureProvider<double?>((ref) async {
+  try {
+    return await ref.watch(launcherIconProvider).maskCorner();
+  } catch (_) {
+    return null;
+  }
+});
+
 /// Live user settings.
 final appSettingsProvider = StreamProvider<AppSettings>(
   (ref) => ref.watch(settingsRepositoryProvider).watch(),

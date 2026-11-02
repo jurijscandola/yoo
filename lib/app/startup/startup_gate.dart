@@ -14,6 +14,13 @@ import '../../l10n/l10n.dart';
 import '../providers.dart';
 import '../services.dart';
 
+/// Completes once the first frame is on screen (the engine has drawn it and
+/// the system splash is gone). Overridden in tests, which have no engine.
+final firstFrameShownProvider = Provider<Future<void> Function()>(
+  (ref) =>
+      () => WidgetsBinding.instance.waitUntilFirstFrameRasterized,
+);
+
 /// Wraps the app with the cold-start experience:
 /// 1. the opening animation, played on every cold start;
 /// 2. the language prompt, shown once on the very first launch;
@@ -84,6 +91,7 @@ class _StartupGateState extends ConsumerState<StartupGate> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(appSettingsProvider);
+    final systemCorner = ref.watch(systemIconCornerProvider);
     final needsLanguage = settings.value?.needsLanguageChoice ?? false;
     if (_splashDone && settings.hasValue && !needsLanguage && !_permissionsChecked) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _checkPermissions());
@@ -119,8 +127,10 @@ class _StartupGateState extends ConsumerState<StartupGate> {
           SplashOverlay(
             // Wait for the settings too: they choose the logo, and the prompt
             // never flickers.
-            ready: settings.hasValue,
+            ready: settings.hasValue && !systemCorner.isLoading,
             icon: AppIconOption.byId(settings.value?.appIconId ?? AppSettings.defaultAppIconId),
+            startCorner: systemCorner.value ?? SplashOverlay.circle,
+            firstFrameShown: ref.read(firstFrameShownProvider),
             onFinished: () => setState(() => _splashDone = true),
           ),
       ],
@@ -133,17 +143,23 @@ class _StartupGateState extends ConsumerState<StartupGate> {
 const nativeSplashColor = Color(0xFFECE9E2);
 
 /// Opening animation. It starts exactly like the Android 12+ splash screen
-/// (the launcher icon in a 160 dp circle on [nativeSplashColor]), so the
-/// hand-over is invisible; then the circle becomes the app icon, the page
-/// takes the theme color and the name slides up. Finally the whole overlay
-/// fades out revealing the app.
+/// (the launcher icon, 160 dp, in the device's icon shape, on
+/// [nativeSplashColor]), so the hand-over is invisible; then the icon shrinks
+/// into the logo, the page takes the theme color and the name slides up.
+/// Finally the whole overlay fades out revealing the app.
 class SplashOverlay extends StatefulWidget {
   const SplashOverlay({
     super.key,
     required this.ready,
     required this.icon,
     required this.onFinished,
+    required this.firstFrameShown,
+    this.startCorner = circle,
   });
+
+  /// Corner share of a circle: the splash icon shape of the Android
+  /// documentation, used when the device cannot tell its own.
+  static const circle = 0.5;
 
   /// Whether the settings are loaded: the animation waits for them, as they
   /// choose the logo and the colors.
@@ -152,6 +168,12 @@ class SplashOverlay extends StatefulWidget {
   /// The app icon chosen by the user (the launcher shows the same one).
   final AppIconOption icon;
 
+  /// Corner share of the icon on the system splash (the device's icon shape).
+  final double startCorner;
+
+  /// Completes once the first frame is on screen (see [firstFrameShownProvider]).
+  final Future<void> Function() firstFrameShown;
+
   final VoidCallback onFinished;
 
   @override
@@ -159,8 +181,8 @@ class SplashOverlay extends StatefulWidget {
 }
 
 class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateMixin {
-  /// Diameter of the icon on the Android 12+ splash screen (an adaptive icon
-  /// with a background is shown in a 160 dp circle).
+  /// Side of the icon on the Android 12+ splash screen (an adaptive icon with
+  /// a background is shown at 160 dp, measured on a Motorola edge 60).
   static const _systemIconSize = 160.0;
   static const _logoSize = 96.0;
 
@@ -190,14 +212,20 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
     if (widget.ready && !oldWidget.ready) _start();
   }
 
-  void _start() {
-    if (_intro.isAnimating || _intro.isCompleted) return;
-    _intro.forward().whenComplete(() {
-      if (!mounted) return;
-      _outro.forward().whenComplete(() {
-        if (mounted) widget.onFinished();
-      });
-    });
+  bool _started = false;
+
+  /// Plays the animation once the first frame is on screen: the frames
+  /// before it are not shown (the system splash is), and a slow start would
+  /// otherwise eat the animation.
+  Future<void> _start() async {
+    if (_started) return;
+    _started = true;
+    await widget.firstFrameShown().timeout(const Duration(seconds: 3), onTimeout: () {});
+    if (!mounted) return;
+    await _intro.forward();
+    if (!mounted) return;
+    await _outro.forward();
+    if (mounted) widget.onFinished();
   }
 
   @override
@@ -237,7 +265,7 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
                     child: YooIcon(
                       option: widget.icon,
                       size: lerpDouble(_systemIconSize, _logoSize, m)!,
-                      roundness: 1 - m,
+                      cornerShare: lerpDouble(widget.startCorner, YooIcon.defaultCornerShare, m)!,
                     ),
                   ),
                   Transform.translate(

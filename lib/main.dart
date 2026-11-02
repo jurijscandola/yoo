@@ -46,11 +46,15 @@ Future<void> main() async {
   if (launch != null) await handleNotificationResponse(container, launch);
 }
 
-/// Lets the first frame through once the settings are known (or after a
-/// short wait, so the app never stays on the system splash).
+/// Lets the first frame through once the settings and the device's icon
+/// shape are known (or after a short wait, so the app never stays on the
+/// system splash).
 Future<void> _showFirstFrame(WidgetsBinding binding, ProviderContainer container) async {
   try {
-    await container.read(appSettingsProvider.future).timeout(const Duration(seconds: 2));
+    await Future.wait([
+      container.read(appSettingsProvider.future),
+      container.read(systemIconCornerProvider.future),
+    ]).timeout(const Duration(seconds: 2));
   } catch (_) {
     // Defaults are used: better than no app at all.
   }

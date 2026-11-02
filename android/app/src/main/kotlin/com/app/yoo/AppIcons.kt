@@ -5,7 +5,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import com.app.yoo.widget.YooWidgetReceiver
+import kotlin.math.sqrt
 
 /**
  * Switches the launcher icon. Each icon is a launcher activity of its own
@@ -60,6 +67,26 @@ object AppIcons {
     }
     redrawWidgets(context)
     return true
+  }
+
+  /**
+   * Corner radius of the device's icon shape, as a share of the icon side
+   * (0.5 for a circle). The Android 12+ splash screen shows the launcher icon
+   * with this shape, so the opening animation can start from the same one.
+   * Measured on the mask, along the diagonal; `null` before Android 8.
+   */
+  fun maskCornerShare(): Double? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return null
+    val size = 400
+    val icon = AdaptiveIconDrawable(ColorDrawable(), ColorDrawable())
+    icon.setBounds(0, 0, size, size)
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ALPHA_8)
+    Canvas(bitmap).drawPath(icon.iconMask, Paint().apply { isAntiAlias = true })
+    var inset = 0
+    while (inset < size / 2 && bitmap.getPixel(inset, inset) ushr 24 < 128) inset++
+    bitmap.recycle()
+    // A rounded corner of radius r leaves r * (1 - 1/sqrt(2)) on the diagonal.
+    return (inset / (1 - 1 / sqrt(2.0)) / size).coerceIn(0.0, 0.5)
   }
 
   private fun isEnabled(context: Context, activity: Class<*>): Boolean {

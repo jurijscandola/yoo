@@ -32,6 +32,7 @@ open class MainActivity : FlutterActivity() {
         result ->
       when (call.method) {
         "current" -> result.success(AppIcons.current(this))
+        "maskCorner" -> result.success(AppIcons.maskCornerShare())
         "apply" -> {
           val id = call.arguments as? String
           if (id == null || !AppIcons.isKnown(id)) {

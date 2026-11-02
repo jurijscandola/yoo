@@ -15,5 +15,8 @@ class AndroidLauncherIcon implements LauncherIcon {
   Future<String?> current() => _channel.invokeMethod<String>('current');
 
   @override
+  Future<double?> maskCorner() => _channel.invokeMethod<double>('maskCorner');
+
+  @override
   Future<bool> apply(String id) async => await _channel.invokeMethod<bool>('apply', id) ?? false;
 }
