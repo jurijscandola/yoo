@@ -173,7 +173,8 @@ class OccurrencePlanner {
     required DateTime now,
   }) {
     if (!target.isAfter(source.date)) return null;
-    if (source.isCompleted || source.status == OccurrenceStatus.skipped) return null;
+    if (source.isCompleted || source.isNotNeeded) return null;
+    if (source.status == OccurrenceStatus.skipped) return null;
     if (hasOccurrenceOn(activity: activity, target: target, storedOnTarget: storedOnTarget)) {
       return null;
     }

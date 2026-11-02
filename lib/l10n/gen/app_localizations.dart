@@ -543,6 +543,18 @@ abstract class AppLocalizations {
   /// **'Move to tomorrow'**
   String get actionPostpone;
 
+  /// No description provided for @actionNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not needed'**
+  String get actionNotNeeded;
+
+  /// No description provided for @actionNotNeededHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Counts neither as done nor as missed'**
+  String get actionNotNeededHint;
+
   /// No description provided for @actionSkipDay.
   ///
   /// In en, this message translates to:
@@ -572,6 +584,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Moved to tomorrow'**
   String get postponed;
+
+  /// No description provided for @markedNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as not needed'**
+  String get markedNotNeeded;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
 
   /// No description provided for @cannotPostpone.
   ///
@@ -639,6 +663,12 @@ abstract class AppLocalizations {
   /// **'Still to do'**
   String get summaryPending;
 
+  /// No description provided for @summaryNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not needed'**
+  String get summaryNotNeeded;
+
   /// No description provided for @missedBanner.
   ///
   /// In en, this message translates to:
@@ -668,6 +698,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do it today'**
   String get missedMoveToday;
+
+  /// No description provided for @missedNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'It wasn\'t needed'**
+  String get missedNotNeeded;
 
   /// No description provided for @missedLeave.
   ///
@@ -699,12 +735,6 @@ abstract class AppLocalizations {
   /// **'100%'**
   String get notifFull;
 
-  /// No description provided for @notifHalf.
-  ///
-  /// In en, this message translates to:
-  /// **'50%'**
-  String get notifHalf;
-
   /// No description provided for @notifOther.
   ///
   /// In en, this message translates to:
@@ -716,6 +746,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Percentage (0-100)'**
   String get notifInputLabel;
+
+  /// No description provided for @notifNotNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not needed'**
+  String get notifNotNeeded;
 
   /// No description provided for @notifProgress.
   ///
@@ -1430,6 +1466,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not done'**
   String get reopenConfirm;
+
+  /// No description provided for @notNeededUndoTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Put back to do'**
+  String get notNeededUndoTooltip;
+
+  /// No description provided for @notNeededUndoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Put \"{name}\" back to do?'**
+  String notNeededUndoTitle(String name);
+
+  /// No description provided for @notNeededUndoConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Put back'**
+  String get notNeededUndoConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -23,9 +23,13 @@ class MonthReport {
   /// Days with at least one activity, in order. Future days are left out.
   final List<ReportDay> days;
 
-  /// Activities of the month (one per day and activity) and how many were
-  /// completed.
-  int get total => days.fold(0, (sum, d) => sum + d.entries.length);
+  /// Activities of the month (one per day and activity, leaving out the ones
+  /// that were not needed) and how many were completed.
+  int get total => days.fold(
+    0,
+    (sum, d) =>
+        sum + d.entries.where((e) => e.occurrence?.status != OccurrenceStatus.notNeeded).length,
+  );
   int get completed => days.fold(
     0,
     (sum, d) =>

@@ -53,19 +53,23 @@ class LocalNotificationGateway implements ReminderGateway, ReminderPermissions {
     final darwinActions = [
       DarwinNotificationCategory(
         _categorySimple,
-        actions: [DarwinNotificationAction.plain(ReminderActions.done, labels.done)],
+        actions: [
+          DarwinNotificationAction.plain(ReminderActions.done, labels.done),
+          DarwinNotificationAction.plain(ReminderActions.notNeeded, labels.notNeeded),
+        ],
       ),
+      // Same three actions as on Android (which shows at most three).
       DarwinNotificationCategory(
         _categoryPartial,
         actions: [
           DarwinNotificationAction.plain(ReminderActions.full, labels.full),
-          DarwinNotificationAction.plain(ReminderActions.half, labels.half),
           DarwinNotificationAction.text(
             ReminderActions.input,
             labels.other,
             buttonTitle: labels.done,
             placeholder: labels.inputLabel,
           ),
+          DarwinNotificationAction.plain(ReminderActions.notNeeded, labels.notNeeded),
         ],
       ),
     ];
@@ -206,22 +210,27 @@ class LocalNotificationGateway implements ReminderGateway, ReminderPermissions {
           priority: Priority.high,
           category: AndroidNotificationCategory.reminder,
           color: _accent,
+          // Android shows at most three actions: 50% is one of the choices
+          // offered by "Other %".
           actions: reminder.isPartial
               ? [
                   AndroidNotificationAction(ReminderActions.full, labels.full),
-                  AndroidNotificationAction(ReminderActions.half, labels.half),
                   AndroidNotificationAction(
                     ReminderActions.input,
                     labels.other,
                     inputs: [
                       AndroidNotificationActionInput(
                         label: labels.inputLabel,
-                        choices: const ['25', '75'],
+                        choices: const ['25', '50', '75'],
                       ),
                     ],
                   ),
+                  AndroidNotificationAction(ReminderActions.notNeeded, labels.notNeeded),
                 ]
-              : [AndroidNotificationAction(ReminderActions.done, labels.done)],
+              : [
+                  AndroidNotificationAction(ReminderActions.done, labels.done),
+                  AndroidNotificationAction(ReminderActions.notNeeded, labels.notNeeded),
+                ],
         ),
         iOS: DarwinNotificationDetails(
           categoryIdentifier: reminder.isPartial ? _categoryPartial : _categorySimple,

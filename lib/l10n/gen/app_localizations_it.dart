@@ -246,6 +246,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get actionPostpone => 'Sposta a domani';
 
   @override
+  String get actionNotNeeded => 'Non serve';
+
+  @override
+  String get actionNotNeededHint => 'Non conta né come fatta né come mancata';
+
+  @override
   String get actionSkipDay => 'Rimuovi solo per questo giorno';
 
   @override
@@ -261,6 +267,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get postponed => 'Spostata a domani';
+
+  @override
+  String get markedNotNeeded => 'Segnata come non necessaria';
+
+  @override
+  String get undo => 'Annulla';
 
   @override
   String get cannotPostpone => 'Domani c\'è già questa attività';
@@ -300,6 +312,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get summaryPending => 'Ancora da fare';
 
   @override
+  String get summaryNotNeeded => 'Non serve';
+
+  @override
   String missedBanner(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -324,6 +339,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get missedMoveToday => 'Falla oggi';
 
   @override
+  String get missedNotNeeded => 'Non serviva';
+
+  @override
   String get missedLeave => 'Lascia stare';
 
   @override
@@ -339,13 +357,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notifFull => '100%';
 
   @override
-  String get notifHalf => '50%';
-
-  @override
   String get notifOther => 'Altra %';
 
   @override
   String get notifInputLabel => 'Percentuale (0-100)';
+
+  @override
+  String get notifNotNeeded => 'Non serve';
 
   @override
   String notifProgress(String name, int percent) {
@@ -742,4 +760,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reopenConfirm => 'Da fare';
+
+  @override
+  String get notNeededUndoTooltip => 'Rimetti da fare';
+
+  @override
+  String notNeededUndoTitle(String name) {
+    return 'Rimettere \"$name\" tra le cose da fare?';
+  }
+
+  @override
+  String get notNeededUndoConfirm => 'Rimetti';
 }

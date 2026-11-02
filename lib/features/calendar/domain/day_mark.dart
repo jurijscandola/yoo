@@ -10,7 +10,7 @@ enum DayMark {
   /// Something is planned or still open.
   planned,
 
-  /// Everything completed.
+  /// Everything completed (or not needed).
   done,
 
   /// At least one activity was not completed.
@@ -23,7 +23,9 @@ DayMark dayMarkOf(List<DayEntry> entries, LocalDate date, LocalDate today) {
   if (entries.isEmpty) return DayMark.none;
   if (date.isAfter(today)) return DayMark.planned;
   final statuses = entries.map((e) => e.occurrence?.status);
-  if (statuses.every((s) => s == OccurrenceStatus.completed)) return DayMark.done;
+  if (statuses.every((s) => s == OccurrenceStatus.completed || s == OccurrenceStatus.notNeeded)) {
+    return DayMark.done;
+  }
   if (statuses.any((s) => s == OccurrenceStatus.missed)) return DayMark.missed;
   return DayMark.planned;
 }

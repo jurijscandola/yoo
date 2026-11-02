@@ -14,6 +14,10 @@ enum OccurrenceStatus {
 
   /// Removed by the user for that day only: hidden and not counted anywhere.
   skipped,
+
+  /// Not needed that day (e.g. watering the plants after the rain): shown in
+  /// the summaries, but neither done nor missed, and neutral for goals.
+  notNeeded,
 }
 
 /// What the user decided about a missed occurrence.
@@ -79,6 +83,8 @@ class Occurrence {
 
   bool get isCompleted => status == OccurrenceStatus.completed;
 
+  bool get isNotNeeded => status == OccurrenceStatus.notNeeded;
+
   /// Still actionable (shown on Home and reminded).
   bool get isOpen => status == OccurrenceStatus.pending;
 
@@ -86,7 +92,7 @@ class Occurrence {
   /// activities, the done/total ratio for counters.
   double completionFor(Activity activity) {
     if (status == OccurrenceStatus.completed) return 1;
-    if (status == OccurrenceStatus.skipped) return 0;
+    if (status == OccurrenceStatus.skipped || status == OccurrenceStatus.notNeeded) return 0;
     if (activity.isPartial) return (progress / 100).clamp(0, 1).toDouble();
     return (completedCount / activity.timesPerDay).clamp(0, 1).toDouble();
   }
@@ -127,6 +133,14 @@ class Occurrence {
     retroactive: false,
     updatedAt: now,
   );
+
+  /// Marks the occurrence as not needed that day. Progress already made is
+  /// kept, so undoing it ([backToOpen]) restores the card as it was.
+  Occurrence markNotNeeded(DateTime now) =>
+      copyWith(status: OccurrenceStatus.notNeeded, resolution: () => null, updatedAt: now);
+
+  /// Undoes [markNotNeeded]: the occurrence is open again.
+  Occurrence backToOpen(DateTime now) => copyWith(status: OccurrenceStatus.pending, updatedAt: now);
 
   /// Marks a missed occurrence as done after its day ended.
   Occurrence completeRetroactively(Activity activity, DateTime now) => copyWith(

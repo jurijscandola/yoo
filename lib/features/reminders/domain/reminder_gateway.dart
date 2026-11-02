@@ -8,11 +8,15 @@ abstract final class ReminderActions {
   /// Partial activities: set to 100%.
   static const full = 'p100';
 
-  /// Partial activities: set to 50%.
+  /// Partial activities: set to 50%. No longer offered (Android shows three
+  /// actions at most); still handled for notifications already on screen.
   static const half = 'p50';
 
   /// Partial activities: free percentage typed in the notification.
   static const input = 'pinput';
+
+  /// Any activity: not needed today (e.g. no watering after the rain).
+  static const notNeeded = 'notneeded';
 
   /// Parses the percentage typed in a notification ("40", "40%", " 40 ").
   static int? parsePercent(String? raw) {
@@ -27,16 +31,16 @@ class ReminderLabels {
   const ReminderLabels({
     required this.done,
     required this.full,
-    required this.half,
     required this.other,
     required this.inputLabel,
+    required this.notNeeded,
   });
 
   final String done;
   final String full;
-  final String half;
   final String other;
   final String inputLabel;
+  final String notNeeded;
 }
 
 /// Platform notification system, as seen by the reminder logic. Implemented

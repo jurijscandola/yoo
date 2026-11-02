@@ -54,13 +54,15 @@ class MonthTextFormatter {
     return out.toString().replaceAll('\n', '\r\n');
   }
 
-  /// "✅ Vitamins — 2/2", "❌ Walk — Moved to the next day", "⏳ Read — 40%".
+  /// "✅ Vitamins — 2/2", "❌ Walk — Moved to the next day", "⏳ Read — 40%",
+  /// "➖ Water the plants — Not needed".
   String _line(DayEntry entry) {
     final o = entry.occurrence;
     final activity = entry.activity;
     final symbol = switch (o?.status) {
       OccurrenceStatus.completed => '✅',
       OccurrenceStatus.missed => '❌',
+      OccurrenceStatus.notNeeded => '➖',
       _ => '⏳',
     };
     final details = [
@@ -69,6 +71,7 @@ class MonthTextFormatter {
         l10n.timesDone(o.completedCount, activity.timesPerDay),
       if (o?.resolution == MissedResolution.moved) l10n.summaryMoved,
       if (o?.retroactive ?? false) l10n.summaryCompletedLater,
+      if (o?.isNotNeeded ?? false) l10n.summaryNotNeeded,
     ];
     return ['$symbol ${activity.name}', if (details.isNotEmpty) details.join(', ')].join(' — ');
   }

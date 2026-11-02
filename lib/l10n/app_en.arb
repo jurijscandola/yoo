@@ -96,6 +96,8 @@
   "errorTimeSlot": "The end time must be after the start time",
   "actionEdit": "Edit",
   "actionPostpone": "Move to tomorrow",
+  "actionNotNeeded": "Not needed",
+  "actionNotNeededHint": "Counts neither as done nor as missed",
   "actionSkipDay": "Remove only for this day",
   "actionDeleteActivity": "Delete the whole activity",
   "deleteConfirmTitle": "Delete \"{name}\"?",
@@ -108,6 +110,8 @@
   },
   "deleteConfirmBody": "It won't be planned anymore. Its history stays in the summaries.",
   "postponed": "Moved to tomorrow",
+  "markedNotNeeded": "Marked as not needed",
+  "undo": "Undo",
   "cannotPostpone": "Tomorrow already has this activity",
   "progressTitle": "How much did you complete?",
   "progressDone": "Done",
@@ -136,6 +140,7 @@
   "summaryMoved": "Moved to the next day",
   "summaryCompletedLater": "Completed later",
   "summaryPending": "Still to do",
+  "summaryNotNeeded": "Not needed",
   "missedBanner": "{count, plural, =1{1 activity not completed} other{{count} activities not completed}}",
   "@missedBanner": {
     "placeholders": {
@@ -148,14 +153,15 @@
   "missedPromptSubtitle": "These activities were not completed. Maybe you forgot to tick them? You can still mark them as completed.",
   "missedDidIt": "I did it",
   "missedMoveToday": "Do it today",
+  "missedNotNeeded": "It wasn't needed",
   "missedLeave": "Leave it",
   "missedCannotMove": "Already planned today",
   "missedResolveAll": "Decide later",
   "notifDone": "Done",
   "notifFull": "100%",
-  "notifHalf": "50%",
   "notifOther": "Other %",
   "notifInputLabel": "Percentage (0-100)",
+  "notifNotNeeded": "Not needed",
   "notifProgress": "{name} · {percent}%",
   "@notifProgress": {
     "placeholders": {
@@ -367,5 +373,15 @@
     }
   },
   "reopenBody": "It goes back to Home and its reminders start again.",
-  "reopenConfirm": "Not done"
+  "reopenConfirm": "Not done",
+  "notNeededUndoTooltip": "Put back to do",
+  "notNeededUndoTitle": "Put \"{name}\" back to do?",
+  "@notNeededUndoTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notNeededUndoConfirm": "Put back"
 }

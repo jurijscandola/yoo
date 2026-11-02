@@ -30,6 +30,8 @@ class NotificationActionHandler {
         final percent = ReminderActions.parsePercent(input);
         if (percent == null) return false;
         return await _activities.setProgress(target.activityId, target.date, percent) != null;
+      case ReminderActions.notNeeded:
+        return _activities.markNotNeeded(target.activityId, target.date);
       default:
         return false;
     }

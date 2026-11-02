@@ -149,6 +149,33 @@ class ActivityService {
     return true;
   }
 
+  /// Marks the activity as not needed on [date] ("it rained, no need to water
+  /// the plants"): it leaves Home, its reminders stop, and it counts neither
+  /// as done nor as missed. Works on open days (today, future) and on missed
+  /// days still waiting for a decision. Returns whether something changed.
+  Future<bool> markNotNeeded(String activityId, LocalDate date) async {
+    final occurrence = await _ensureOccurrence(activityId, date);
+    if (occurrence == null) return false;
+    final missed =
+        occurrence.status == OccurrenceStatus.missed &&
+        occurrence.resolution != MissedResolution.moved;
+    if (!occurrence.isOpen && !missed) return false;
+    await _occurrences.saveAll([occurrence.markNotNeeded(_clock.now())]);
+    await _changed({date});
+    return true;
+  }
+
+  /// Undoes [markNotNeeded] on today or a future day: the activity is open
+  /// again, with the progress it had. Returns whether something changed.
+  Future<bool> undoNotNeeded(String activityId, LocalDate date) async {
+    if (date.isBefore(_today)) return false;
+    final occurrence = await _occurrences.find(activityId, date);
+    if (occurrence == null || !occurrence.isNotNeeded) return false;
+    await _occurrences.saveAll([occurrence.backToOpen(_clock.now())]);
+    await _changed({date});
+    return true;
+  }
+
   /// Marks a past occurrence as done ("I forgot to tick it"). If it had been
   /// moved, the open copy is removed so it is not done twice.
   Future<void> completeRetroactively(String occurrenceId) async {
@@ -202,7 +229,8 @@ class ActivityService {
   /// Whether [occurrence] can be moved to [moveTargetFor] without creating a
   /// duplicate there.
   Future<bool> canMoveToNextDay(Occurrence occurrence) async {
-    if (occurrence.isCompleted || occurrence.status == OccurrenceStatus.skipped) return false;
+    if (occurrence.isCompleted || occurrence.isNotNeeded) return false;
+    if (occurrence.status == OccurrenceStatus.skipped) return false;
     if (occurrence.resolution == MissedResolution.moved) return false;
     final activity = await _activities.getById(occurrence.activityId);
     if (activity == null || activity.isDeleted) return false;

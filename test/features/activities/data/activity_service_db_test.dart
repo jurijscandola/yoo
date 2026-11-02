@@ -167,6 +167,82 @@ void main() {
     expect((await occurrences.find(a.id, today))!.isCompleted, isTrue);
   });
 
+  test('"not needed" leaves Home, is not missed the next day and can be undone', () async {
+    final a = await service.create(
+      draft('Stretch', slots: const [TimeSlot.at(LocalTime(9, 0)), TimeSlot.at(LocalTime(18, 0))]),
+    );
+    await service.markTimeDone(a.id, today);
+    changes.clear();
+
+    expect(await service.markNotNeeded(a.id, today), isTrue);
+    final marked = (await occurrences.find(a.id, today))!;
+    expect(marked.status, OccurrenceStatus.notNeeded);
+    expect(marked.isOpen, isFalse);
+    expect(changes.single, {today});
+    // Already not needed, or done: nothing to do.
+    expect(await service.markNotNeeded(a.id, today), isFalse);
+    expect(await service.canMoveToNextDay(marked), isFalse);
+
+    // Undo: open again, with the time already done.
+    expect(await service.undoNotNeeded(a.id, today), isTrue);
+    final back = (await occurrences.find(a.id, today))!;
+    expect(back.isOpen, isTrue);
+    expect(back.completedCount, 1);
+
+    // Marked again, then the day ends: it is not a missed activity.
+    await service.markNotNeeded(a.id, today);
+    clock.current = DateTime(2026, 9, 30, 8);
+    await service.rollover();
+    expect(await occurrences.getUnresolvedMissed(), isEmpty);
+    expect((await occurrences.find(a.id, today))!.status, OccurrenceStatus.notNeeded);
+    // Past days cannot be undone.
+    expect(await service.undoNotNeeded(a.id, today), isFalse);
+  });
+
+  test('a future day can be marked as not needed in advance', () async {
+    final a = await service.create(draft('Water'));
+    final tomorrow = today.addDays(1);
+    expect(await service.markNotNeeded(a.id, tomorrow), isTrue);
+    expect((await occurrences.find(a.id, tomorrow))!.status, OccurrenceStatus.notNeeded);
+  });
+
+  test('a missed occurrence can be resolved as not needed', () async {
+    final a = await service.create(draft('Water'));
+    clock.current = DateTime(2026, 9, 30, 8);
+    await service.rollover();
+    expect(await occurrences.getUnresolvedMissed(), hasLength(1));
+
+    expect(await service.markNotNeeded(a.id, today), isTrue);
+    final resolved = (await occurrences.find(a.id, today))!;
+    expect(resolved.status, OccurrenceStatus.notNeeded);
+    expect(resolved.resolution, isNull);
+    expect(await occurrences.getUnresolvedMissed(), isEmpty);
+  });
+
+  test('"not needed" is neutral for goals', () async {
+    final books = await goals.create(year: 2026, month: 9, title: 'Read', target: 4);
+    final sweets = await goals.create(year: 2026, month: 9, title: 'Fewer sweets', target: 4);
+    final read = await service.create(
+      draft(
+        'Read',
+        goalLink: GoalLink(goalId: books.id, impact: 1, type: ImpactType.additive),
+      ),
+    );
+    final cake = await service.create(
+      draft(
+        'Cake',
+        goalLink: GoalLink(goalId: sweets.id, impact: 1, type: ImpactType.subtractive),
+      ),
+    );
+    await service.markTimeDone(read.id, today);
+    await service.markNotNeeded(read.id, today.addDays(1));
+    await service.markNotNeeded(cake.id, today);
+    final progress = {
+      for (final p in await goals.progressOfMonth(2026, 9)) p.goal.title: p.progress,
+    };
+    expect(progress, {'Read': 1, 'Fewer sweets': 0});
+  });
+
   test('day rollover turns yesterday into a missed, unresolved occurrence', () async {
     final a = await service.create(draft('Water'));
     clock.current = DateTime(2026, 9, 30, 8);

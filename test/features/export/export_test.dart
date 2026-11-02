@@ -109,6 +109,31 @@ void main() {
     expect(lines, contains('Completed: 2 of 5'));
   });
 
+  test('"not needed" days are listed but left out of the total', () {
+    final r = MonthReport.build(
+      year: 2026,
+      month: 9,
+      today: today,
+      activitiesById: {'v': vitamins},
+      occurrences: [
+        occurrence('1', 'v', LocalDate(2026, 9, 27), status: OccurrenceStatus.completed),
+        occurrence('2', 'v', LocalDate(2026, 9, 28), status: OccurrenceStatus.notNeeded),
+        occurrence('3', 'v', today, status: OccurrenceStatus.completed),
+      ],
+      goals: const [],
+    );
+    expect(r.completed, 2);
+    expect(r.total, 2);
+    final lines = MonthTextFormatter(
+      l10n: lookupAppLocalizations(const Locale('it')),
+      monthLabel: 'settembre 2026',
+      dayLabel: (d) => '${d.day}',
+      exportedOn: '29 settembre 2026',
+    ).format(r).split('\r\n');
+    expect(lines, contains('  ➖ Activity v — Non serve'));
+    expect(lines, contains('Completate: 2 su 2'));
+  });
+
   test('Italian text', () {
     final text = MonthTextFormatter(
       l10n: lookupAppLocalizations(const Locale('it')),

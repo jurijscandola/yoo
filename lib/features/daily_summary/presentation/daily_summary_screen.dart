@@ -13,8 +13,9 @@ import '../../activities/presentation/activity_providers.dart';
 import '../../activities/presentation/widgets/activity_sheets.dart';
 import '../../home/presentation/widgets/day_header.dart';
 
-/// Daily summary: every activity of a day with ✅ (completed) or ❌ (not
-/// completed), plus the percentage reached by partial activities.
+/// Daily summary: every activity of a day with ✅ (completed), ❌ (not
+/// completed) or ➖ (not needed), plus the percentage reached by partial
+/// activities.
 ///
 /// Future days list what is planned. Missed entries can still be resolved.
 class DailySummaryScreen extends ConsumerWidget {
@@ -94,6 +95,7 @@ class _SummaryRow extends ConsumerWidget {
         l10n.timesDone(o.completedCount, activity.timesPerDay),
       if (o?.resolution == MissedResolution.moved) l10n.summaryMoved,
       if (o?.retroactive ?? false) l10n.summaryCompletedLater,
+      if (status == _Status.notNeeded) l10n.summaryNotNeeded,
       if (status == _Status.planned) l10n.summaryPlanned,
       if (status == _Status.pending) l10n.summaryPending,
     ];
@@ -101,16 +103,18 @@ class _SummaryRow extends ConsumerWidget {
     final resolvable =
         o != null && o.status == OccurrenceStatus.missed && o.resolution != MissedResolution.moved;
 
-    // Today's green check can be tapped to undo a completion by mistake.
+    // Today's green check can be tapped to undo a completion by mistake;
+    // "not needed" can be undone today and on later days.
     final reopenable = status == _Status.done && entry.date == today;
+    final undoable = status == _Status.notNeeded && !entry.date.isBefore(today);
 
     return ListTile(
-      leading: reopenable
+      leading: reopenable || undoable
           ? IconButton(
-              tooltip: l10n.reopenTooltip,
+              tooltip: reopenable ? l10n.reopenTooltip : l10n.notNeededUndoTooltip,
               padding: EdgeInsets.zero,
               icon: _StatusIcon(status: status),
-              onPressed: () => _reopen(context, ref),
+              onPressed: () => reopenable ? _reopen(context, ref) : _undoNotNeeded(context, ref),
             )
           : _StatusIcon(status: status),
       title: Row(
@@ -156,6 +160,27 @@ class _SummaryRow extends ConsumerWidget {
     }
   }
 
+  Future<void> _undoNotNeeded(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.notNeededUndoTitle(entry.activity.name)),
+        content: Text(l10n.reopenBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.notNeededUndoConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await ref.read(activityServiceProvider).undoNotNeeded(entry.activity.id, entry.date);
+    }
+  }
+
   _Status _statusOf(Occurrence? o) {
     if (o == null) return entry.date.isAfter(today) ? _Status.planned : _Status.pending;
     return switch (o.status) {
@@ -163,13 +188,15 @@ class _SummaryRow extends ConsumerWidget {
       OccurrenceStatus.missed => _Status.missed,
       OccurrenceStatus.pending => entry.date.isAfter(today) ? _Status.planned : _Status.pending,
       OccurrenceStatus.skipped => _Status.planned,
+      OccurrenceStatus.notNeeded => _Status.notNeeded,
     };
   }
 }
 
-enum _Status { done, missed, pending, planned }
+enum _Status { done, missed, notNeeded, pending, planned }
 
-/// ✅ green check, ❌ red cross, or a neutral marker for open/planned entries.
+/// ✅ green check, ❌ red cross, ➖ not needed, or a neutral marker for
+/// open/planned entries.
 class _StatusIcon extends StatelessWidget {
   const _StatusIcon({required this.status});
 
@@ -181,6 +208,7 @@ class _StatusIcon extends StatelessWidget {
     return switch (status) {
       _Status.done => Icon(Icons.check_circle_rounded, color: t.success, size: 28),
       _Status.missed => Icon(Icons.cancel_rounded, color: t.danger, size: 28),
+      _Status.notNeeded => Icon(Icons.remove_circle_rounded, color: t.textMuted, size: 28),
       _Status.pending => Icon(Icons.radio_button_unchecked, color: t.textMuted, size: 28),
       _Status.planned => Icon(Icons.schedule_rounded, color: t.textMuted, size: 28),
     };

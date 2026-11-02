@@ -246,6 +246,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionPostpone => 'Move to tomorrow';
 
   @override
+  String get actionNotNeeded => 'Not needed';
+
+  @override
+  String get actionNotNeededHint => 'Counts neither as done nor as missed';
+
+  @override
   String get actionSkipDay => 'Remove only for this day';
 
   @override
@@ -262,6 +268,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postponed => 'Moved to tomorrow';
+
+  @override
+  String get markedNotNeeded => 'Marked as not needed';
+
+  @override
+  String get undo => 'Undo';
 
   @override
   String get cannotPostpone => 'Tomorrow already has this activity';
@@ -301,6 +313,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get summaryPending => 'Still to do';
 
   @override
+  String get summaryNotNeeded => 'Not needed';
+
+  @override
   String missedBanner(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -325,6 +340,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missedMoveToday => 'Do it today';
 
   @override
+  String get missedNotNeeded => 'It wasn\'t needed';
+
+  @override
   String get missedLeave => 'Leave it';
 
   @override
@@ -340,13 +358,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifFull => '100%';
 
   @override
-  String get notifHalf => '50%';
-
-  @override
   String get notifOther => 'Other %';
 
   @override
   String get notifInputLabel => 'Percentage (0-100)';
+
+  @override
+  String get notifNotNeeded => 'Not needed';
 
   @override
   String notifProgress(String name, int percent) {
@@ -742,4 +760,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reopenConfirm => 'Not done';
+
+  @override
+  String get notNeededUndoTooltip => 'Put back to do';
+
+  @override
+  String notNeededUndoTitle(String name) {
+    return 'Put \"$name\" back to do?';
+  }
+
+  @override
+  String get notNeededUndoConfirm => 'Put back';
 }

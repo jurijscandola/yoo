@@ -24,7 +24,8 @@ abstract final class ActivitySheets {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  /// Actions menu of a card: edit, postpone, remove for the day, delete.
+  /// Actions menu of a card: edit, postpone, not needed, remove for the day,
+  /// delete.
   static Future<void> openMenu(
     BuildContext context,
     WidgetRef ref,
@@ -42,42 +43,55 @@ abstract final class ActivitySheets {
         occurrence != null &&
         await service.canMoveToNextDay(occurrence);
     if (!context.mounted) return;
+    // The card leaves the list after some actions: keep the messenger.
+    final messenger = ScaffoldMessenger.of(context);
 
     final choice = await showModalBottomSheet<_MenuChoice>(
       context: context,
+      // Scrollable: on small phones or with large text the menu can be
+      // taller than the space a sheet gets by default.
+      isScrollControlled: true,
       builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _SheetHeader(activity: entry.activity),
-            ListTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: Text(l10n.actionEdit),
-              onTap: () => Navigator.pop(context, _MenuChoice.edit),
-            ),
-            if (mode == CardMode.actionable)
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _SheetHeader(activity: entry.activity),
               ListTile(
-                enabled: canPostpone,
-                leading: const Icon(Icons.redo_rounded),
-                title: Text(l10n.actionPostpone),
-                subtitle: canPostpone ? null : Text(l10n.cannotPostpone),
-                onTap: () => Navigator.pop(context, _MenuChoice.postpone),
+                leading: const Icon(Icons.edit_outlined),
+                title: Text(l10n.actionEdit),
+                onTap: () => Navigator.pop(context, _MenuChoice.edit),
               ),
-            ListTile(
-              leading: const Icon(Icons.event_busy_outlined),
-              title: Text(l10n.actionSkipDay),
-              onTap: () => Navigator.pop(context, _MenuChoice.skipDay),
-            ),
-            ListTile(
-              leading: Icon(Icons.delete_outline, color: context.tokens.danger),
-              title: Text(
-                l10n.actionDeleteActivity,
-                style: TextStyle(color: context.tokens.danger),
+              if (mode == CardMode.actionable)
+                ListTile(
+                  enabled: canPostpone,
+                  leading: const Icon(Icons.redo_rounded),
+                  title: Text(l10n.actionPostpone),
+                  subtitle: canPostpone ? null : Text(l10n.cannotPostpone),
+                  onTap: () => Navigator.pop(context, _MenuChoice.postpone),
+                ),
+              ListTile(
+                leading: const Icon(Icons.remove_circle_outline_rounded),
+                title: Text(l10n.actionNotNeeded),
+                subtitle: Text(l10n.actionNotNeededHint),
+                onTap: () => Navigator.pop(context, _MenuChoice.notNeeded),
               ),
-              onTap: () => Navigator.pop(context, _MenuChoice.delete),
-            ),
-            const SizedBox(height: 8),
-          ],
+              ListTile(
+                leading: const Icon(Icons.event_busy_outlined),
+                title: Text(l10n.actionSkipDay),
+                onTap: () => Navigator.pop(context, _MenuChoice.skipDay),
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_outline, color: context.tokens.danger),
+                title: Text(
+                  l10n.actionDeleteActivity,
+                  style: TextStyle(color: context.tokens.danger),
+                ),
+                onTap: () => Navigator.pop(context, _MenuChoice.delete),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );
@@ -89,6 +103,20 @@ abstract final class ActivitySheets {
       case _MenuChoice.postpone:
         final moved = await service.moveToNextDay(occurrence!.id);
         if (context.mounted) _toast(context, moved ? l10n.postponed : l10n.cannotPostpone);
+      case _MenuChoice.notNeeded:
+        final activityId = entry.activity.id;
+        if (!await service.markNotNeeded(activityId, entry.date)) return;
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(l10n.markedNotNeeded),
+              action: SnackBarAction(
+                label: l10n.undo,
+                onPressed: () => service.undoNotNeeded(activityId, entry.date),
+              ),
+            ),
+          );
       case _MenuChoice.skipDay:
         await service.skipDay(entry.activity.id, entry.date);
       case _MenuChoice.delete:
@@ -172,7 +200,7 @@ abstract final class ActivitySheets {
   }
 }
 
-enum _MenuChoice { edit, postpone, skipDay, delete }
+enum _MenuChoice { edit, postpone, notNeeded, skipDay, delete }
 
 /// Title of a sheet: color dot, activity name and optional date.
 class _SheetHeader extends StatelessWidget {
@@ -210,7 +238,7 @@ class _SheetHeader extends StatelessWidget {
   }
 }
 
-/// The three choices for a missed occurrence: done, move, leave.
+/// The choices for a missed occurrence: done, move, not needed, leave.
 class MissedActions extends ConsumerWidget {
   const MissedActions({super.key, required this.occurrence, this.onDone});
 
@@ -253,6 +281,14 @@ class MissedActions extends ConsumerWidget {
                       onDone?.call();
                     }
                   : null,
+            ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.remove_circle_outline_rounded, size: 18),
+              label: Text(l10n.missedNotNeeded),
+              onPressed: () async {
+                await service.markNotNeeded(occurrence.activityId, occurrence.date);
+                onDone?.call();
+              },
             ),
             TextButton(
               onPressed: () async {

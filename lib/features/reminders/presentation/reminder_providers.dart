@@ -46,9 +46,9 @@ final reminderStringsProvider = Provider<Future<AppLocalizations> Function()>((r
 ReminderLabels reminderLabelsOf(AppLocalizations l10n) => ReminderLabels(
   done: l10n.notifDone,
   full: l10n.notifFull,
-  half: l10n.notifHalf,
   other: l10n.notifOther,
   inputLabel: l10n.notifInputLabel,
+  notNeeded: l10n.notifNotNeeded,
 );
 
 /// The single scheduler of the app (it coalesces concurrent refreshes, so it

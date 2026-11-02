@@ -43,9 +43,9 @@ void main() {
       labels: () async => const ReminderLabels(
         done: 'Done',
         full: '100%',
-        half: '50%',
         other: 'Other %',
         inputLabel: 'Percentage',
+        notNeeded: 'Not needed',
       ),
     );
     // Same wiring as the app: every change refreshes the reminders.
@@ -110,6 +110,29 @@ void main() {
     await handler.handle(actionId: ReminderActions.full, payload: payload(a));
     expect((await todayOf(a)).progress, 100);
     expect((await todayOf(a)).status, OccurrenceStatus.completed);
+  });
+
+  test('"Not needed" closes the day for any activity and stops its reminders', () async {
+    final simple = await create('Water plants', times: 2);
+    final partial = await create(
+      'Study',
+      partial: const PartialConfig(reminderCount: 2, until: LocalTime(20, 0)),
+    );
+    expect(gateway.pending.values.where((r) => r.date == today), isNotEmpty);
+
+    for (final a in [simple, partial]) {
+      expect(
+        await handler.handle(actionId: ReminderActions.notNeeded, payload: payload(a)),
+        isTrue,
+      );
+      expect((await todayOf(a)).status, OccurrenceStatus.notNeeded);
+    }
+    expect(gateway.pending.values.where((r) => r.date == today), isEmpty);
+    // A second press (e.g. an old notification) changes nothing.
+    expect(
+      await handler.handle(actionId: ReminderActions.notNeeded, payload: payload(simple)),
+      isFalse,
+    );
   });
 
   test('typed percentages are clamped; empty input changes nothing', () async {

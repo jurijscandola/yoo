@@ -54,6 +54,20 @@ void main() {
     );
   });
 
+  test('not needed counts as fine', () {
+    expect(
+      dayMarkOf(
+        [
+          entry('a', yesterday, OccurrenceStatus.completed),
+          entry('b', yesterday, OccurrenceStatus.notNeeded),
+        ],
+        yesterday,
+        today,
+      ),
+      DayMark.done,
+    );
+  });
+
   test('today with open activities is still planned', () {
     expect(
       dayMarkOf([entry('a', today, OccurrenceStatus.completed), entry('b', today)], today, today),

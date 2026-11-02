@@ -24,9 +24,9 @@ void main() {
   const labels = ReminderLabels(
     done: 'Done',
     full: '100%',
-    half: '50%',
     other: 'Other %',
     inputLabel: 'Percentage',
+    notNeeded: 'Not needed',
   );
   final today = LocalDate(2026, 9, 29);
 

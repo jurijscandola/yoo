@@ -132,6 +132,35 @@ void main() {
     expect(find.text('All done for today'), findsNothing);
   });
 
+  testWidgets('"Not needed" from the menu, with undo, shown in the summary', (tester) async {
+    final app = TestApp(settings: english);
+    await tester.pumpWidget(app.build());
+    await tester.pumpAndSettle();
+    await createActivity(tester, 'Water the plants');
+
+    Future<void> markNotNeeded() async {
+      await tester.tap(find.byTooltip('More options').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Counts neither as done nor as missed'), findsOneWidget);
+      await tester.tap(find.text('Not needed'));
+      await tester.pumpAndSettle();
+    }
+
+    await markNotNeeded();
+    expect(find.text('Water the plants'), findsNothing);
+    expect(find.text('Marked as not needed'), findsOneWidget);
+    await tester.tap(find.text('Undo'));
+    await tester.pumpAndSettle();
+    expect(find.text('Water the plants'), findsOneWidget);
+
+    await markNotNeeded();
+    await tester.tap(find.text('Today'));
+    await tester.pumpAndSettle();
+    expect(find.text('Water the plants'), findsOneWidget);
+    expect(find.text('Not needed'), findsOneWidget);
+    expect(find.byIcon(Icons.remove_circle_rounded), findsOneWidget);
+  });
+
   testWidgets('an unknown location lands on Home instead of an error page', (tester) async {
     await tester.pumpWidget(TestApp(settings: english).build());
     await tester.pumpAndSettle();

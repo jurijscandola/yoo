@@ -96,6 +96,8 @@
   "errorTimeSlot": "L'orario di fine deve essere dopo quello di inizio",
   "actionEdit": "Modifica",
   "actionPostpone": "Sposta a domani",
+  "actionNotNeeded": "Non serve",
+  "actionNotNeededHint": "Non conta né come fatta né come mancata",
   "actionSkipDay": "Rimuovi solo per questo giorno",
   "actionDeleteActivity": "Elimina l'intera attività",
   "deleteConfirmTitle": "Eliminare \"{name}\"?",
@@ -108,6 +110,8 @@
   },
   "deleteConfirmBody": "Non verrà più pianificata. Lo storico resta nei riepiloghi.",
   "postponed": "Spostata a domani",
+  "markedNotNeeded": "Segnata come non necessaria",
+  "undo": "Annulla",
   "cannotPostpone": "Domani c'è già questa attività",
   "progressTitle": "Quanto hai completato?",
   "progressDone": "Fatto",
@@ -136,6 +140,7 @@
   "summaryMoved": "Spostata al giorno dopo",
   "summaryCompletedLater": "Completata in seguito",
   "summaryPending": "Ancora da fare",
+  "summaryNotNeeded": "Non serve",
   "missedBanner": "{count, plural, =1{1 attività non completata} other{{count} attività non completate}}",
   "@missedBanner": {
     "placeholders": {
@@ -148,14 +153,15 @@
   "missedPromptSubtitle": "Queste attività non sono state completate. Forse hai dimenticato di spuntarle? Puoi ancora segnarle come completate.",
   "missedDidIt": "L'ho fatta",
   "missedMoveToday": "Falla oggi",
+  "missedNotNeeded": "Non serviva",
   "missedLeave": "Lascia stare",
   "missedCannotMove": "Già pianificata oggi",
   "missedResolveAll": "Decido dopo",
   "notifDone": "Fatto",
   "notifFull": "100%",
-  "notifHalf": "50%",
   "notifOther": "Altra %",
   "notifInputLabel": "Percentuale (0-100)",
+  "notifNotNeeded": "Non serve",
   "notifProgress": "{name} · {percent}%",
   "@notifProgress": {
     "placeholders": {
@@ -308,5 +314,8 @@
   "reopenTooltip": "Segna come da fare",
   "reopenTitle": "Segnare \"{name}\" come da fare?",
   "reopenBody": "Torna nella Home e i promemoria ripartono.",
-  "reopenConfirm": "Da fare"
+  "reopenConfirm": "Da fare",
+  "notNeededUndoTooltip": "Rimetti da fare",
+  "notNeededUndoTitle": "Rimettere \"{name}\" tra le cose da fare?",
+  "notNeededUndoConfirm": "Rimetti"
 }
