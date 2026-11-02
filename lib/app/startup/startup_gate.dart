@@ -255,37 +255,41 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
           opacity: 1 - outro.value,
           child: Transform.scale(
             scale: 1 + 0.06 * outro.value,
-            child: ColoredBox(
-              color: Color.lerp(nativeSplashColor, t.page, m)!,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Transform.translate(
-                    offset: Offset(0, _logoY * m),
-                    child: YooIcon(
-                      option: widget.icon,
-                      size: lerpDouble(_systemIconSize, _logoSize, m)!,
-                      cornerShare: lerpDouble(widget.startCorner, YooIcon.defaultCornerShare, m)!,
+            // The whole screen: the inner Stack alone would only be as big
+            // as the icon and the name.
+            child: SizedBox.expand(
+              child: ColoredBox(
+                color: Color.lerp(nativeSplashColor, t.page, m)!,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Transform.translate(
+                      offset: Offset(0, _logoY * m),
+                      child: YooIcon(
+                        option: widget.icon,
+                        size: lerpDouble(_systemIconSize, _logoSize, m)!,
+                        cornerShare: lerpDouble(widget.startCorner, YooIcon.defaultCornerShare, m)!,
+                      ),
                     ),
-                  ),
-                  Transform.translate(
-                    offset: Offset(0, _nameY + 24 * (1 - nameIn.value)),
-                    child: Opacity(
-                      opacity: nameIn.value,
-                      child: Text(
-                        'Yoo',
-                        style: TextStyle(
-                          fontFamily: t.fontFamily,
-                          color: t.text,
-                          fontSize: 34,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
-                          decoration: TextDecoration.none,
+                    Transform.translate(
+                      offset: Offset(0, _nameY + 24 * (1 - nameIn.value)),
+                      child: Opacity(
+                        opacity: nameIn.value,
+                        child: Text(
+                          'Yoo',
+                          style: TextStyle(
+                            fontFamily: t.fontFamily,
+                            color: t.text,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
