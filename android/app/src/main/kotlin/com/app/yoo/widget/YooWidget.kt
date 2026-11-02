@@ -1,6 +1,7 @@
 package com.app.yoo.widget
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -12,12 +13,14 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.Action
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
@@ -41,13 +44,12 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import com.app.yoo.MainActivity
 import com.app.yoo.R
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetGlanceState
 import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 import es.antonborri.home_widget.HomeWidgetGlanceWidgetReceiver
-import es.antonborri.home_widget.actionStartActivity
+import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import java.time.LocalDate
 import org.json.JSONObject
 
@@ -74,7 +76,7 @@ class YooWidget : GlanceAppWidget() {
     val snapshot = Snapshot.parse(state.preferences.getString(DATA_KEY, null))
     val colors = snapshot?.colors ?: Colors.FALLBACK
     val day = snapshot?.days?.firstOrNull { it.date == LocalDate.now().toString() }
-    val openHome = actionStartActivity<MainActivity>(context, Uri.parse("yoo://home"))
+    val openHome = openHomeAction(context)
 
     Column(
         modifier =
@@ -256,6 +258,21 @@ class YooWidget : GlanceAppWidget() {
           modifier = GlanceModifier.size(size),
       )
     }
+  }
+
+  /**
+   * Opens the app on Home through the launcher entry of the chosen app icon
+   * (the others are disabled, see AppIcons). The widget is redrawn when the
+   * icon changes, so this always points at the enabled one.
+   */
+  private fun openHomeAction(context: Context): Action {
+    val launcher = context.packageManager.getLaunchIntentForPackage(context.packageName)?.component
+    val intent =
+        Intent()
+            .setComponent(launcher)
+            .setAction(HomeWidgetLaunchIntent.HOME_WIDGET_LAUNCH_ACTION)
+            .setData(Uri.parse("yoo://home"))
+    return actionStartActivity(intent)
   }
 
   companion object {

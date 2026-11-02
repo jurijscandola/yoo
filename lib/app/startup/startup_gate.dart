@@ -1,10 +1,13 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/database/key_value_store.dart';
 import '../../core/theme/yoo_tokens.dart';
-import '../../core/widgets/yoo_logo.dart';
+import '../../core/widgets/yoo_icon.dart';
 import '../../features/reminders/presentation/reminder_providers.dart';
+import '../../features/settings/domain/app_settings.dart';
 import '../../features/settings/presentation/settings_providers.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../l10n/l10n.dart';
@@ -114,8 +117,10 @@ class _StartupGateState extends ConsumerState<StartupGate> {
           ),
         if (!_splashDone)
           SplashOverlay(
-            // Wait for the settings too, so the prompt never flickers.
+            // Wait for the settings too: they choose the logo, and the prompt
+            // never flickers.
             ready: settings.hasValue,
+            icon: AppIconOption.byId(settings.value?.appIconId ?? AppSettings.defaultAppIconId),
             onFinished: () => setState(() => _splashDone = true),
           ),
       ],
@@ -123,13 +128,30 @@ class _StartupGateState extends ConsumerState<StartupGate> {
   }
 }
 
-/// Opening animation: the logo pops in, the name slides up, then the whole
-/// overlay fades out revealing the app.
-class SplashOverlay extends StatefulWidget {
-  const SplashOverlay({super.key, required this.ready, required this.onFinished});
+/// Background of the native launch screen (`yoo_splash` in
+/// android/app/src/main/res/values/colors.xml).
+const nativeSplashColor = Color(0xFFECE9E2);
 
-  /// Whether the app is ready to be revealed once the intro has played.
+/// Opening animation. It starts exactly like the Android 12+ splash screen
+/// (the launcher icon in a 160 dp circle on [nativeSplashColor]), so the
+/// hand-over is invisible; then the circle becomes the app icon, the page
+/// takes the theme color and the name slides up. Finally the whole overlay
+/// fades out revealing the app.
+class SplashOverlay extends StatefulWidget {
+  const SplashOverlay({
+    super.key,
+    required this.ready,
+    required this.icon,
+    required this.onFinished,
+  });
+
+  /// Whether the settings are loaded: the animation waits for them, as they
+  /// choose the logo and the colors.
   final bool ready;
+
+  /// The app icon chosen by the user (the launcher shows the same one).
+  final AppIconOption icon;
+
   final VoidCallback onFinished;
 
   @override
@@ -137,6 +159,16 @@ class SplashOverlay extends StatefulWidget {
 }
 
 class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateMixin {
+  /// Diameter of the icon on the Android 12+ splash screen (an adaptive icon
+  /// with a background is shown in a 160 dp circle).
+  static const _systemIconSize = 160.0;
+  static const _logoSize = 96.0;
+
+  /// Final vertical offsets from the center, so icon and name end up centered
+  /// together.
+  static const _logoY = -28.0;
+  static const _nameY = 62.0;
+
   late final AnimationController _intro = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1100),
@@ -149,19 +181,22 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _intro.forward().whenComplete(_maybeFinish);
+    if (widget.ready) _start();
   }
 
   @override
   void didUpdateWidget(covariant SplashOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.ready && !oldWidget.ready) _maybeFinish();
+    if (widget.ready && !oldWidget.ready) _start();
   }
 
-  void _maybeFinish() {
-    if (!mounted || !_intro.isCompleted || !widget.ready || _outro.isAnimating) return;
-    _outro.forward().whenComplete(() {
-      if (mounted) widget.onFinished();
+  void _start() {
+    if (_intro.isAnimating || _intro.isCompleted) return;
+    _intro.forward().whenComplete(() {
+      if (!mounted) return;
+      _outro.forward().whenComplete(() {
+        if (mounted) widget.onFinished();
+      });
     });
   }
 
@@ -175,51 +210,59 @@ class _SplashOverlayState extends State<SplashOverlay> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    final logoScale = CurvedAnimation(
+    final morph = CurvedAnimation(
       parent: _intro,
-      curve: const Interval(0, 0.6, curve: Curves.elasticOut),
+      curve: const Interval(0, 0.55, curve: Curves.easeInOutCubic),
     );
     final nameIn = CurvedAnimation(
       parent: _intro,
-      curve: const Interval(0.35, 0.85, curve: Curves.easeOutCubic),
+      curve: const Interval(0.4, 0.9, curve: Curves.easeOutCubic),
     );
-    return FadeTransition(
-      opacity: Tween<double>(begin: 1, end: 0).animate(_outro),
-      child: ScaleTransition(
-        scale: Tween<double>(
-          begin: 1,
-          end: 1.06,
-        ).animate(CurvedAnimation(parent: _outro, curve: Curves.easeIn)),
-        child: ColoredBox(
-          color: t.page,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ScaleTransition(scale: logoScale, child: const YooLogo(size: 88)),
-                const SizedBox(height: 20),
-                FadeTransition(
-                  opacity: nameIn,
-                  child: SlideTransition(
-                    position: Tween(begin: const Offset(0, 0.6), end: Offset.zero).animate(nameIn),
-                    child: Text(
-                      'Yoo',
-                      style: TextStyle(
-                        fontFamily: t.fontFamily,
-                        color: t.text,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        decoration: TextDecoration.none,
+    final outro = CurvedAnimation(parent: _outro, curve: Curves.easeIn);
+    return AnimatedBuilder(
+      animation: Listenable.merge([_intro, _outro]),
+      builder: (context, _) {
+        final m = morph.value;
+        return Opacity(
+          opacity: 1 - outro.value,
+          child: Transform.scale(
+            scale: 1 + 0.06 * outro.value,
+            child: ColoredBox(
+              color: Color.lerp(nativeSplashColor, t.page, m)!,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Transform.translate(
+                    offset: Offset(0, _logoY * m),
+                    child: YooIcon(
+                      option: widget.icon,
+                      size: lerpDouble(_systemIconSize, _logoSize, m)!,
+                      roundness: 1 - m,
+                    ),
+                  ),
+                  Transform.translate(
+                    offset: Offset(0, _nameY + 24 * (1 - nameIn.value)),
+                    child: Opacity(
+                      opacity: nameIn.value,
+                      child: Text(
+                        'Yoo',
+                        style: TextStyle(
+                          fontFamily: t.fontFamily,
+                          color: t.text,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -248,7 +291,14 @@ class _LanguagePrompt extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Center(child: YooLogo(size: 48)),
+                Center(
+                  child: YooIcon(
+                    option: AppIconOption.byId(
+                      ref.watch(currentSettingsProvider.select((s) => s.appIconId)),
+                    ),
+                    size: 48,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 Text(
                   l10n.languagePromptTitle,

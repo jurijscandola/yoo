@@ -706,7 +706,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appIcon => 'App icon';
 
   @override
-  String get appIconHint => 'The final icons are on their way: these are previews.';
+  String get appIconHint => 'The icon of Yoo on the home screen and at startup.';
+
+  @override
+  String get appIconHintInApp => 'On this device only the logo shown at startup changes.';
+
+  @override
+  String appIconConfirmTitle(String name) {
+    return 'Use the $name icon?';
+  }
+
+  @override
+  String get appIconConfirmBody =>
+      'Yoo closes to change its icon: open it again from the new one. If Yoo was on your home screen, add it again from the app drawer.';
+
+  @override
+  String get appIconApply => 'Change icon';
 
   @override
   String get appIconClassic => 'Classic';

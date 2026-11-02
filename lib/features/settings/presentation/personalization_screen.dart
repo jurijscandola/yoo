@@ -7,6 +7,7 @@ import '../../../core/theme/yoo_fonts.dart';
 import '../../../core/theme/yoo_palettes.dart';
 import '../../../core/theme/yoo_tokens.dart';
 import '../../../core/widgets/activity_card_preview.dart';
+import '../../../core/widgets/yoo_icon.dart';
 import '../../../l10n/l10n.dart';
 import '../domain/app_settings.dart';
 import 'app_icon_screen.dart';
@@ -157,8 +158,12 @@ class PersonalizationScreen extends ConsumerWidget {
             _Group(
               children: [
                 ListTile(
-                  leading: AppIconPreview(option: AppIconOption.byId(settings.appIconId), size: 40),
-                  title: Text(AppIconOption.byId(settings.appIconId).label(context)),
+                  leading: YooIcon(
+                    option: AppIconOption.byId(settings.appIconId),
+                    size: 40,
+                    shadow: true,
+                  ),
+                  title: Text(appIconLabel(context, settings.appIconId)),
                   trailing: Icon(Icons.chevron_right, color: t.textMuted),
                   onTap: () => context.push(Routes.appIcon),
                 ),

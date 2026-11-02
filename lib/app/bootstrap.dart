@@ -24,7 +24,9 @@ import '../features/reminders/application/notification_action_handler.dart';
 import '../features/reminders/data/local_notification_gateway.dart';
 import '../features/reminders/domain/notification_planner.dart';
 import '../features/reminders/presentation/reminder_providers.dart';
+import '../features/settings/data/android_launcher_icon.dart';
 import '../features/settings/data/stored_settings_repository.dart';
+import '../features/settings/domain/launcher_icon.dart';
 import '../features/settings/presentation/settings_providers.dart';
 import '../l10n/l10n.dart';
 import 'providers.dart';
@@ -49,8 +51,29 @@ ProviderContainer openAppContainer(LocalNotificationGateway gateway) {
       externalCalendarSourceProvider.overrideWithValue(DeviceExternalCalendarSource()),
       exportDestinationProvider.overrideWithValue(const ShareExportDestination()),
       homeScreenWidgetProvider.overrideWithValue(const AndroidHomeScreenWidget()),
+      launcherIconProvider.overrideWithValue(
+        Platform.isAndroid ? const AndroidLauncherIcon() : const UnsupportedLauncherIcon(),
+      ),
     ],
   );
+}
+
+/// Keeps the stored app icon equal to the one the launcher shows (a backup or
+/// a reinstall can leave them apart), so the opening animation shows the
+/// same logo the user just tapped.
+Future<void> followLauncherIcon(ProviderContainer container) async {
+  final launcher = container.read(launcherIconProvider);
+  if (!launcher.isSupported) return;
+  try {
+    final current = await launcher.current();
+    if (current == null) return;
+    final settings = await container.read(settingsRepositoryProvider).load();
+    if (settings.appIconId != current) {
+      await container.read(settingsControllerProvider).setAppIcon(current);
+    }
+  } catch (error, stack) {
+    debugPrint('Launcher icon check failed: $error\n$stack');
+  }
 }
 
 /// Initializes [gateway] with the user's language and colors.

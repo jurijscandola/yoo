@@ -4,12 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/yoo_tokens.dart';
 import '../data/in_memory_settings_repository.dart';
 import '../domain/app_settings.dart';
+import '../domain/launcher_icon.dart';
 import '../domain/settings_repository.dart';
 
 /// The settings repository. Overridden in `main` with the persistent one.
 final settingsRepositoryProvider = Provider<SettingsRepository>(
   (ref) => InMemorySettingsRepository(),
 );
+
+/// The launcher icon. Overridden at bootstrap on Android.
+final launcherIconProvider = Provider<LauncherIcon>((ref) => const UnsupportedLauncherIcon());
+
+/// Id of the icon the launcher shows, when the device can tell.
+final launcherIconIdProvider = FutureProvider<String?>((ref) async {
+  try {
+    return await ref.watch(launcherIconProvider).current();
+  } catch (_) {
+    return null;
+  }
+});
 
 /// Live user settings.
 final appSettingsProvider = StreamProvider<AppSettings>(

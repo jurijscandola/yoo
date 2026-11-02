@@ -2,95 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/yoo_tokens.dart';
+import '../../../core/widgets/yoo_icon.dart';
 import '../../../l10n/l10n.dart';
 import 'settings_providers.dart';
 
-/// An app icon choice. The artwork is a placeholder (a "Y" on a colored
-/// square) until the final icons exist; switching the launcher icon also
-/// needs native setup (Android activity-alias, iOS alternate icons).
-class AppIconOption {
-  const AppIconOption(this.id, this.background, this.foreground, [this.gradientEnd]);
-
-  final String id;
-  final Color background;
-  final Color foreground;
-
-  /// Second gradient color, if any.
-  final Color? gradientEnd;
-
-  static const all = [
-    AppIconOption('classic', Color(0xFF1E1D1B), Color(0xFFFAF8F4)),
-    AppIconOption('light', Color(0xFFFAF8F4), Color(0xFF1E1D1B)),
-    AppIconOption('dark', Color(0xFF111112), Color(0xFF7DA7E0)),
-    AppIconOption('ocean', Color(0xFF0090FF), Colors.white, Color(0xFF12A594)),
-    AppIconOption('forest', Color(0xFF4F7A4A), Colors.white, Color(0xFF1E2A1E)),
-    AppIconOption('sunset', Color(0xFFF76B15), Colors.white, Color(0xFFD6409F)),
-  ];
-
-  static AppIconOption byId(String id) =>
-      all.firstWhere((o) => o.id == id, orElse: () => all.first);
-
-  String label(BuildContext context) {
-    final l10n = context.l10n;
-    return switch (id) {
-      'light' => l10n.appIconLight,
-      'dark' => l10n.appIconDark,
-      'ocean' => l10n.appIconOcean,
-      'forest' => l10n.appIconForest,
-      'sunset' => l10n.appIconSunset,
-      _ => l10n.appIconClassic,
-    };
-  }
+/// Localized name of the app icon [id].
+String appIconLabel(BuildContext context, String id) {
+  final l10n = context.l10n;
+  return switch (id) {
+    'light' => l10n.appIconLight,
+    'dark' => l10n.appIconDark,
+    'ocean' => l10n.appIconOcean,
+    'forest' => l10n.appIconForest,
+    'sunset' => l10n.appIconSunset,
+    _ => l10n.appIconClassic,
+  };
 }
 
-/// Placeholder rendering of an icon, shaped like a launcher icon.
-class AppIconPreview extends StatelessWidget {
-  const AppIconPreview({super.key, required this.option, this.size = 72});
-
-  final AppIconOption option;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final end = option.gradientEnd;
-    return Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: end == null ? option.background : null,
-        gradient: end == null
-            ? null
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [option.background, end],
-              ),
-        borderRadius: BorderRadius.circular(size * 0.26),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: size * 0.1)],
-      ),
-      child: Text(
-        'Y',
-        style: TextStyle(
-          color: option.foreground,
-          fontSize: size * 0.5,
-          fontWeight: FontWeight.w700,
-          height: 1,
-        ),
-      ),
-    );
-  }
-}
-
-/// Grid of icon previews; the choice is stored in the settings.
+/// Grid of app icons. On Android the choice replaces the launcher icon (the
+/// app closes to do it, after a confirmation); elsewhere only the logo shown
+/// at startup follows it.
 class AppIconScreen extends ConsumerWidget {
   const AppIconScreen({super.key});
+
+  Future<void> _choose(BuildContext context, WidgetRef ref, String id, String selected) async {
+    if (id == selected) return;
+    final launcher = ref.read(launcherIconProvider);
+    final settings = ref.read(settingsControllerProvider);
+    if (!launcher.isSupported) {
+      await settings.setAppIcon(id);
+      return;
+    }
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.appIconConfirmTitle(appIconLabel(context, id))),
+        content: Text(l10n.appIconConfirmBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l10n.cancel)),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: Text(l10n.appIconApply)),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false)) return;
+    await settings.setAppIcon(id);
+    await launcher.apply(id);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final t = context.tokens;
-    final selected = ref.watch(currentSettingsProvider.select((s) => s.appIconId));
+    final supported = ref.watch(launcherIconProvider).isSupported;
+    // What the launcher shows wins over the stored choice (they can differ
+    // after a reinstall); the stored choice is used where the device cannot
+    // tell.
+    final stored = ref.watch(currentSettingsProvider.select((s) => s.appIconId));
+    final selected = ref.watch(launcherIconIdProvider).value ?? stored;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appIcon)),
       // Keeps the end of the list above the system navigation bar
@@ -100,7 +69,10 @@ class AppIconScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           children: [
-            Text(l10n.appIconHint, style: TextStyle(color: t.textMuted)),
+            Text(
+              supported ? l10n.appIconHint : l10n.appIconHintInApp,
+              style: TextStyle(color: t.textMuted),
+            ),
             const SizedBox(height: 20),
             GridView.count(
               crossAxisCount: 3,
@@ -116,7 +88,7 @@ class AppIconScreen extends ConsumerWidget {
                     selected: option.id == selected,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(t.radius),
-                      onTap: () => ref.read(settingsControllerProvider).setAppIcon(option.id),
+                      onTap: () => _choose(context, ref, option.id, selected),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(8),
@@ -131,9 +103,9 @@ class AppIconScreen extends ConsumerWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            AppIconPreview(option: option, size: 64),
+                            YooIcon(option: option, size: 64, shadow: true),
                             const SizedBox(height: 8),
-                            Text(option.label(context), style: TextStyle(color: t.text)),
+                            Text(appIconLabel(context, option.id), style: TextStyle(color: t.text)),
                           ],
                         ),
                       ),

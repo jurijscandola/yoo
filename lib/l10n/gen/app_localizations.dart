@@ -1362,8 +1362,32 @@ abstract class AppLocalizations {
   /// No description provided for @appIconHint.
   ///
   /// In en, this message translates to:
-  /// **'The final icons are on their way: these are previews.'**
+  /// **'The icon of Yoo on the home screen and at startup.'**
   String get appIconHint;
+
+  /// No description provided for @appIconHintInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device only the logo shown at startup changes.'**
+  String get appIconHintInApp;
+
+  /// No description provided for @appIconConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the {name} icon?'**
+  String appIconConfirmTitle(String name);
+
+  /// No description provided for @appIconConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoo closes to change its icon: open it again from the new one. If Yoo was on your home screen, add it again from the app drawer.'**
+  String get appIconConfirmBody;
+
+  /// No description provided for @appIconApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Change icon'**
+  String get appIconApply;
 
   /// No description provided for @appIconClassic.
   ///

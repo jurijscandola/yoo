@@ -349,7 +349,18 @@
   "fontSystem": "System",
   "fontSample": "A small step every day",
   "appIcon": "App icon",
-  "appIconHint": "The final icons are on their way: these are previews.",
+  "appIconHint": "The icon of Yoo on the home screen and at startup.",
+  "appIconHintInApp": "On this device only the logo shown at startup changes.",
+  "appIconConfirmTitle": "Use the {name} icon?",
+  "@appIconConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "appIconConfirmBody": "Yoo closes to change its icon: open it again from the new one. If Yoo was on your home screen, add it again from the app drawer.",
+  "appIconApply": "Change icon",
   "appIconClassic": "Classic",
   "appIconLight": "Light",
   "appIconDark": "Dark",

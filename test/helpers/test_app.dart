@@ -18,6 +18,7 @@ import 'package:yoo/features/reminders/domain/reminder_permissions.dart';
 import 'package:yoo/features/reminders/presentation/reminder_providers.dart';
 import 'package:yoo/features/settings/data/in_memory_settings_repository.dart';
 import 'package:yoo/features/settings/domain/app_settings.dart';
+import 'package:yoo/features/settings/domain/launcher_icon.dart';
 import 'package:yoo/features/settings/presentation/settings_providers.dart';
 
 /// Everything a widget test needs to run the full app in memory.
@@ -34,6 +35,7 @@ class TestApp {
     this.externalCalendars = const EmptyExternalCalendarSource(),
     this.exportDestination = const NoopExportDestination(),
     this.homeScreenWidget = const NoopHomeScreenWidget(),
+    this.launcherIcon = const UnsupportedLauncherIcon(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -62,6 +64,9 @@ class TestApp {
   /// Home screen widget; nothing is drawn unless a test inspects it.
   final HomeScreenWidget homeScreenWidget;
 
+  /// Launcher icon; not switchable unless a test is about it.
+  final LauncherIcon launcherIcon;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
@@ -72,6 +77,7 @@ class TestApp {
     externalCalendarSourceProvider.overrideWithValue(externalCalendars),
     exportDestinationProvider.overrideWithValue(exportDestination),
     homeScreenWidgetProvider.overrideWithValue(homeScreenWidget),
+    launcherIconProvider.overrideWithValue(launcherIcon),
   ];
 
   /// The whole app, ready to pump.

@@ -7,9 +7,29 @@ import 'package:yoo/core/theme/yoo_palettes.dart';
 import 'package:yoo/core/theme/yoo_tokens.dart';
 import 'package:yoo/features/settings/data/stored_settings_repository.dart';
 import 'package:yoo/features/settings/domain/app_settings.dart';
+import 'package:yoo/features/settings/domain/launcher_icon.dart';
 import 'package:yoo/features/settings/presentation/personalization_screen.dart';
 
 import '../../helpers/test_app.dart';
+
+/// A launcher that can switch icons, recording the switches.
+class _FakeLauncherIcon implements LauncherIcon {
+  String shown = 'classic';
+  final applied = <String>[];
+
+  @override
+  bool get isSupported => true;
+
+  @override
+  Future<String?> current() async => shown;
+
+  @override
+  Future<bool> apply(String id) async {
+    applied.add(id);
+    shown = id;
+    return true;
+  }
+}
 
 void main() {
   const english = AppSettings(localeCode: 'en');
@@ -181,14 +201,14 @@ void main() {
     expect(reset.fontFamily, isNull);
   });
 
-  testWidgets('the app icon screen stores the chosen preview', (tester) async {
+  testWidgets('without launcher support the choice only changes the logo', (tester) async {
     final app = TestApp(settings: english);
     await openPersonalization(tester, app);
     await scrollTo(tester, find.text('Classic'));
     await tester.tap(find.text('Classic'));
     await tester.pumpAndSettle();
 
-    expect(find.text('The final icons are on their way: these are previews.'), findsOneWidget);
+    expect(find.text('On this device only the logo shown at startup changes.'), findsOneWidget);
     await tester.ensureVisible(find.text('Ocean'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Ocean'));
@@ -198,5 +218,33 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Ocean'), findsOneWidget);
+  });
+
+  testWidgets('on Android the launcher icon changes after a confirmation', (tester) async {
+    final launcher = _FakeLauncherIcon();
+    final app = TestApp(settings: english, launcherIcon: launcher);
+    await openPersonalization(tester, app);
+    await scrollTo(tester, find.text('Classic'));
+    await tester.tap(find.text('Classic'));
+    await tester.pumpAndSettle();
+    expect(find.text('The icon of Yoo on the home screen and at startup.'), findsOneWidget);
+
+    // Cancel: nothing changes.
+    await tester.ensureVisible(find.text('Sunset'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Sunset'));
+    await tester.pumpAndSettle();
+    expect(find.text('Use the Sunset icon?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(launcher.applied, isEmpty);
+    expect((await app.settings.load()).appIconId, 'classic');
+
+    await tester.tap(find.text('Sunset'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Change icon'));
+    await tester.pumpAndSettle();
+    expect(launcher.applied, ['sunset']);
+    expect((await app.settings.load()).appIconId, 'sunset');
   });
 }
