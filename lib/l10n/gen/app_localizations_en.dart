@@ -33,6 +33,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsExportSubtitle => 'One .txt file per month';
 
   @override
+  String get settingsBackup => 'Backup';
+
+  @override
+  String get settingsBackupSubtitle => 'Save or restore all your data';
+
+  @override
   String get settingsPersonalization => 'Personalization';
 
   @override
@@ -617,6 +623,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportPreview => 'Preview';
+
+  @override
+  String get backupDescription =>
+      'A backup holds everything: activities with their whole history, goals, subtasks, language and appearance. Keep it somewhere safe (Drive, Files…) to fill Yoo again on a new phone.';
+
+  @override
+  String get backupExport => 'Export backup';
+
+  @override
+  String get backupImport => 'Import backup';
+
+  @override
+  String get backupImportHint =>
+      'Nothing is deleted: what is missing is added, and what is newer in the backup replaces the older copy.';
+
+  @override
+  String get backupImportUnsupported => 'Importing is not available on this device yet.';
+
+  @override
+  String get backupConfirmTitle => 'Import this backup?';
+
+  @override
+  String backupCreatedOn(String date) {
+    return 'Made on $date';
+  }
+
+  @override
+  String backupCountActivities(int count) {
+    return 'Activities: $count';
+  }
+
+  @override
+  String backupCountDays(int count) {
+    return 'Days of history: $count';
+  }
+
+  @override
+  String backupCountGoals(int count) {
+    return 'Goals: $count';
+  }
+
+  @override
+  String get backupImportConfirm => 'Import';
+
+  @override
+  String backupImported(int added, int updated) {
+    return 'Backup imported: $added added, $updated updated';
+  }
+
+  @override
+  String get backupInvalid => 'This file is not a Yoo backup.';
+
+  @override
+  String get backupTooNew => 'This backup comes from a newer version of Yoo: update the app first.';
+
+  @override
+  String get backupImportFailed => 'Import failed: nothing was changed.';
 
   @override
   String reportTitle(String month) {

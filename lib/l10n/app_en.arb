@@ -8,6 +8,8 @@
   "settingsTitle": "Settings",
   "settingsExport": "Export data",
   "settingsExportSubtitle": "One .txt file per month",
+  "settingsBackup": "Backup",
+  "settingsBackupSubtitle": "Save or restore all your data",
   "settingsPersonalization": "Personalization",
   "settingsPersonalizationSubtitle": "Colors, fonts, app icon",
   "settingsLanguage": "Language",
@@ -311,6 +313,59 @@
   "exportEmpty": "Nothing recorded in this month",
   "exportFailed": "Export failed",
   "exportPreview": "Preview",
+  "backupDescription": "A backup holds everything: activities with their whole history, goals, subtasks, language and appearance. Keep it somewhere safe (Drive, Files…) to fill Yoo again on a new phone.",
+  "backupExport": "Export backup",
+  "backupImport": "Import backup",
+  "backupImportHint": "Nothing is deleted: what is missing is added, and what is newer in the backup replaces the older copy.",
+  "backupImportUnsupported": "Importing is not available on this device yet.",
+  "backupConfirmTitle": "Import this backup?",
+  "backupCreatedOn": "Made on {date}",
+  "@backupCreatedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backupCountActivities": "Activities: {count}",
+  "@backupCountActivities": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCountDays": "Days of history: {count}",
+  "@backupCountDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCountGoals": "Goals: {count}",
+  "@backupCountGoals": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupImportConfirm": "Import",
+  "backupImported": "Backup imported: {added} added, {updated} updated",
+  "@backupImported": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "updated": {
+        "type": "int"
+      }
+    }
+  },
+  "backupInvalid": "This file is not a Yoo backup.",
+  "backupTooNew": "This backup comes from a newer version of Yoo: update the app first.",
+  "backupImportFailed": "Import failed: nothing was changed.",
   "reportTitle": "Yoo · {month}",
   "@reportTitle": {
     "placeholders": {

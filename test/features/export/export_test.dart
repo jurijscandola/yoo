@@ -27,6 +27,7 @@ class _RecordingDestination implements ExportDestination {
     required String fileName,
     required String content,
     String? subject,
+    String mimeType = 'text/plain',
   }) async => files.add((fileName, content));
 }
 

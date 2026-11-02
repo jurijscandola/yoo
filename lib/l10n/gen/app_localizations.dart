@@ -141,6 +141,18 @@ abstract class AppLocalizations {
   /// **'One .txt file per month'**
   String get settingsExportSubtitle;
 
+  /// No description provided for @settingsBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsBackupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save or restore all your data'**
+  String get settingsBackupSubtitle;
+
   /// No description provided for @settingsPersonalization.
   ///
   /// In en, this message translates to:
@@ -1190,6 +1202,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preview'**
   String get exportPreview;
+
+  /// No description provided for @backupDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup holds everything: activities with their whole history, goals, subtasks, language and appearance. Keep it somewhere safe (Drive, Files…) to fill Yoo again on a new phone.'**
+  String get backupDescription;
+
+  /// No description provided for @backupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get backupExport;
+
+  /// No description provided for @backupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get backupImport;
+
+  /// No description provided for @backupImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is deleted: what is missing is added, and what is newer in the backup replaces the older copy.'**
+  String get backupImportHint;
+
+  /// No description provided for @backupImportUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing is not available on this device yet.'**
+  String get backupImportUnsupported;
+
+  /// No description provided for @backupConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import this backup?'**
+  String get backupConfirmTitle;
+
+  /// No description provided for @backupCreatedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Made on {date}'**
+  String backupCreatedOn(String date);
+
+  /// No description provided for @backupCountActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities: {count}'**
+  String backupCountActivities(int count);
+
+  /// No description provided for @backupCountDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days of history: {count}'**
+  String backupCountDays(int count);
+
+  /// No description provided for @backupCountGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals: {count}'**
+  String backupCountGoals(int count);
+
+  /// No description provided for @backupImportConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get backupImportConfirm;
+
+  /// No description provided for @backupImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported: {added} added, {updated} updated'**
+  String backupImported(int added, int updated);
+
+  /// No description provided for @backupInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a Yoo backup.'**
+  String get backupInvalid;
+
+  /// No description provided for @backupTooNew.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup comes from a newer version of Yoo: update the app first.'**
+  String get backupTooNew;
+
+  /// No description provided for @backupImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: nothing was changed.'**
+  String get backupImportFailed;
 
   /// No description provided for @reportTitle.
   ///

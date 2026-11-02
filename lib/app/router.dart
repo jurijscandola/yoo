@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../core/time/local_date.dart';
 import '../core/time/local_time.dart';
 import '../features/activities/presentation/activity_form_screen.dart';
+import '../features/backup/presentation/backup_screen.dart';
 import '../features/calendar/presentation/calendar_screen.dart';
 import '../features/daily_summary/presentation/daily_summary_screen.dart';
 import '../features/export/presentation/export_screen.dart';
@@ -96,6 +97,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.export,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const ExportScreen(),
+      ),
+      GoRoute(
+        path: Routes.backup,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const BackupScreen(),
       ),
       GoRoute(
         path: Routes.externalCalendars,

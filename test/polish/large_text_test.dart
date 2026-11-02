@@ -133,6 +133,7 @@ void main() {
       await open(find.byIcon(Icons.more_horiz));
       for (final icon in [
         Icons.file_download_outlined,
+        Icons.settings_backup_restore_rounded,
         Icons.palette_outlined,
         Icons.event_outlined,
       ]) {

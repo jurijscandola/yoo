@@ -7,6 +7,8 @@ import 'package:yoo/app/app.dart';
 import 'package:yoo/app/providers.dart';
 import 'package:yoo/core/database/app_database.dart';
 import 'package:yoo/core/time/clock.dart';
+import 'package:yoo/features/backup/domain/backup_service.dart';
+import 'package:yoo/features/backup/presentation/backup_providers.dart';
 import 'package:yoo/features/export/domain/export_destination.dart';
 import 'package:yoo/features/export/presentation/export_providers.dart';
 import 'package:yoo/features/external_calendars/domain/external_calendar_source.dart';
@@ -36,6 +38,7 @@ class TestApp {
     this.exportDestination = const NoopExportDestination(),
     this.homeScreenWidget = const NoopHomeScreenWidget(),
     this.launcherIcon = const UnsupportedLauncherIcon(),
+    this.backupFiles = const UnsupportedBackupFileSource(),
   }) : database = AppDatabase(
          // Synchronous stream closing avoids pending timers in widget tests.
          DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true),
@@ -67,6 +70,9 @@ class TestApp {
   /// Launcher icon; not switchable unless a test is about it.
   final LauncherIcon launcherIcon;
 
+  /// Files to import; none unless a test is about backups.
+  final BackupFileSource backupFiles;
+
   /// Provider overrides wiring the in-memory implementations.
   List<Override> get overrides => [
     databaseProvider.overrideWithValue(database),
@@ -78,6 +84,7 @@ class TestApp {
     exportDestinationProvider.overrideWithValue(exportDestination),
     homeScreenWidgetProvider.overrideWithValue(homeScreenWidget),
     launcherIconProvider.overrideWithValue(launcherIcon),
+    backupFileSourceProvider.overrideWithValue(backupFiles),
   ];
 
   /// The whole app, ready to pump.

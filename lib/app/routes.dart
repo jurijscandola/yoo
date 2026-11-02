@@ -9,6 +9,7 @@ abstract final class Routes {
   static const settings = '/settings';
   static const externalCalendars = '/settings/calendars';
   static const export = '/settings/export';
+  static const backup = '/settings/backup';
   static const personalization = '/settings/personalization';
   static const appIcon = '/settings/personalization/icon';
 

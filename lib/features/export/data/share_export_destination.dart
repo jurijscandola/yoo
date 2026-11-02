@@ -12,14 +12,21 @@ class ShareExportDestination implements ExportDestination {
   const ShareExportDestination();
 
   @override
-  Future<void> deliver({required String fileName, required String content, String? subject}) async {
+  Future<void> deliver({
+    required String fileName,
+    required String content,
+    String? subject,
+    String mimeType = 'text/plain',
+  }) async {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}${Platform.pathSeparator}$fileName');
-    // UTF-8 with BOM so that older editors detect the encoding (✅, accents).
-    await file.writeAsBytes([0xEF, 0xBB, 0xBF, ...utf8.encode(content)], flush: true);
+    // Plain text: UTF-8 with BOM so that older editors detect the encoding
+    // (✅, accents). Other formats (JSON) stay plain UTF-8.
+    final bom = mimeType == 'text/plain' ? const [0xEF, 0xBB, 0xBF] : const <int>[];
+    await file.writeAsBytes([...bom, ...utf8.encode(content)], flush: true);
     await SharePlus.instance.share(
       ShareParams(
-        files: [XFile(file.path, mimeType: 'text/plain')],
+        files: [XFile(file.path, mimeType: mimeType)],
         subject: subject,
       ),
     );

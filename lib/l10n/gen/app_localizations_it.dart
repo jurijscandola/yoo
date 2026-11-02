@@ -33,6 +33,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsExportSubtitle => 'Un file .txt per ogni mese';
 
   @override
+  String get settingsBackup => 'Backup';
+
+  @override
+  String get settingsBackupSubtitle => 'Salva o ripristina tutti i dati';
+
+  @override
   String get settingsPersonalization => 'Personalizzazione';
 
   @override
@@ -617,6 +623,65 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get exportPreview => 'Anteprima';
+
+  @override
+  String get backupDescription =>
+      'Un backup contiene tutto: le attività con tutto il loro storico, gli obiettivi, le sotto-attività, la lingua e l\'aspetto. Conservalo al sicuro (Drive, File…) per ripopolare Yoo su un nuovo telefono.';
+
+  @override
+  String get backupExport => 'Esporta backup';
+
+  @override
+  String get backupImport => 'Importa backup';
+
+  @override
+  String get backupImportHint =>
+      'Non si cancella nulla: si aggiunge ciò che manca e si aggiorna ciò che nel backup è più recente.';
+
+  @override
+  String get backupImportUnsupported =>
+      'L\'importazione non è ancora disponibile su questo dispositivo.';
+
+  @override
+  String get backupConfirmTitle => 'Importare questo backup?';
+
+  @override
+  String backupCreatedOn(String date) {
+    return 'Creato il $date';
+  }
+
+  @override
+  String backupCountActivities(int count) {
+    return 'Attività: $count';
+  }
+
+  @override
+  String backupCountDays(int count) {
+    return 'Giorni di storico: $count';
+  }
+
+  @override
+  String backupCountGoals(int count) {
+    return 'Obiettivi: $count';
+  }
+
+  @override
+  String get backupImportConfirm => 'Importa';
+
+  @override
+  String backupImported(int added, int updated) {
+    return 'Backup importato: $added aggiunti, $updated aggiornati';
+  }
+
+  @override
+  String get backupInvalid => 'Questo file non è un backup di Yoo.';
+
+  @override
+  String get backupTooNew =>
+      'Questo backup viene da una versione più recente di Yoo: aggiorna prima l\'app.';
+
+  @override
+  String get backupImportFailed => 'Importazione non riuscita: non è stato modificato nulla.';
 
   @override
   String reportTitle(String month) {

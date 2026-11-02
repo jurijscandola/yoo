@@ -36,6 +36,12 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => context.push(Routes.export),
             ),
             SettingsTile(
+              icon: Icons.settings_backup_restore_rounded,
+              title: l10n.settingsBackup,
+              subtitle: l10n.settingsBackupSubtitle,
+              onTap: () => context.push(Routes.backup),
+            ),
+            SettingsTile(
               icon: Icons.palette_outlined,
               title: l10n.settingsPersonalization,
               subtitle: l10n.settingsPersonalizationSubtitle,

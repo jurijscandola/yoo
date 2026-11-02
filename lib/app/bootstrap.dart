@@ -13,6 +13,9 @@ import 'package:home_widget/home_widget.dart';
 import '../core/database/app_database.dart';
 import '../core/theme/yoo_fonts.dart';
 import '../core/theme/yoo_tokens.dart';
+import '../features/backup/data/android_backup_file_source.dart';
+import '../features/backup/domain/backup_service.dart';
+import '../features/backup/presentation/backup_providers.dart';
 import '../features/export/data/share_export_destination.dart';
 import '../features/export/presentation/export_providers.dart';
 import '../features/external_calendars/data/device_external_calendar_source.dart';
@@ -53,6 +56,9 @@ ProviderContainer openAppContainer(LocalNotificationGateway gateway) {
       homeScreenWidgetProvider.overrideWithValue(const AndroidHomeScreenWidget()),
       launcherIconProvider.overrideWithValue(
         Platform.isAndroid ? const AndroidLauncherIcon() : const UnsupportedLauncherIcon(),
+      ),
+      backupFileSourceProvider.overrideWithValue(
+        Platform.isAndroid ? const AndroidBackupFileSource() : const UnsupportedBackupFileSource(),
       ),
     ],
   );
