@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/yoo_tokens.dart';
 import '../../core/widgets/goals_icon.dart';
+import '../../features/goals/presentation/goal_providers.dart';
 import '../../l10n/l10n.dart';
 
 /// Root layout with the bottom navigation bar (Calendar · Home · Goals).
@@ -38,7 +40,14 @@ class AppShell extends StatelessWidget {
           ),
           YooNavItem(
             label: l10n.navGoals,
-            icon: (color) => GoalsIcon(color: color),
+            // A dot while goals of past months wait for a decision.
+            icon: (color) => Consumer(
+              builder: (context, ref, _) => Badge(
+                isLabelVisible: ref.watch(goalsToDecideProvider).value?.isNotEmpty ?? false,
+                backgroundColor: context.tokens.danger,
+                child: GoalsIcon(color: color),
+              ),
+            ),
           ),
         ],
       ),

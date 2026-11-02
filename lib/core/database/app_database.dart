@@ -59,6 +59,19 @@ class Goals extends Table {
   /// percentages, so they keep 100 as target (added in schema 2).
   IntColumn get target => integer().withDefault(const Constant(100))();
   DateTimeColumn get completionNotifiedAt => dateTime().nullable()();
+
+  /// What the user decided (added in schema 3): `completed` (marked by
+  /// hand), `moved` (continued in a later month) or `leftIncomplete`;
+  /// `null` while the goal is open.
+  TextColumn get outcome => text().nullable()();
+
+  /// Progress when the decision was taken (added in schema 3), so later
+  /// changes to the linked activities do not rewrite it.
+  RealColumn get frozenProgress => real().nullable()();
+  DateTimeColumn get resolvedAt => dateTime().nullable()();
+
+  /// The goal of an earlier month this one continues (added in schema 3).
+  TextColumn get movedFromId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get deletedAt => dateTime().nullable()();
@@ -116,7 +129,7 @@ class AppDatabase extends _$AppDatabase {
   );
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -130,6 +143,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(subtaskChecks);
         await m.createIndex(subtasksActivity);
         await m.createIndex(subtaskChecksDate);
+      }
+      if (from < 3) {
+        await m.addColumn(goals, goals.outcome);
+        await m.addColumn(goals, goals.frozenProgress);
+        await m.addColumn(goals, goals.resolvedAt);
+        await m.addColumn(goals, goals.movedFromId);
       }
     },
   );

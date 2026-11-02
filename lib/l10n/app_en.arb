@@ -246,6 +246,39 @@
     }
   },
   "goalReachedLabel": "Reached",
+  "goalsToDecide": "To decide",
+  "goalsToDecideHint": "Their month is over and they were not reached. What should we do?",
+  "goalsPast": "Past months",
+  "goalMarkCompleted": "Mark as completed",
+  "goalMoveTo": "Move to {month}",
+  "@goalMoveTo": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "goalMoveHint": "It starts again from zero; the linked activities follow it.",
+  "goalLeaveIncomplete": "Leave it",
+  "goalReopen": "Reopen",
+  "goalOutcomeCompleted": "Completed",
+  "goalOutcomeMoved": "Moved to {month}",
+  "@goalOutcomeMoved": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "goalOutcomeLeft": "Not reached",
+  "goalMovedFrom": "Continued from {month}",
+  "@goalMovedFrom": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "errorEmptyGoal": "Give the goal a name",
   "externalSectionTitle": "From your calendars",
   "externalEventsCount": "{count, plural, =1{1 event in your calendars} other{{count} events in your calendars}}",

@@ -57,6 +57,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             monthLabel: monthLabel,
             dayLabel: context.fullDate,
             exportedOn: context.fullDate(today),
+            otherMonthLabel: context.monthYear,
           ).format(report);
     final text = content?.replaceAll('\r\n', '\n');
 

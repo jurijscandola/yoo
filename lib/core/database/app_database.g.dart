@@ -1350,6 +1350,42 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _outcomeMeta = const VerificationMeta('outcome');
+  @override
+  late final GeneratedColumn<String> outcome = GeneratedColumn<String>(
+    'outcome',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _frozenProgressMeta = const VerificationMeta('frozenProgress');
+  @override
+  late final GeneratedColumn<double> frozenProgress = GeneratedColumn<double>(
+    'frozen_progress',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _resolvedAtMeta = const VerificationMeta('resolvedAt');
+  @override
+  late final GeneratedColumn<DateTime> resolvedAt = GeneratedColumn<DateTime>(
+    'resolved_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _movedFromIdMeta = const VerificationMeta('movedFromId');
+  @override
+  late final GeneratedColumn<String> movedFromId = GeneratedColumn<String>(
+    'moved_from_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
@@ -1385,6 +1421,10 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
     title,
     target,
     completionNotifiedAt,
+    outcome,
+    frozenProgress,
+    resolvedAt,
+    movedFromId,
     createdAt,
     updatedAt,
     deletedAt,
@@ -1428,6 +1468,27 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
           data['completion_notified_at']!,
           _completionNotifiedAtMeta,
         ),
+      );
+    }
+    if (data.containsKey('outcome')) {
+      context.handle(_outcomeMeta, outcome.isAcceptableOrUnknown(data['outcome']!, _outcomeMeta));
+    }
+    if (data.containsKey('frozen_progress')) {
+      context.handle(
+        _frozenProgressMeta,
+        frozenProgress.isAcceptableOrUnknown(data['frozen_progress']!, _frozenProgressMeta),
+      );
+    }
+    if (data.containsKey('resolved_at')) {
+      context.handle(
+        _resolvedAtMeta,
+        resolvedAt.isAcceptableOrUnknown(data['resolved_at']!, _resolvedAtMeta),
+      );
+    }
+    if (data.containsKey('moved_from_id')) {
+      context.handle(
+        _movedFromIdMeta,
+        movedFromId.isAcceptableOrUnknown(data['moved_from_id']!, _movedFromIdMeta),
       );
     }
     if (data.containsKey('created_at')) {
@@ -1476,6 +1537,22 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, GoalRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}completion_notified_at'],
       ),
+      outcome: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}outcome'],
+      ),
+      frozenProgress: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}frozen_progress'],
+      ),
+      resolvedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}resolved_at'],
+      ),
+      movedFromId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}moved_from_id'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1507,6 +1584,19 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
   /// percentages, so they keep 100 as target (added in schema 2).
   final int target;
   final DateTime? completionNotifiedAt;
+
+  /// What the user decided (added in schema 3): `completed` (marked by
+  /// hand), `moved` (continued in a later month) or `leftIncomplete`;
+  /// `null` while the goal is open.
+  final String? outcome;
+
+  /// Progress when the decision was taken (added in schema 3), so later
+  /// changes to the linked activities do not rewrite it.
+  final double? frozenProgress;
+  final DateTime? resolvedAt;
+
+  /// The goal of an earlier month this one continues (added in schema 3).
+  final String? movedFromId;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
@@ -1517,6 +1607,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     required this.title,
     required this.target,
     this.completionNotifiedAt,
+    this.outcome,
+    this.frozenProgress,
+    this.resolvedAt,
+    this.movedFromId,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -1531,6 +1625,18 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     map['target'] = Variable<int>(target);
     if (!nullToAbsent || completionNotifiedAt != null) {
       map['completion_notified_at'] = Variable<DateTime>(completionNotifiedAt);
+    }
+    if (!nullToAbsent || outcome != null) {
+      map['outcome'] = Variable<String>(outcome);
+    }
+    if (!nullToAbsent || frozenProgress != null) {
+      map['frozen_progress'] = Variable<double>(frozenProgress);
+    }
+    if (!nullToAbsent || resolvedAt != null) {
+      map['resolved_at'] = Variable<DateTime>(resolvedAt);
+    }
+    if (!nullToAbsent || movedFromId != null) {
+      map['moved_from_id'] = Variable<String>(movedFromId);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1550,6 +1656,12 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       completionNotifiedAt: completionNotifiedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(completionNotifiedAt),
+      outcome: outcome == null && nullToAbsent ? const Value.absent() : Value(outcome),
+      frozenProgress: frozenProgress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(frozenProgress),
+      resolvedAt: resolvedAt == null && nullToAbsent ? const Value.absent() : Value(resolvedAt),
+      movedFromId: movedFromId == null && nullToAbsent ? const Value.absent() : Value(movedFromId),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent ? const Value.absent() : Value(deletedAt),
@@ -1565,6 +1677,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       title: serializer.fromJson<String>(json['title']),
       target: serializer.fromJson<int>(json['target']),
       completionNotifiedAt: serializer.fromJson<DateTime?>(json['completionNotifiedAt']),
+      outcome: serializer.fromJson<String?>(json['outcome']),
+      frozenProgress: serializer.fromJson<double?>(json['frozenProgress']),
+      resolvedAt: serializer.fromJson<DateTime?>(json['resolvedAt']),
+      movedFromId: serializer.fromJson<String?>(json['movedFromId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
@@ -1580,6 +1696,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       'title': serializer.toJson<String>(title),
       'target': serializer.toJson<int>(target),
       'completionNotifiedAt': serializer.toJson<DateTime?>(completionNotifiedAt),
+      'outcome': serializer.toJson<String?>(outcome),
+      'frozenProgress': serializer.toJson<double?>(frozenProgress),
+      'resolvedAt': serializer.toJson<DateTime?>(resolvedAt),
+      'movedFromId': serializer.toJson<String?>(movedFromId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
@@ -1593,6 +1713,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     String? title,
     int? target,
     Value<DateTime?> completionNotifiedAt = const Value.absent(),
+    Value<String?> outcome = const Value.absent(),
+    Value<double?> frozenProgress = const Value.absent(),
+    Value<DateTime?> resolvedAt = const Value.absent(),
+    Value<String?> movedFromId = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
@@ -1605,6 +1729,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     completionNotifiedAt: completionNotifiedAt.present
         ? completionNotifiedAt.value
         : this.completionNotifiedAt,
+    outcome: outcome.present ? outcome.value : this.outcome,
+    frozenProgress: frozenProgress.present ? frozenProgress.value : this.frozenProgress,
+    resolvedAt: resolvedAt.present ? resolvedAt.value : this.resolvedAt,
+    movedFromId: movedFromId.present ? movedFromId.value : this.movedFromId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -1619,6 +1747,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
       completionNotifiedAt: data.completionNotifiedAt.present
           ? data.completionNotifiedAt.value
           : this.completionNotifiedAt,
+      outcome: data.outcome.present ? data.outcome.value : this.outcome,
+      frozenProgress: data.frozenProgress.present ? data.frozenProgress.value : this.frozenProgress,
+      resolvedAt: data.resolvedAt.present ? data.resolvedAt.value : this.resolvedAt,
+      movedFromId: data.movedFromId.present ? data.movedFromId.value : this.movedFromId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
@@ -1634,6 +1766,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
           ..write('title: $title, ')
           ..write('target: $target, ')
           ..write('completionNotifiedAt: $completionNotifiedAt, ')
+          ..write('outcome: $outcome, ')
+          ..write('frozenProgress: $frozenProgress, ')
+          ..write('resolvedAt: $resolvedAt, ')
+          ..write('movedFromId: $movedFromId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
@@ -1649,6 +1785,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
     title,
     target,
     completionNotifiedAt,
+    outcome,
+    frozenProgress,
+    resolvedAt,
+    movedFromId,
     createdAt,
     updatedAt,
     deletedAt,
@@ -1663,6 +1803,10 @@ class GoalRow extends DataClass implements Insertable<GoalRow> {
           other.title == this.title &&
           other.target == this.target &&
           other.completionNotifiedAt == this.completionNotifiedAt &&
+          other.outcome == this.outcome &&
+          other.frozenProgress == this.frozenProgress &&
+          other.resolvedAt == this.resolvedAt &&
+          other.movedFromId == this.movedFromId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
@@ -1675,6 +1819,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
   final Value<String> title;
   final Value<int> target;
   final Value<DateTime?> completionNotifiedAt;
+  final Value<String?> outcome;
+  final Value<double?> frozenProgress;
+  final Value<DateTime?> resolvedAt;
+  final Value<String?> movedFromId;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
@@ -1686,6 +1834,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     this.title = const Value.absent(),
     this.target = const Value.absent(),
     this.completionNotifiedAt = const Value.absent(),
+    this.outcome = const Value.absent(),
+    this.frozenProgress = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    this.movedFromId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -1698,6 +1850,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     required String title,
     this.target = const Value.absent(),
     this.completionNotifiedAt = const Value.absent(),
+    this.outcome = const Value.absent(),
+    this.frozenProgress = const Value.absent(),
+    this.resolvedAt = const Value.absent(),
+    this.movedFromId = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.deletedAt = const Value.absent(),
@@ -1715,6 +1871,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     Expression<String>? title,
     Expression<int>? target,
     Expression<DateTime>? completionNotifiedAt,
+    Expression<String>? outcome,
+    Expression<double>? frozenProgress,
+    Expression<DateTime>? resolvedAt,
+    Expression<String>? movedFromId,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? deletedAt,
@@ -1727,6 +1887,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       if (title != null) 'title': title,
       if (target != null) 'target': target,
       if (completionNotifiedAt != null) 'completion_notified_at': completionNotifiedAt,
+      if (outcome != null) 'outcome': outcome,
+      if (frozenProgress != null) 'frozen_progress': frozenProgress,
+      if (resolvedAt != null) 'resolved_at': resolvedAt,
+      if (movedFromId != null) 'moved_from_id': movedFromId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
@@ -1741,6 +1905,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     Value<String>? title,
     Value<int>? target,
     Value<DateTime?>? completionNotifiedAt,
+    Value<String?>? outcome,
+    Value<double?>? frozenProgress,
+    Value<DateTime?>? resolvedAt,
+    Value<String?>? movedFromId,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<DateTime?>? deletedAt,
@@ -1753,6 +1921,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
       title: title ?? this.title,
       target: target ?? this.target,
       completionNotifiedAt: completionNotifiedAt ?? this.completionNotifiedAt,
+      outcome: outcome ?? this.outcome,
+      frozenProgress: frozenProgress ?? this.frozenProgress,
+      resolvedAt: resolvedAt ?? this.resolvedAt,
+      movedFromId: movedFromId ?? this.movedFromId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
@@ -1781,6 +1953,18 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
     if (completionNotifiedAt.present) {
       map['completion_notified_at'] = Variable<DateTime>(completionNotifiedAt.value);
     }
+    if (outcome.present) {
+      map['outcome'] = Variable<String>(outcome.value);
+    }
+    if (frozenProgress.present) {
+      map['frozen_progress'] = Variable<double>(frozenProgress.value);
+    }
+    if (resolvedAt.present) {
+      map['resolved_at'] = Variable<DateTime>(resolvedAt.value);
+    }
+    if (movedFromId.present) {
+      map['moved_from_id'] = Variable<String>(movedFromId.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1805,6 +1989,10 @@ class GoalsCompanion extends UpdateCompanion<GoalRow> {
           ..write('title: $title, ')
           ..write('target: $target, ')
           ..write('completionNotifiedAt: $completionNotifiedAt, ')
+          ..write('outcome: $outcome, ')
+          ..write('frozenProgress: $frozenProgress, ')
+          ..write('resolvedAt: $resolvedAt, ')
+          ..write('movedFromId: $movedFromId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt, ')
@@ -3247,6 +3435,10 @@ typedef $$GoalsTableCreateCompanionBuilder =
       required String title,
       Value<int> target,
       Value<DateTime?> completionNotifiedAt,
+      Value<String?> outcome,
+      Value<double?> frozenProgress,
+      Value<DateTime?> resolvedAt,
+      Value<String?> movedFromId,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<DateTime?> deletedAt,
@@ -3260,6 +3452,10 @@ typedef $$GoalsTableUpdateCompanionBuilder =
       Value<String> title,
       Value<int> target,
       Value<DateTime?> completionNotifiedAt,
+      Value<String?> outcome,
+      Value<double?> frozenProgress,
+      Value<DateTime?> resolvedAt,
+      Value<String?> movedFromId,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
@@ -3293,6 +3489,18 @@ class $$GoalsTableFilterComposer extends Composer<_$AppDatabase, $GoalsTable> {
     column: $table.completionNotifiedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get outcome =>
+      $composableBuilder(column: $table.outcome, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get frozenProgress =>
+      $composableBuilder(column: $table.frozenProgress, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get resolvedAt =>
+      $composableBuilder(column: $table.resolvedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get movedFromId =>
+      $composableBuilder(column: $table.movedFromId, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -3332,6 +3540,20 @@ class $$GoalsTableOrderingComposer extends Composer<_$AppDatabase, $GoalsTable> 
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get outcome =>
+      $composableBuilder(column: $table.outcome, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get frozenProgress => $composableBuilder(
+    column: $table.frozenProgress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get resolvedAt =>
+      $composableBuilder(column: $table.resolvedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get movedFromId =>
+      $composableBuilder(column: $table.movedFromId, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -3367,6 +3589,18 @@ class $$GoalsTableAnnotationComposer extends Composer<_$AppDatabase, $GoalsTable
 
   GeneratedColumn<DateTime> get completionNotifiedAt =>
       $composableBuilder(column: $table.completionNotifiedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get outcome =>
+      $composableBuilder(column: $table.outcome, builder: (column) => column);
+
+  GeneratedColumn<double> get frozenProgress =>
+      $composableBuilder(column: $table.frozenProgress, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get resolvedAt =>
+      $composableBuilder(column: $table.resolvedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get movedFromId =>
+      $composableBuilder(column: $table.movedFromId, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3409,6 +3643,10 @@ class $$GoalsTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> target = const Value.absent(),
                 Value<DateTime?> completionNotifiedAt = const Value.absent(),
+                Value<String?> outcome = const Value.absent(),
+                Value<double?> frozenProgress = const Value.absent(),
+                Value<DateTime?> resolvedAt = const Value.absent(),
+                Value<String?> movedFromId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
@@ -3420,6 +3658,10 @@ class $$GoalsTableTableManager
                 title: title,
                 target: target,
                 completionNotifiedAt: completionNotifiedAt,
+                outcome: outcome,
+                frozenProgress: frozenProgress,
+                resolvedAt: resolvedAt,
+                movedFromId: movedFromId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
@@ -3433,6 +3675,10 @@ class $$GoalsTableTableManager
                 required String title,
                 Value<int> target = const Value.absent(),
                 Value<DateTime?> completionNotifiedAt = const Value.absent(),
+                Value<String?> outcome = const Value.absent(),
+                Value<double?> frozenProgress = const Value.absent(),
+                Value<DateTime?> resolvedAt = const Value.absent(),
+                Value<String?> movedFromId = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<DateTime?> deletedAt = const Value.absent(),
@@ -3444,6 +3690,10 @@ class $$GoalsTableTableManager
                 title: title,
                 target: target,
                 completionNotifiedAt: completionNotifiedAt,
+                outcome: outcome,
+                frozenProgress: frozenProgress,
+                resolvedAt: resolvedAt,
+                movedFromId: movedFromId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,

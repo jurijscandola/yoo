@@ -11,6 +11,9 @@ abstract interface class GoalRepository {
   /// Emits every non-deleted goal (used by the activity form picker).
   Stream<List<MonthlyGoal>> watchAll();
 
+  /// Returns every non-deleted goal.
+  Future<List<MonthlyGoal>> getAll();
+
   /// Returns the goal with [id], deleted or not.
   Future<MonthlyGoal?> getById(String id);
 

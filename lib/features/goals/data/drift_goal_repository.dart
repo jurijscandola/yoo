@@ -31,6 +31,12 @@ class DriftGoalRepository implements GoalRepository {
   }
 
   @override
+  Future<List<MonthlyGoal>> getAll() async {
+    final q = _db.select(_db.goals)..where((t) => t.deletedAt.isNull());
+    return (await q.get()).map(goalFromRow).toList();
+  }
+
+  @override
   Future<MonthlyGoal?> getById(String id) async {
     final row = await (_db.select(_db.goals)..where((t) => t.id.equals(id))).getSingleOrNull();
     return row == null ? null : goalFromRow(row);
@@ -47,6 +53,10 @@ class DriftGoalRepository implements GoalRepository {
           title: goal.title,
           target: Value(goal.target),
           completionNotifiedAt: Value(goal.completionNotifiedAt),
+          outcome: Value(goal.outcome?.name),
+          frozenProgress: Value(goal.frozenProgress),
+          resolvedAt: Value(goal.resolvedAt),
+          movedFromId: Value(goal.movedFromId),
           createdAt: goal.createdAt,
           updatedAt: goal.updatedAt,
           deletedAt: Value(goal.deletedAt),
@@ -62,6 +72,10 @@ MonthlyGoal goalFromRow(GoalRow row) => MonthlyGoal(
   title: row.title,
   target: row.target,
   completionNotifiedAt: row.completionNotifiedAt,
+  outcome: GoalOutcome.values.asNameMap()[row.outcome],
+  frozenProgress: row.frozenProgress,
+  resolvedAt: row.resolvedAt,
+  movedFromId: row.movedFromId,
   createdAt: row.createdAt,
   updatedAt: row.updatedAt,
   deletedAt: row.deletedAt,

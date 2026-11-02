@@ -2,6 +2,8 @@ import '../../../core/time/local_date.dart';
 import '../../../l10n/l10n.dart';
 import '../../activities/domain/entities/occurrence.dart';
 import '../../activities/domain/services/occurrence_planner.dart';
+import '../../goals/domain/goal_service.dart';
+import '../../goals/domain/monthly_goal.dart';
 import '../domain/month_report.dart';
 
 /// Turns a [MonthReport] into the plain text of the exported file.
@@ -14,6 +16,7 @@ class MonthTextFormatter {
     required this.monthLabel,
     required this.dayLabel,
     required this.exportedOn,
+    this.otherMonthLabel,
   });
 
   final AppLocalizations l10n;
@@ -27,6 +30,9 @@ class MonthTextFormatter {
   /// When the export was made, already formatted.
   final String exportedOn;
 
+  /// e.g. "October 2026", for goals moved to another month.
+  final String Function(int year, int month)? otherMonthLabel;
+
   String format(MonthReport report) {
     final out = StringBuffer()
       ..writeln(l10n.reportTitle(monthLabel))
@@ -35,7 +41,7 @@ class MonthTextFormatter {
       ..writeln(l10n.reportGoals);
     if (report.goals.isEmpty) out.writeln('  ${l10n.reportNoGoals}');
     for (final g in report.goals) {
-      out.writeln('  • ${g.goal.title} — ${l10n.goalAmount(g.reached, g.goal.target)}');
+      out.writeln('  • ${_goal(g)}');
     }
 
     out
@@ -52,6 +58,22 @@ class MonthTextFormatter {
     if (report.days.isNotEmpty) out.writeln(l10n.reportTotal(report.completed, report.total));
     // Windows editors (Notepad) expect CRLF; every other one accepts it.
     return out.toString().replaceAll('\n', '\r\n');
+  }
+
+  /// "Read 4 books — 2 / 4", "… — 2 / 4 (Moved to November 2026)".
+  String _goal(GoalProgress g) {
+    final goal = g.goal;
+    final amount = l10n.goalAmount(g.reached, goal.target);
+    final movedTo = goal.movedTo;
+    final outcome = switch (goal.outcome) {
+      GoalOutcome.completed => l10n.goalOutcomeCompleted,
+      GoalOutcome.moved when movedTo != null && otherMonthLabel != null => l10n.goalOutcomeMoved(
+        otherMonthLabel!(movedTo.$1, movedTo.$2),
+      ),
+      GoalOutcome.leftIncomplete => l10n.goalOutcomeLeft,
+      _ => null,
+    };
+    return '${goal.title} — $amount${outcome == null ? '' : ' ($outcome)'}';
   }
 
   /// "✅ Vitamins — 2/2", "❌ Walk — Moved to the next day", "⏳ Read — 40%",

@@ -1,5 +1,6 @@
 import '../../../core/time/clock.dart';
 import '../../../core/time/local_date.dart';
+import '../../activities/domain/entities/activity.dart';
 import '../../activities/domain/repositories/activity_repository.dart';
 import '../../activities/domain/repositories/occurrence_repository.dart';
 import '../../activities/domain/services/occurrence_planner.dart';
@@ -18,16 +19,25 @@ class GoalProgress {
 
   final MonthlyGoal goal;
 
-  /// Amount reached, 0 to the goal's target.
+  /// Amount reached, 0 to the goal's target (as it was when the user decided
+  /// about the goal, for resolved goals).
   final double progress;
 
   /// Whole units reached (partial shares only count once complete).
   int get reached => progress.floor();
 
-  /// Share of the target reached, 0–1.
-  double get fraction => goal.target == 0 ? 0 : (progress / goal.target).clamp(0, 1);
+  /// Share of the target reached, 0–1 (1 when marked as completed by hand).
+  double get fraction {
+    if (goal.outcome == GoalOutcome.completed) return 1;
+    return goal.target == 0 ? 0 : (progress / goal.target).clamp(0, 1);
+  }
 
-  bool get isReached => progress >= goal.target;
+  /// Reached by its activities, or marked as completed by hand.
+  bool get isReached => goal.outcome == GoalOutcome.completed || progress >= goal.target;
+
+  /// Its month is over, it was not reached and the user has not decided yet
+  /// what to do with it.
+  bool needsDecisionAt(LocalDate today) => goal.isPastAt(today) && !goal.isResolved && !isReached;
 }
 
 /// Use cases around monthly goals.
@@ -91,25 +101,125 @@ class GoalService {
   }
 
   /// Progress of every goal of [year]/[month].
-  Future<List<GoalProgress>> progressOfMonth(int year, int month) async {
-    final goals = await _goals.getMonth(year, month);
+  Future<List<GoalProgress>> progressOfMonth(int year, int month) async =>
+      _withProgress(await _goals.getMonth(year, month));
+
+  /// Live progress from the linked activities, or the one frozen when the
+  /// user decided about the goal.
+  Future<List<GoalProgress>> _withProgress(List<MonthlyGoal> goals) async {
     if (goals.isEmpty) return const [];
     final activities = {for (final a in await _activities.getAll(includeDeleted: true)) a.id: a};
-    final first = LocalDate(year, month, 1);
-    final occurrences = await _occurrences.getBetween(first, first.lastOfMonth);
+    final byMonth = <(int, int), List<MonthlyGoal>>{};
+    for (final g in goals) {
+      byMonth.putIfAbsent((g.year, g.month), () => []).add(g);
+    }
+    final progress = <String, double>{};
+    for (final MapEntry(key: (year, month), value: monthGoals) in byMonth.entries) {
+      final first = LocalDate(year, month, 1);
+      final occurrences = await _occurrences.getBetween(first, first.lastOfMonth);
+      for (final g in monthGoals) {
+        progress[g.id] =
+            g.frozenProgress ??
+            _calculator.progressOf(goal: g, activitiesById: activities, occurrences: occurrences);
+      }
+    }
+    return [for (final g in goals) GoalProgress(g, progress[g.id]!)];
+  }
+
+  /// Goals of months already over that were not reached and still wait for
+  /// a decision (see [GoalProgress.needsDecisionAt]).
+  Future<List<GoalProgress>> toDecide() async {
+    final today = _clock.today();
+    final open = (await _goals.getAll()).where((g) => g.isPastAt(today) && !g.isResolved);
     return [
-      for (final g in goals)
-        GoalProgress(
-          g,
-          _calculator.progressOf(goal: g, activitiesById: activities, occurrences: occurrences),
-        ),
+      for (final p in await _withProgress(open.toList()))
+        if (p.needsDecisionAt(today)) p,
     ];
   }
+
+  Future<double> _liveProgress(MonthlyGoal goal) async =>
+      (await _withProgress([goal.reopened(goal.updatedAt)])).single.progress;
+
+  // ---------------------------------------------------------------------------
+  // Decisions (monthly summary)
+  // ---------------------------------------------------------------------------
+
+  /// Marks [goal] as completed by hand, whatever its progress (e.g. a goal no
+  /// activity feeds). No notification: the user did it.
+  Future<void> markCompleted(MonthlyGoal goal) async {
+    if (goal.outcome == GoalOutcome.moved) return;
+    final now = _clock.now();
+    await _goals.save(
+      goal
+          .resolved(GoalOutcome.completed, await _liveProgress(goal), now)
+          .copyWith(completionNotifiedAt: () => goal.completionNotifiedAt ?? now),
+    );
+  }
+
+  /// Accepts that [goal] was not reached.
+  Future<void> leaveIncomplete(MonthlyGoal goal) async {
+    if (goal.isResolved) return;
+    final now = _clock.now();
+    await _goals.save(goal.resolved(GoalOutcome.leftIncomplete, await _liveProgress(goal), now));
+  }
+
+  /// Undoes "completed" or "left incomplete": the goal is open again and its
+  /// progress comes from its activities. Moved goals stay moved.
+  Future<void> reopen(MonthlyGoal goal) async {
+    if (!goal.isResolved || goal.outcome == GoalOutcome.moved) return;
+    final open = goal.reopened(_clock.now());
+    final reached = await _liveProgress(open) >= goal.target;
+    // Marked by hand, it never notified: let a real completion do it.
+    await _goals.save(open.copyWith(completionNotifiedAt: reached ? null : () => null));
+  }
+
+  /// The month a "move to the next month" targets: the following one, or the
+  /// current month for goals of months already over.
+  (int, int) moveTargetFor(MonthlyGoal goal) =>
+      MonthlyGoal.moveTarget(goal.year, goal.month, _clock.today());
+
+  /// Continues [goal] in [moveTargetFor], from zero: a copy with the same
+  /// title and target is created there, the activities linked to [goal] now
+  /// feed the copy, and [goal] keeps the progress it had, marked as moved.
+  /// Returns the copy, or `null` when [goal] was already decided.
+  Future<MonthlyGoal?> moveToNextMonth(MonthlyGoal goal) async {
+    if (goal.isResolved) return null;
+    final now = _clock.now();
+    final (year, month) = moveTargetFor(goal);
+    final copy = MonthlyGoal(
+      id: _newId(),
+      year: year,
+      month: month,
+      title: goal.title,
+      target: goal.target,
+      movedFromId: goal.id,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await _goals.save(goal.resolved(GoalOutcome.moved, await _liveProgress(goal), now));
+    await _goals.save(copy);
+    for (final activity in await _activities.getAll()) {
+      final link = activity.goalLink;
+      if (link == null || link.goalId != goal.id) continue;
+      await _activities.save(
+        activity.copyWith(
+          goalLink: () => GoalLink(goalId: copy.id, impact: link.impact, type: link.type),
+          updatedAt: now,
+        ),
+      );
+    }
+    return copy;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Notifications
+  // ---------------------------------------------------------------------------
 
   /// Sends the one-shot notification for goals of [year]/[month] that just
   /// reached their target, and remembers it.
   Future<void> checkCompletions(int year, int month) async {
     for (final p in await progressOfMonth(year, month)) {
+      if (p.goal.isResolved) continue;
       if (!_calculator.shouldNotifyCompletion(p.goal, p.progress)) continue;
       final now = _clock.now();
       await _goals.save(p.goal.copyWith(completionNotifiedAt: () => now, updatedAt: now));

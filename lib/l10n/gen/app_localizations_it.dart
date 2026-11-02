@@ -511,6 +511,49 @@ class AppLocalizationsIt extends AppLocalizations {
   String get goalReachedLabel => 'Raggiunto';
 
   @override
+  String get goalsToDecide => 'Da decidere';
+
+  @override
+  String get goalsToDecideHint =>
+      'Il loro mese è finito e non sono stati raggiunti. Cosa facciamo?';
+
+  @override
+  String get goalsPast => 'Mesi passati';
+
+  @override
+  String get goalMarkCompleted => 'Segna completato';
+
+  @override
+  String goalMoveTo(String month) {
+    return 'Sposta a $month';
+  }
+
+  @override
+  String get goalMoveHint => 'Riparte da zero; le attività collegate lo seguono.';
+
+  @override
+  String get goalLeaveIncomplete => 'Lascia stare';
+
+  @override
+  String get goalReopen => 'Riapri';
+
+  @override
+  String get goalOutcomeCompleted => 'Completato';
+
+  @override
+  String goalOutcomeMoved(String month) {
+    return 'Spostato a $month';
+  }
+
+  @override
+  String get goalOutcomeLeft => 'Non raggiunto';
+
+  @override
+  String goalMovedFrom(String month) {
+    return 'Continua da $month';
+  }
+
+  @override
   String get errorEmptyGoal => 'Dai un nome all\'obiettivo';
 
   @override

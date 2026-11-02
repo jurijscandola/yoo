@@ -61,6 +61,10 @@ void main() {
       final goal = await container
           .read(goalServiceProvider)
           .create(year: 2026, month: 9, title: 'Read four long books before the end of the month');
+      // A goal of last month, waiting for a decision on the Goals tab.
+      await container
+          .read(goalServiceProvider)
+          .create(year: 2026, month: 8, title: 'Paint the fence before the summer ends', target: 3);
       final activities = container.read(activityServiceProvider);
       for (final (i, name) in [
         'Take the vitamins after breakfast every single day',
@@ -115,8 +119,17 @@ void main() {
       await tester.tapAt(const Offset(5, 5)); // dismiss the dialog
       await tester.pumpAndSettle();
 
-      // Settings and its pages.
+      // Goals tab: the goal to decide, and the actions of a goal.
       await open(find.byType(GoalsIcon));
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -2000));
+      await tester.pumpAndSettle();
+      await open(find.textContaining('Read four long books').last);
+      await tester.tapAt(const Offset(5, 5)); // close the sheet
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, 4000));
+      await tester.pumpAndSettle();
+
+      // Settings and its pages.
       await open(find.byIcon(Icons.more_horiz));
       for (final icon in [
         Icons.file_download_outlined,

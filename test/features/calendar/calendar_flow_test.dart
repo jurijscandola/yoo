@@ -89,7 +89,12 @@ void main() {
     expect(find.text('Read 4 books'), findsOneWidget);
     expect(find.text('0 / 4'), findsOneWidget);
 
+    // Tapping a goal opens its actions; editing is one of them.
     await tester.tap(find.text('Read 4 books'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mark as completed'), findsOneWidget);
+    expect(find.text('Move to October 2026'), findsOneWidget);
+    await tester.tap(find.text('Edit goal'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Read 5 books');
     await tester.enterText(find.byType(TextField).last, '5');
@@ -99,6 +104,8 @@ void main() {
     expect(find.text('0 / 5'), findsOneWidget);
 
     await tester.tap(find.text('Read 5 books'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Edit goal'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();

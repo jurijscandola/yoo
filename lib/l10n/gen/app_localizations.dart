@@ -1011,6 +1011,78 @@ abstract class AppLocalizations {
   /// **'Reached'**
   String get goalReachedLabel;
 
+  /// No description provided for @goalsToDecide.
+  ///
+  /// In en, this message translates to:
+  /// **'To decide'**
+  String get goalsToDecide;
+
+  /// No description provided for @goalsToDecideHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Their month is over and they were not reached. What should we do?'**
+  String get goalsToDecideHint;
+
+  /// No description provided for @goalsPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Past months'**
+  String get goalsPast;
+
+  /// No description provided for @goalMarkCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as completed'**
+  String get goalMarkCompleted;
+
+  /// No description provided for @goalMoveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to {month}'**
+  String goalMoveTo(String month);
+
+  /// No description provided for @goalMoveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'It starts again from zero; the linked activities follow it.'**
+  String get goalMoveHint;
+
+  /// No description provided for @goalLeaveIncomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it'**
+  String get goalLeaveIncomplete;
+
+  /// No description provided for @goalReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get goalReopen;
+
+  /// No description provided for @goalOutcomeCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get goalOutcomeCompleted;
+
+  /// No description provided for @goalOutcomeMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved to {month}'**
+  String goalOutcomeMoved(String month);
+
+  /// No description provided for @goalOutcomeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Not reached'**
+  String get goalOutcomeLeft;
+
+  /// No description provided for @goalMovedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Continued from {month}'**
+  String goalMovedFrom(String month);
+
   /// No description provided for @errorEmptyGoal.
   ///
   /// In en, this message translates to:
